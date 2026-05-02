@@ -1521,5 +1521,32 @@ function tickPreviewTimer() {
 }
 setInterval(tickPreviewTimer, 1000);
 </script>
+
+<script>
+  // ── CTA BUTTON HANDLERS ──
+  document.querySelectorAll('button').forEach(btn => {
+    const label = btn.textContent.trim();
+
+    // Already has a handler — skip
+    if (btn.onclick || btn.dataset.wired) return;
+
+    if (label === 'Sign in') {
+      btn.addEventListener('click', () => window.location.href = '/app');
+    } else if (label === 'Get started free' || label === 'Start for free — no card needed') {
+      btn.addEventListener('click', () => window.location.href = '/app');
+    } else if (label === 'Start Lite free for 14 days') {
+      btn.addEventListener('click', () => window.location.href = '/app');
+    } else if (label === 'Start Pro free for 14 days') {
+      btn.addEventListener('click', () => window.location.href = '/app');
+    } else if (label === 'Book a demo') {
+      btn.addEventListener('click', () => window.location.href = 'mailto:hello@afriquote.africa');
+    } else if (label === 'Contact sales') {
+      btn.addEventListener('click', () => window.location.href = 'mailto:hello@afriquote.africa');
+    }
+
+    btn.dataset.wired = 'true';
+    btn.style.cursor = 'pointer';
+  });
+</script>
 </body>
 </html>
