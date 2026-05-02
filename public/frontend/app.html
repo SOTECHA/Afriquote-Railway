@@ -1459,10 +1459,21 @@ function doCheckin(btn){
 switchMod('finance', document.querySelector('.mn.on'));
 
 // Proposal module render trigger
-function switchMod(mod, el) {
-
-  if (mod === 'proposals') setTimeout(propRenderAll, 60);
-  
+function switchMod(mod,el){
+  document.querySelectorAll('.mn').forEach(m=>m.classList.remove('on'));
+  if(el) el.classList.add('on');
+  Object.values(modSidebars).forEach(id=>{const s=document.getElementById(id);if(s)s.classList.remove('on')});
+  const sb=document.getElementById(modSidebars[mod]);
+  if(sb){sb.classList.add('on')}
+  showPage(modDefaults[mod],null);
+  // set first sidebar item active
+  if(sb){
+    sb.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+    const first=sb.querySelector('.sb-item');
+    if(first)first.classList.add('on');
+  }
+  // render proposals when switching to that tab
+  if(mod === 'proposals') setTimeout(propRenderAll, 60);
 }
 
 
