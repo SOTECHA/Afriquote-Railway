@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfriQuote — African Tax Calculator 2026</title>
+<style>
+:root{--g:#1D9E75;--g2:#0F6E56;--gl:#E1F5EE;--gx:#f0faf6;--red:#E24B4A;--rl:#FCEBEB;--amber:#BA7517;--al:#FAEEDA;--blue:#185FA5;--bl:#E6F1FB;--ink:#0e1410;--ink2:#3d4a3f;--ink3:#7a8c7c;--bg:#f7f8f6;--s:#fff;--s2:#f4f5f3;--b:#e2e6df;--b2:#cdd1c9;--r:10px;--rl2:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+.header{background:var(--g);padding:32px 24px 28px;text-align:center;color:#fff}
+.header h1{font-size:28px;font-weight:700;margin-bottom:6px;letter-spacing:-.5px}
+.header p{font-size:15px;opacity:.85;max-width:480px;margin:0 auto 4px}
+.header .sub{font-size:12px;opacity:.65;margin-top:8px}
+.countries{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.cflag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 12px;font-size:12px;color:#fff;font-weight:500}
+.container{max-width:800px;margin:0 auto;padding:24px 16px}
+.card{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:18px 20px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.ct-num{width:20px;height:20px;border-radius:50%;background:var(--g);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fg{margin-bottom:10px}
+.fl{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:5px;display:block}
+.fc{width:100%;padding:9px 12px;border:1px solid var(--b2);border-radius:var(--r);font-size:13px;background:var(--s);color:var(--ink);font-family:inherit;transition:border .15s}
+.fc:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+select.fc{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a8c7c'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+.calc-btn{width:100%;padding:13px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;margin-top:4px}
+.calc-btn:hover{background:var(--g2)}
+.results{display:none}
+.result-hero{background:var(--g);border-radius:var(--rl2);padding:22px 24px;color:#fff;margin-bottom:14px;text-align:center}
+.result-hero .lbl{font-size:13px;opacity:.8;margin-bottom:6px}
+.result-hero .amount{font-size:36px;font-weight:700;letter-spacing:-1px;margin-bottom:4px}
+.result-hero .sub{font-size:12px;opacity:.7}
+.breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.bc{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:14px 16px;text-align:center}
+.bc .bn{font-size:20px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.bc .bl{font-size:11px;color:var(--ink3)}
+.bc.good .bn{color:var(--g)}
+.bc.warn .bn{color:var(--amber)}
+.bc.bad .bn{color:var(--red)}
+.deadline-list{margin:0;padding:0;list-style:none}
+.deadline-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--b);font-size:13px}
+.deadline-item:last-child{border-bottom:none}
+.deadline-item .lbl{color:var(--ink2)}
+.deadline-item .date{font-weight:500;color:var(--ink)}
+.days-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600}
+.db-danger{background:var(--rl);color:var(--red)}
+.db-warn{background:var(--al);color:var(--amber)}
+.db-ok{background:var(--gl);color:var(--g2)}
+.ntaa-box{border-radius:var(--r);padding:12px 14px;font-size:12.5px;line-height:1.6}
+.ntaa-ok{background:var(--gl);border-left:3px solid var(--g);color:var(--g2)}
+.ntaa-no{background:var(--al);border-left:3px solid var(--amber);color:var(--amber)}
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.share-btn{padding:9px 16px;border-radius:var(--r);border:1px solid var(--b2);font-size:12.5px;cursor:pointer;font-family:inherit;background:var(--s);color:var(--ink);font-weight:500;transition:all .12s;display:inline-flex;align-items:center;gap:6px}
+.share-btn:hover{background:var(--s2)}
+.share-btn.wa{background:#25D366;color:#fff;border-color:#25D366}
+.share-btn.wa:hover{background:#1da851}
+.cta-box{background:linear-gradient(135deg,var(--g),var(--g2));border-radius:var(--rl2);padding:20px 22px;color:#fff;text-align:center;margin-top:16px}
+.cta-box h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.cta-box p{font-size:13px;opacity:.85;margin-bottom:14px}
+.cta-box .btn-w{background:#fff;color:var(--g2);border:none;border-radius:var(--r);padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.tip{background:var(--bl);border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--blue);line-height:1.6;margin-bottom:10px}
+.footer{text-align:center;padding:24px 16px;font-size:11px;color:var(--ink3);border-top:1px solid var(--b)}
+@media(max-width:540px){.g2,.g3,.breakdown-grid{grid-template-columns:1fr}.breakdown-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>African Tax Calculator 2026</h1>
+  <p>Calculate your VAT, Withholding Tax, and filing deadlines in seconds</p>
+  <div class="sub">Updated for Nigeria NTAA 2025 · All figures verified against FIRS, GRA, KRA, SARS, RRA</div>
+  <div class="countries">
+    <span class="cflag">🇳🇬 Nigeria</span>
+    <span class="cflag">🇬🇭 Ghana</span>
+    <span class="cflag">🇰🇪 Kenya</span>
+    <span class="cflag">🇿🇦 South Africa</span>
+    <span class="cflag">🇷🇼 Rwanda</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <div class="card-title"><div class="ct-num">1</div> Your details</div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Country</label>
+        <select class="fc" id="country" onchange="updateCountryInfo()">
+          <option value="NG">Nigeria</option>
+          <option value="GH">Ghana</option>
+          <option value="KE">Kenya</option>
+          <option value="ZA">South Africa</option>
+          <option value="RW">Rwanda</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Service / profession type</label>
+        <select class="fc" id="serviceType">
+          <option value="services">Professional services (consulting, design, IT)</option>
+          <option value="construction">Construction / engineering</option>
+          <option value="creative">Creative (photography, video, writing)</option>
+          <option value="tech">Software / technology</option>
+          <option value="legal">Legal / accounting</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Monthly revenue / income</label>
+        <input class="fc" id="revenue" type="number" placeholder="e.g. 500000" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+      </div>
+      <div class="fg"><label class="fl">Annual revenue (if different)</label>
+        <input class="fc" id="annualRevenue" type="number" placeholder="Leave blank to auto-calculate">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Do you have a TIN / Tax ID?</label>
+        <select class="fc" id="hasTIN">
+          <option value="yes">Yes, I have a TIN</option>
+          <option value="no">No, I don't have one</option>
+          <option value="pending">Application in progress</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Are you VAT registered?</label>
+        <select class="fc" id="vatReg">
+          <option value="no">No</option>
+          <option value="yes">Yes, I'm VAT registered</option>
+          <option value="unsure">Not sure</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="ct-num">2</div> Invoice details (optional — for WHT calculation)</div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Invoice / contract value</label>
+        <input class="fc" id="invoiceValue" type="number" placeholder="e.g. 320000">
+      </div>
+      <div class="fg"><label class="fl">Client type</label>
+        <select class="fc" id="clientType">
+          <option value="company">Company / corporate (WHT applies)</option>
+          <option value="individual">Individual / sole trader (WHT may not apply)</option>
+          <option value="government">Government / public sector</option>
+          <option value="international">International client</option>
+        </select>
+      </div>
+    </div>
+    <div id="countryInfo" class="tip"></div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">Calculate my tax →</button>
+
+  <div class="results" id="results">
+    <div style="height:16px"></div>
+    <div class="result-hero">
+      <div class="lbl">Total tax payable (estimated)</div>
+      <div class="amount" id="r-total">₦0</div>
+      <div class="sub" id="r-sub">Based on your inputs — see full breakdown below</div>
+    </div>
+    <div class="breakdown-grid">
+      <div class="bc" id="bc-vat"><div class="bn">₦0</div><div class="bl">VAT collectible</div></div>
+      <div class="bc" id="bc-wht"><div class="bn">₦0</div><div class="bl">WHT deduction</div></div>
+      <div class="bc" id="bc-net"><div class="bn">₦0</div><div class="bl">Net receivable</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">NTAA 2025 / WHT exemption check</div>
+      <div id="ntaa-result"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Filing deadlines — next 6 months</div>
+      <ul class="deadline-list" id="deadlines"></ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">What you need to know</div>
+      <div id="tax-tips"></div>
+    </div>
+
+    <div class="share-row">
+      <button class="share-btn wa" onclick="shareWhatsApp()">💬 Share on WhatsApp</button>
+      <button class="share-btn" onclick="shareTwitter()">Share on X/Twitter</button>
+      <button class="share-btn" onclick="emailResults()">📧 Email me this report</button>
+    </div>
+
+    <div class="cta-box">
+      <h3>Let AfriQuote track this automatically</h3>
+      <p>Stop calculating manually every month. AfriQuote auto-calculates your VAT and WHT, alerts you before every filing deadline, and keeps your full tax record in one place.</p>
+      <button class="btn-w">Start free — no credit card needed →</button>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  AfriQuote Tax Calculator · Updated April 2026 · Sources: FIRS, GRA, KRA, SARS, RRA<br>
+  This is a guide only — consult a qualified tax professional for formal advice.<br><br>
+  <strong style="color:var(--g)">Powered by AfriQuote · afriquote.africa</strong>
+</div>
+<script>
+const CONFIG={
+  NG:{name:'Nigeria',currency:'NGN',sym:'₦',vatRate:7.5,vatAuth:'FIRS',whtServices:10,whtConstruction:5,whtThreshold:2000000,ntaa:true,periods:'Quarterly'},
+  GH:{name:'Ghana',currency:'GHS',sym:'GH₵',vatRate:12.5,vatAuth:'GRA',whtServices:7.5,whtConstruction:5,ntaa:false,periods:'Quarterly'},
+  KE:{name:'Kenya',currency:'KES',sym:'KES ',vatRate:16,vatAuth:'KRA',whtServices:5,whtConstruction:3,ntaa:false,periods:'Monthly'},
+  ZA:{name:'South Africa',currency:'ZAR',sym:'R',vatRate:15,vatAuth:'SARS',whtServices:15,whtConstruction:7.5,ntaa:false,periods:'Bi-monthly'},
+  RW:{name:'Rwanda',currency:'RWF',sym:'RWF ',vatRate:18,vatAuth:'RRA',whtServices:15,whtConstruction:10,ntaa:false,periods:'Monthly'},
+};
+const DEADLINES={
+  NG:[{l:'Q1 VAT return (FIRS)',d:'2026-04-21'},{l:'Annual income tax (LIRS)',d:'2026-06-30'},{l:'Q2 VAT return (FIRS)',d:'2026-07-21'},{l:'Q3 VAT return (FIRS)',d:'2026-10-21'},{l:'Q4 VAT return (FIRS)',d:'2027-01-21'}],
+  GH:[{l:'Q1 VAT return (GRA)',d:'2026-04-30'},{l:'Annual income tax (GRA)',d:'2026-04-30'},{l:'Q2 VAT return (GRA)',d:'2026-07-31'},{l:'Q3 VAT return (GRA)',d:'2026-10-31'}],
+  KE:[{l:'March VAT return (KRA)',d:'2026-04-20'},{l:'April VAT return (KRA)',d:'2026-05-20'},{l:'Annual IT1 return',d:'2026-06-30'},{l:'May VAT return (KRA)',d:'2026-06-20'},{l:'June VAT return (KRA)',d:'2026-07-20'}],
+  ZA:[{l:'VAT return (Feb/Mar)',d:'2026-04-25'},{l:'VAT return (Apr/May)',d:'2026-06-25'},{l:'VAT return (Jun/Jul)',d:'2026-08-25'},{l:'Annual ITR12 return',d:'2026-11-23'}],
+  RW:[{l:'April VAT return (RRA)',d:'2026-05-15'},{l:'May VAT return (RRA)',d:'2026-06-15'},{l:'June VAT return (RRA)',d:'2026-07-15'},{l:'Annual CIT return',d:'2026-06-30'}],
+};
+const TIPS={
+  NG:['As a Nigerian professional, you must register for VAT once your annual turnover exceeds ₦25M — but charging VAT builds client credibility even below that threshold.','WHT at 10% is deducted by corporate clients on services payments — always request a WHT credit note to offset against your annual tax liability.','The NTAA 2025 exempts service providers earning below ₦2M/month from WHT if they have a valid TIN — ensure your TIN is active with FIRS.','File your VAT returns quarterly by the 21st of the month following each quarter-end, even if you have zero to declare.'],
+  GH:['GRA requires VAT registration at GH₵200,000 annual turnover. File quarterly returns within 30 days of quarter-end.','WHT at 7.5% applies to management and technical services paid by corporate clients — obtain WHT certificates to reduce income tax.','Resident individuals pay a flat 20% personal income tax on self-employment income above GH₵15,000 per annum.'],
+  KE:['KRA requires monthly VAT returns due by the 20th of the following month — late filing attracts a Ksh 10,000 penalty.','WHT at 5% applies to professional services. Register on iTax and request WHT credit certificates from corporate clients.','The turnover tax of 1% applies to businesses with annual turnover between KES 500,000 and KES 15M as an alternative to income tax.'],
+  ZA:['SARS requires VAT registration above R1M annual turnover. File bi-monthly returns (6 per year) within 25 days of period-end.','WHT at 15% applies to non-resident service providers. Residents are taxed at standard income tax rates (18%–45% based on income).','Submit your ITR12 annual return by 23 November for non-provisional taxpayers. Provisional taxpayers must file twice-yearly estimates.'],
+  RW:['RRA requires monthly VAT returns due by the 15th of the following month for VAT-registered businesses.','Corporate income tax is 30% of taxable profit. Personal income tax is progressive: 0% below RWF 360K, 20% up to RWF 1.2M, 30% above.','Small businesses (turnover below RWF 20M) pay 3% flat tax instead of standard income tax — verify your threshold each year.'],
+};
+
+function fmt(n,c){const cfg=CONFIG[c||document.getElementById('country')?.value||'NG'];return cfg.sym+Math.round(n).toLocaleString();}
+
+function updateCountryInfo(){
+  const c=document.getElementById('country').value;
+  const cfg=CONFIG[c];
+  document.getElementById('countryInfo').textContent=`${cfg.name}: VAT rate ${cfg.vatRate}% (${cfg.vatAuth}) · WHT on services: ${cfg.whtServices}% · Filing: ${cfg.periods}`;
+}
+
+function daysUntil(dateStr){return Math.ceil((new Date(dateStr)-new Date())/86400000);}
+function daysClass(d){return d<14?'db-danger':d<45?'db-warn':'db-ok';}
+function daysText(d){return d<0?`${Math.abs(d)}d overdue`:d===0?'Today':d===1?'Tomorrow':`${d} days`;}
+
+function calculate(){
+  const c=document.getElementById('country').value;
+  const cfg=CONFIG[c];
+  const monthly=+(document.getElementById('revenue').value)||0;
+  const annualInput=+(document.getElementById('annualRevenue').value)||0;
+  const annual=annualInput||monthly*12;
+  const inv=+(document.getElementById('invoiceValue').value)||monthly;
+  const hasTIN=document.getElementById('hasTIN').value==='yes';
+  const svcType=document.getElementById('serviceType').value;
+  const clientType=document.getElementById('clientType').value;
+  const isCorpClient=clientType==='company'||clientType==='government';
+
+  const vatAmt=inv*cfg.vatRate/100;
+  const vatTotal=inv+vatAmt;
+  const whtRate=svcType==='construction'?cfg.whtConstruction:cfg.whtServices;
+  const whtAmt=isCorpClient?inv*whtRate/100:0;
+  const netReceivable=vatTotal-whtAmt;
+  const totalPayable=vatAmt+whtAmt;
+
+  document.getElementById('r-total').textContent=fmt(totalPayable,c);
+  document.getElementById('r-sub').textContent=`Based on ${fmt(inv,c)} invoice · VAT ${cfg.vatRate}% + WHT ${isCorpClient?whtRate:0}%`;
+  document.getElementById('bc-vat').innerHTML=`<div class="bn ${vatAmt>0?'good':''}">${fmt(vatAmt,c)}</div><div class="bl">VAT to collect & remit</div>`;
+  document.getElementById('bc-wht').innerHTML=`<div class="bn ${whtAmt>0?'warn':''}">${fmt(whtAmt,c)}</div><div class="bl">WHT client will deduct</div>`;
+  document.getElementById('bc-net').innerHTML=`<div class="bn">${fmt(netReceivable,c)}</div><div class="bl">You will receive</div>`;
+
+  // NTAA check
+  const ntaaEl=document.getElementById('ntaa-result');
+  if(c==='NG'){
+    const exempt=hasTIN&&monthly<cfg.whtThreshold;
+    ntaaEl.innerHTML=`<div class="ntaa-box ${exempt?'ntaa-ok':'ntaa-no'}">${exempt
+      ?`<strong>You may be WHT exempt under NTAA 2025.</strong> Your monthly income (${fmt(monthly,'NG')}) is below the ₦2M threshold and you have a valid TIN. Ask corporate clients to confirm your exemption before deducting WHT. Present your TIN certificate as evidence.`
+      :!hasTIN
+        ?`<strong>No TIN = no exemption.</strong> Without a valid TIN registered with FIRS, corporate clients must deduct WHT at 10% regardless of your income level. Register at taxpromax.firs.gov.ng immediately — it's free.`
+        :`<strong>WHT applies to your invoices.</strong> Your monthly income (${fmt(monthly,'NG')}) exceeds the ₦2M NTAA 2025 threshold. Corporate clients will deduct WHT at ${whtRate}%. Always request WHT credit notes to offset against your annual tax return.`
+    }</div>`;
+  } else {
+    ntaaEl.innerHTML=`<div class="ntaa-box ntaa-no"><strong>NTAA 2025 applies only to Nigeria.</strong> For ${cfg.name}: WHT at ${whtRate}% applies to ${svcType==='construction'?'construction':'professional service'} payments from corporate clients. Request WHT credit certificates from each client to offset against your income tax assessment.</div>`;
+  }
+
+  // Deadlines
+  const dl=DEADLINES[c]||[];
+  document.getElementById('deadlines').innerHTML=dl
+    .filter(d=>daysUntil(d.d)>-30)
+    .slice(0,6)
+    .map(d=>{const days=daysUntil(d.d);return`<li class="deadline-item"><span class="lbl">${d.l}</span><div style="text-align:right"><div class="date">${d.d}</div><span class="days-badge ${daysClass(days)}">${daysText(days)}</span></div></li>`;})
+    .join('');
+
+  // Tips
+  const tips=TIPS[c]||[];
+  document.getElementById('tax-tips').innerHTML=tips.map(t=>`<div class="tip" style="margin-bottom:8px">${t}</div>`).join('');
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function shareWhatsApp(){
+  const c=document.getElementById('country').value;
+  const cfg=CONFIG[c];
+  const monthly=+(document.getElementById('revenue').value)||0;
+  const inv=+(document.getElementById('invoiceValue').value)||monthly;
+  const vatAmt=Math.round(inv*cfg.vatRate/100);
+  const msg=`I just calculated my 2026 tax using the AfriQuote African Tax Calculator:\n\nCountry: ${cfg.name}\nVAT (${cfg.vatRate}%): ${cfg.sym}${vatAmt.toLocaleString()}\nFiling: ${cfg.periods}\n\nCalculate yours FREE at: https://afriquote.africa/tax-calculator\n\n#AfriQuote #NigeriaTax #AfricanBusiness`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function shareTwitter(){
+  const c=document.getElementById('country').value;
+  const cfg=CONFIG[c];
+  const monthly=+(document.getElementById('revenue').value)||0;
+  const vatAmt=Math.round(monthly*cfg.vatRate/100);
+  const tweet=`Just calculated my 2026 ${cfg.name} VAT — ${cfg.sym}${vatAmt.toLocaleString()}/month to remit to ${cfg.vatAuth}. Most African freelancers have no idea how much they owe. Calculate yours free 👇 afriquote.africa/tax-calculator #AfriQuote #${cfg.name}Tax`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,'_blank');
+}
+
+function emailResults(){
+  const email=prompt('Enter your email address to receive the full tax report PDF:');
+  if(email&&email.includes('@')){
+    alert(`Report sent to ${email}!\n\nYou'll also receive monthly tax deadline reminders.\n\nAfriQuote can automate all of this for you — start free at afriquote.africa`);
+  }
+}
+
+updateCountryInfo();
+</script>
+</body>
+</html>

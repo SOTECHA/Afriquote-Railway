@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfriQuote — Business Health Score</title>
+<style>
+:root{--g:#1D9E75;--g2:#0F6E56;--gl:#E1F5EE;--gx:#f0faf6;--red:#E24B4A;--rl:#FCEBEB;--amber:#BA7517;--al:#FAEEDA;--blue:#185FA5;--bl:#E6F1FB;--ink:#0e1410;--ink2:#3d4a3f;--ink3:#7a8c7c;--bg:#f7f8f6;--s:#fff;--b:#e2e6df;--b2:#cdd1c9;--r:10px;--rl2:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
+.hero{background:var(--g);padding:40px 20px 36px;text-align:center;color:#fff}
+.hero h1{font-size:30px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.hero p{font-size:15px;opacity:.85;max-width:440px;margin:0 auto 12px}
+.hero .sub{font-size:12px;opacity:.65}
+.score-circle-placeholder{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;margin:16px auto 0;font-size:28px;font-weight:700}
+.container{max-width:600px;margin:0 auto;padding:24px 16px}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;color:var(--ink3)}
+.progress-bar{height:6px;background:var(--b);border-radius:3px;overflow:hidden;margin-bottom:20px}
+.progress-fill{height:100%;background:var(--g);border-radius:3px;transition:width .3s}
+.question-card{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:22px 20px;margin-bottom:16px;display:none}
+.question-card.active{display:block;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-dim{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.q-text{font-size:16px;font-weight:500;color:var(--ink);margin-bottom:16px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{padding:11px 14px;border:1.5px solid var(--b2);border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--ink2);transition:all .15s;display:flex;align-items:center;gap:8px;line-height:1.4}
+.opt:hover{border-color:var(--g);background:var(--gx);color:var(--ink)}
+.opt.sel{border-color:var(--g);background:var(--gx);color:var(--g2);font-weight:500}
+.opt-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--b2);flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.opt.sel .opt-radio{border-color:var(--g);background:var(--g)}
+.opt.sel .opt-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+.nav-row{display:flex;gap:8px;margin-top:16px}
+.btn{padding:11px 20px;border-radius:var(--r);border:1px solid var(--b2);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;background:var(--s);color:var(--ink);transition:all .12s;flex:1;text-align:center}
+.btn:hover{background:var(--b)}
+.btn-g{background:var(--g);color:#fff;border-color:var(--g)}.btn-g:hover{background:var(--g2)}
+/* Results */
+.results{display:none}
+.score-hero{background:var(--g);border-radius:var(--rl2);padding:28px 20px;color:#fff;text-align:center;margin-bottom:16px}
+.score-number{font-size:72px;font-weight:700;line-height:1;letter-spacing:-2px;margin-bottom:4px}
+.score-grade{font-size:20px;font-weight:600;opacity:.9}
+.score-sub{font-size:13px;opacity:.75;margin-top:6px}
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.dim-card{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:14px 16px}
+.dim-card .dlabel{font-size:11px;color:var(--ink3);margin-bottom:4px}
+.dim-card .dscore{font-size:22px;font-weight:700;margin-bottom:6px}
+.dim-card .dbar{height:5px;border-radius:3px;background:var(--b);overflow:hidden}
+.dim-card .dfill{height:100%;border-radius:3px}
+.good{color:var(--g)}.warn{color:var(--amber)}.bad{color:var(--red)}
+.recos{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:16px 18px;margin-bottom:14px}
+.reco-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--b)}
+.reco-item:last-child{border-bottom:none}
+.reco-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.share-row{display:flex;gap:8px;flex-wrap:wrap}
+.share-btn{padding:10px 16px;border-radius:var(--r);border:1px solid var(--b2);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;background:var(--s);color:var(--ink);display:inline-flex;align-items:center;gap:6px;transition:all .12s}
+.share-btn:hover{background:var(--b)}
+.share-btn.wa{background:#25D366;color:#fff;border-color:#25D366}.share-btn.wa:hover{background:#1da851}
+.share-btn.tw{background:#000;color:#fff;border-color:#000}
+.cta-box{background:var(--g);border-radius:var(--rl2);padding:22px 20px;color:#fff;text-align:center;margin-top:16px}
+.cta-box h3{font-size:17px;font-weight:600;margin-bottom:8px}
+.cta-box p{font-size:13px;opacity:.85;margin-bottom:16px;line-height:1.6}
+.cta-box .btn-w{background:#fff;color:var(--g2);border:none;border-radius:var(--r);padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-block}
+.retake{width:100%;padding:12px;background:none;border:1px solid var(--b2);border-radius:var(--r);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;color:var(--ink2);margin-top:10px;transition:all .12s}
+.retake:hover{background:var(--b)}
+@media(max-width:480px){.dim-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>What's your business health score?</h1>
+  <p>10 questions · 2 minutes · Free personalised report for African professionals</p>
+  <div class="sub">Used by 2,400+ freelancers and consultants across Nigeria, Ghana, and Kenya</div>
+</div>
+
+<div class="container">
+  <div id="quizArea">
+    <div class="progress-header">
+      <span id="qLabel">Question 1 of 10</span>
+      <span id="qPct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="qProgress" style="width:0%"></div></div>
+    <div id="qCards"></div>
+    <div class="nav-row">
+      <button class="btn" id="prevBtn" onclick="prevQ()" style="display:none">← Back</button>
+      <button class="btn btn-g" id="nextBtn" onclick="nextQ()">Next →</button>
+    </div>
+  </div>
+  <div class="results" id="resultsArea"></div>
+</div>
+
+<script>
+const QUESTIONS=[
+  {dim:'Invoicing speed',dimShort:'Invoicing',icon:'📋',color:'#1D9E75',q:'How quickly do you typically send invoices after completing work?',opts:[{t:'Same day I finish',s:10},{t:'Within 3 days',s:7},{t:'Within a week',s:5},{t:'Whenever I remember — sometimes weeks later',s:1}]},
+  {dim:'Payment chasing',dimShort:'Payments',icon:'💰',color:'#185FA5',q:'How do you follow up on unpaid invoices?',opts:[{t:'Structured system — auto-reminders at 7, 14, 30 days',s:10},{t:'I send a WhatsApp or email when I remember',s:5},{t:'I feel awkward asking, so I usually wait',s:2},{t:'I often forget and just let it go',s:0}]},
+  {dim:'Contract coverage',dimShort:'Contracts',icon:'📄',color:'#534AB7',q:'For paid projects, how often do you have a signed contract or agreement?',opts:[{t:'Always — for every project above a small threshold',s:10},{t:'Most of the time, but not always',s:6},{t:'Occasionally — mainly for big clients',s:3},{t:'Almost never — I work on trust',s:0}]},
+  {dim:'Scope protection',dimShort:'Scope',icon:'🛡️',color:'#BA7517',q:'When a client requests work beyond the original scope, what do you do?',opts:[{t:'Raise a change order and agree new pricing before proceeding',s:10},{t:'Sometimes I charge, sometimes I absorb it',s:5},{t:'I usually just do it to keep the client happy',s:2},{t:'I don\'t have a formal process for this',s:0}]},
+  {dim:'Tax compliance',dimShort:'Tax',icon:'🧾',color:'#D85A30',q:'How on top of your VAT and income tax obligations are you?',opts:[{t:'Very — I know my rates, deadlines, and file on time',s:10},{t:'Fairly — I file but often scramble near deadlines',s:6},{t:'I\'m not sure exactly what I owe',s:2},{t:'I haven\'t started thinking about taxes as a freelancer',s:0}]},
+  {dim:'Client diversity',dimShort:'Clients',icon:'👥',color:'#185FA5',q:'What percentage of your revenue comes from your top single client?',opts:[{t:'Less than 25% — good spread across 4+ clients',s:10},{t:'25–50% — one strong client but others too',s:7},{t:'50–75% — somewhat dependent on one main client',s:3},{t:'More than 75% — one client is most of my income',s:0}]},
+  {dim:'Cash flow visibility',dimShort:'Cash flow',icon:'📊',color:'#1D9E75',q:'How clearly can you see your cash flow for the next 30 days?',opts:[{t:'Very clearly — I track invoices, payments, and expenses',s:10},{t:'Roughly — I have a general idea',s:6},{t:'Not really — I check my bank balance when unsure',s:2},{t:'I have no system for this',s:0}]},
+  {dim:'Pricing confidence',dimShort:'Pricing',icon:'💎',color:'#534AB7',q:'How do you determine what to charge clients?',opts:[{t:'Clear rate card based on market rates, time, and value delivered',s:10},{t:'I estimate based on experience and adjust per client',s:7},{t:'I often underprice to win work',s:3},{t:'I guess or copy what others charge',s:1}]},
+  {dim:'Proposal process',dimShort:'Proposals',icon:'📝',color:'#BA7517',q:'After sending a proposal, how do you follow up?',opts:[{t:'Structured follow-up: call/email at 3, 7, 14 days with clear CTA',s:10},{t:'One follow-up then I wait',s:5},{t:'I send the proposal and hope for the best',s:2},{t:'I don\'t send formal proposals — just WhatsApp voice notes',s:0}]},
+  {dim:'Business systems',dimShort:'Systems',icon:'⚙️',color:'#888780',q:'How do you currently manage your business admin (invoices, time, projects)?',opts:[{t:'Dedicated software or platform — everything is tracked',s:10},{t:'Mix of spreadsheets and apps',s:6},{t:'Mostly WhatsApp and my memory',s:2},{t:'I have no system — it\'s quite chaotic',s:0}]},
+];
+
+let current=0,answers=Array(10).fill(null);
+
+function renderQuestions(){
+  document.getElementById('qCards').innerHTML=QUESTIONS.map((q,i)=>`
+  <div class="question-card ${i===0?'active':''}" id="qcard-${i}">
+    <div class="q-dim" style="color:${q.color}">${q.icon} ${q.dim}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options">${q.opts.map((o,j)=>`
+      <div class="opt ${answers[i]===j?'sel':''}" onclick="selectOpt(${i},${j})">
+        <div class="opt-radio"></div><span>${o.t}</span>
+      </div>`).join('')}
+    </div>
+  </div>`).join('');
+}
+
+function selectOpt(qi,oi){
+  answers[qi]=oi;
+  renderQuestions();
+  showQ(qi);
+}
+
+function showQ(i){
+  current=i;
+  document.querySelectorAll('.question-card').forEach((c,idx)=>{c.className='question-card '+(idx===i?'active':'');});
+  document.getElementById('qLabel').textContent=`Question ${i+1} of ${QUESTIONS.length}`;
+  document.getElementById('qPct').textContent=Math.round((i+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('qProgress').style.width=Math.round((i+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('prevBtn').style.display=i>0?'block':'none';
+  document.getElementById('nextBtn').textContent=i===QUESTIONS.length-1?'See my score →':'Next →';
+}
+
+function nextQ(){
+  if(current<QUESTIONS.length-1){if(answers[current]===null){document.querySelector(`#qcard-${current} .options`).style.animation='shake .3s ease';setTimeout(()=>document.querySelector(`#qcard-${current} .options`).style.animation='',300);return;}showQ(current+1);}
+  else{if(answers.some(a=>a===null)){alert('Please answer all questions before seeing your score.');return;}showResults();}
+}
+function prevQ(){if(current>0)showQ(current-1);}
+
+function showResults(){
+  const dimScores={};
+  QUESTIONS.forEach((q,i)=>{dimScores[q.dimShort]=(answers[i]!==null?q.opts[answers[i]].s:0);});
+  const total=Math.round(Object.values(dimScores).reduce((s,v)=>s+v,0)/QUESTIONS.length);
+  const grade=total>=80?'Excellent':total>=65?'Good':total>=45?'Fair':'Needs work';
+  const gradeColor=total>=80?'#1D9E75':total>=65?'#185FA5':total>=45?'#BA7517':'#E24B4A';
+
+  const dimList=Object.entries(dimScores).map(([k,v])=>({name:k,score:v,icon:QUESTIONS.find(q=>q.dimShort===k)?.icon||'',color:QUESTIONS.find(q=>q.dimShort===k)?.color||'#888'}));
+  const recos=dimList.filter(d=>d.score<7).sort((a,b)=>a.score-b.score).slice(0,4);
+
+  const recoMessages={
+    'Invoicing':'Send invoices the same day work is completed — delays signal unprofessionalism and slow your cash flow.',
+    'Payments':'Set up a structured follow-up: WhatsApp reminder at day 7, formal email at day 14, final notice at day 30.',
+    'Contracts':'A one-page signed agreement protects you from scope creep, non-payment, and disputes. Start with one template.',
+    'Scope':'Always agree a change order in writing before starting out-of-scope work. Silence is not agreement.',
+    'Tax':'Register your TIN with FIRS (free at taxpromax.firs.gov.ng) and understand your quarterly VAT obligations.',
+    'Clients':'Actively pursue 2 new clients per month to reduce dependence on any single relationship.',
+    'Cash flow':'Track your outstanding invoices weekly. Know exactly what\'s due, when, and from whom.',
+    'Pricing':'Raise your rates by 20%. Most undercharging freelancers have never tested what clients will actually pay.',
+    'Proposals':'Use a structured proposal tracker. A 3-day follow-up alone can double your win rate.',
+    'Systems':'Consolidate your business tools. Switching between WhatsApp, Excel, and memory costs you 3+ hours/week.',
+  };
+
+  document.getElementById('quizArea').style.display='none';
+  const el=document.getElementById('resultsArea');
+  el.style.display='block';
+  el.innerHTML=`
+  <div class="score-hero">
+    <div class="score-number" style="color:#fff">${total}</div>
+    <div class="score-grade">${grade}</div>
+    <div class="score-sub">out of 100 · ${grade==='Excellent'?'Your business is running like a professional operation.':grade==='Good'?'Solid foundations — a few areas to sharpen up.':grade==='Fair'?'You\'re running a real business but leaving money on the table.':'Significant gaps that are costing you clients and cash flow.'}</div>
+  </div>
+
+  <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:10px">Score by dimension</div>
+  <div class="dim-grid">${dimList.map(d=>{
+    const cls=d.score>=8?'good':d.score>=5?'warn':'bad';
+    return`<div class="dim-card"><div class="dlabel">${d.icon} ${d.name}</div><div class="dscore ${cls}">${d.score}/10</div><div class="dbar"><div class="dfill" style="width:${d.score*10}%;background:${d.color}"></div></div></div>`;
+  }).join('')}</div>
+
+  ${recos.length?`<div class="recos">
+    <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:10px">Your top improvements</div>
+    ${recos.map(r=>`<div class="reco-item">
+      <div class="reco-icon" style="background:${r.color}22">${r.icon}</div>
+      <div><div style="font-size:12.5px;font-weight:500;color:var(--ink);margin-bottom:2px">${r.name} — ${r.score}/10</div><div style="font-size:12px;color:var(--ink2);line-height:1.5">${recoMessages[r.name]||'Focus on building better systems in this area.'}</div></div>
+    </div>`).join('')}
+  </div>`:''}
+
+  <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:10px">Share your score</div>
+  <div class="share-row">
+    <button class="share-btn wa" onclick="shareWA(${total},'${grade}')">💬 Share on WhatsApp</button>
+    <button class="share-btn tw" onclick="shareTW(${total},'${grade}')">Share on X</button>
+    <button class="share-btn" onclick="emailReport(${total})">📧 Email my report</button>
+  </div>
+
+  <div class="cta-box">
+    <h3>AfriQuote fixes your lowest scores — automatically</h3>
+    <p>Your lowest areas (${recos.slice(0,2).map(r=>r.name).join(' and ')}) are exactly what AfriQuote was built to solve. Proposals pipeline, instant invoices, contract templates, tax tracking — all in one platform.</p>
+    <button class="btn-w">Start free — improve your score this month →</button>
+  </div>
+  <button class="retake" onclick="retake()">Take the quiz again</button>`;
+}
+
+function retake(){
+  answers=Array(10).fill(null);current=0;
+  document.getElementById('quizArea').style.display='block';
+  document.getElementById('resultsArea').style.display='none';
+  renderQuestions();showQ(0);
+}
+
+function shareWA(score,grade){
+  const msg=`I just took the AfriQuote Business Health Score quiz and scored ${score}/100 (${grade}).\n\nMy weakest areas: ${QUESTIONS.filter((_,i)=>answers[i]!==null&&QUESTIONS[i].opts[answers[i]].s<5).map(q=>q.dimShort).join(', ')||'all areas strong'}.\n\nSee your score free → https://afriquote.africa/health-score\n\n#AfriQuote #AfricanBusiness #FreelancerLife`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
+}
+function shareTW(score,grade){
+  const tweet=`My African Business Health Score: ${score}/100 (${grade}) 📊\n\nMost Lagos freelancers have no idea how healthy their business really is.\n\nTake the free 2-min test → afriquote.africa/health-score\n\n#AfriQuote #NaijaFreelancer`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,'_blank');
+}
+function emailReport(score){
+  const email=prompt('Your email address:');
+  if(email?.includes('@'))alert(`Full report sent to ${email}!\n\nYou'll receive monthly score updates and tips to improve each dimension.\n\nAfriQuote helps you improve every score — try it free at afriquote.africa`);
+}
+
+renderQuestions();
+</script>
+</body>
+</html>

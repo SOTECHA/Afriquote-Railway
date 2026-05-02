@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriQuote — The African Professional Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#1D9E75; --green-dark:#0F6E56; --green-light:#E1F5EE; --green-xlight:#f0faf6;
+  --amber:#BA7517; --amber-light:#FAEEDA;
+  --red:#E24B4A; --red-light:#FCEBEB;
+  --blue:#185FA5; --blue-light:#E6F1FB;
+  --purple:#534AB7; --purple-light:#EEEDFE;
+  --bg:#f7f8f6; --surface:#ffffff; --surface2:#f4f5f3;
+  --border:#e8eae6; --border2:#d4d7d0;
+  --text:#1a1c18; --text2:#5c6057; --text3:#9aa094;
+  --font-head:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+  --r:10px; --r-lg:14px; --r-xl:20px;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+button,input,select,textarea{font-family:var(--font-body)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+
+/* ── LAYOUT ── */
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:16px;height:52px;flex-shrink:0;position:relative;z-index:10}
+.logo{display:flex;align-items:center;gap:9px;margin-right:8px;flex-shrink:0}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:16px;height:16px;fill:white}
+.logo-text{font-family:var(--font-head);font-size:17px;font-weight:700;color:var(--text)}
+.logo-text em{color:var(--green);font-style:normal}
+.mod-nav{display:flex;gap:2px;flex:1;overflow-x:auto}
+.mod-nav::-webkit-scrollbar{display:none}
+.mn{padding:6px 13px;font-size:12.5px;font-weight:500;border-radius:8px;cursor:pointer;color:var(--text2);border:1px solid var(--border);white-space:nowrap;transition:all .15s;user-select:none}
+.mn:hover{background:var(--surface2);color:var(--text)}
+.mn.on{background:var(--green-light);color:var(--green-dark);border-color:rgba(29,158,117,.2)}
+.top-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.notif-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:background .15s}
+.notif-btn:hover{background:var(--surface2)}
+.notif-btn svg{width:15px;height:15px;color:var(--text2)}
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--red);position:absolute;top:5px;right:5px;border:1.5px solid var(--surface)}
+.user-av{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white;cursor:pointer;font-family:var(--font-head)}
+
+.body{display:flex;flex:1;overflow:hidden}
+.sidebar{width:195px;background:var(--surface);border-right:1px solid var(--border);padding:14px 0;flex-shrink:0;overflow-y:auto;display:none}
+.sidebar.on{display:block}
+.sb-sect{margin-bottom:4px}
+.sb-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:10px 16px 5px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:12.5px;color:var(--text2);cursor:pointer;border-left:2px solid transparent;transition:all .12s;position:relative}
+.sb-item:hover{background:var(--surface2);color:var(--text)}
+.sb-item.on{background:var(--green-xlight);color:var(--green-dark);border-left-color:var(--green);font-weight:500}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5;flex-shrink:0}
+.sb-badge{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:10px;background:var(--red);color:white;font-weight:600}
+.sb-badge.amber{background:var(--amber)}
+
+.main{flex:1;overflow-y:auto;padding:20px}
+
+/* ── PAGES ── */
+.page{display:none}.page.on{display:block}
+
+/* ── COMPONENTS ── */
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:10px;flex-wrap:wrap}
+.pt{font-family:var(--font-head);font-size:18px;font-weight:600;color:var(--text)}
+.pt-sub{font-size:12px;color:var(--text3);margin-top:1px}
+.btn{padding:7px 14px;border-radius:var(--r);border:1px solid var(--border2);font-size:12.5px;cursor:pointer;background:var(--surface);color:var(--text);transition:all .12s;font-weight:500}
+.btn:hover{background:var(--surface2);border-color:var(--border2)}
+.btn-primary{background:var(--green);color:white;border-color:var(--green)}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-danger{background:var(--red);color:white;border-color:var(--red)}
+.btn-amber{background:var(--amber);color:white;border-color:var(--amber)}
+.btn-sm{padding:5px 10px;font-size:11.5px}
+.btn-icon{display:flex;align-items:center;gap:5px}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:var(--r);background:#25D366;color:white;border:none;font-size:12.5px;cursor:pointer;font-weight:500;width:100%;margin-top:8px;transition:background .15s}
+.btn-wa:hover{background:#1da851}
+
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+
+.stat-card{background:var(--surface2);border-radius:var(--r);padding:13px 15px}
+.stat-card .label{font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:500}
+.stat-card .value{font-size:22px;font-weight:600;color:var(--text);font-family:var(--font-head)}
+.stat-card .sub{font-size:11px;margin-top:3px}
+.green-sub{color:var(--green)}
+.red-sub{color:var(--red)}
+.amber-sub{color:var(--amber)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:12px}
+
+.badge{display:inline-flex;align-items:center;font-size:10.5px;padding:2px 7px;border-radius:5px;font-weight:500;white-space:nowrap}
+.b-ok{background:var(--green-light);color:var(--green-dark)}
+.b-warn{background:var(--amber-light);color:var(--amber)}
+.b-danger{background:var(--red-light);color:#A32D2D}
+.b-blue{background:var(--blue-light);color:var(--blue)}
+.b-purple{background:var(--purple-light);color:var(--purple)}
+.b-gray{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+
+.row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.row-info{flex:1}
+.row-title{font-size:13px;font-weight:500;color:var(--text)}
+.row-sub{font-size:11.5px;color:var(--text3);margin-top:1px}
+
+.divider{height:1px;background:var(--border);margin:12px 0}
+
+.fg{margin-bottom:11px}
+.fl{font-size:11.5px;font-weight:500;color:var(--text2);margin-bottom:5px;display:block}
+.fc{width:100%;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border2);font-size:13px;background:var(--surface);color:var(--text);transition:border .15s}
+.fc:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+textarea.fc{resize:vertical;min-height:65px}
+
+.alert-box{border-radius:var(--r);padding:11px 14px;margin-bottom:12px;font-size:12.5px;border-left:3px solid}
+.alert-green{background:var(--green-light);border-color:var(--green);color:var(--green-dark)}
+.alert-amber{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
+.alert-red{background:var(--red-light);border-color:var(--red);color:#A32D2D}
+.alert-blue{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+.alert-box strong{font-weight:600}
+
+.prog-track{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin:4px 0}
+.prog-fill{height:100%;border-radius:3px;transition:width .4s}
+
+.hbar-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.hbar-row:last-child{border-bottom:none}
+.hbar-label{font-size:11.5px;color:var(--text2);width:100px;flex-shrink:0}
+.hbar-track{flex:1;height:6px;border-radius:3px;background:var(--border);overflow:hidden}
+.hbar-fill{height:100%;border-radius:3px}
+.hbar-val{font-size:11.5px;font-weight:600;width:36px;text-align:right}
+
+/* ── TABLES ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{text-align:left;padding:6px 8px;font-size:11px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);letter-spacing:.03em}
+.tbl td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--surface2)}
+.tbl .td-bold{font-weight:600}
+.tbl .td-muted{color:var(--text3)}
+
+/* ── SITE CARDS ── */
+.site-card{border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:9px;cursor:pointer;transition:border-color .15s}
+.site-card:hover{border-color:var(--green)}
+.site-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.site-name{font-size:13px;font-weight:600;color:var(--text)}
+.site-loc{font-size:11.5px;color:var(--text3);margin-top:2px}
+.site-meta{display:flex;gap:14px;font-size:11.5px;color:var(--text3);margin-top:7px;flex-wrap:wrap}
+
+/* ── AVATAR ── */
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+
+/* ── PROGRESS STEPS ── */
+.steps{display:flex;margin-bottom:18px}
+.step{flex:1;text-align:center;font-size:11px;padding:7px 4px;border-bottom:2px solid var(--border);color:var(--text3)}
+.step.done{border-color:var(--green);color:var(--green-dark);font-weight:500}
+.step.active{border-color:var(--green);color:var(--green-dark);font-weight:600;background:var(--green-xlight)}
+
+/* ── CASH BARS ── */
+.cash-bars{display:flex;align-items:flex-end;gap:6px;height:90px}
+.cb-group{flex:1;display:flex;flex-direction:column;gap:0}
+.cb-bars{flex:1;display:flex;align-items:flex-end;gap:2px}
+.cb{flex:1;border-radius:3px 3px 0 0;min-height:3px;transition:height .3s}
+.cb-in{background:var(--green)}
+.cb-out{background:var(--red-light);border:1px solid #f09595}
+.cb-lbl{font-size:9.5px;color:var(--text3);text-align:center;margin-top:4px}
+
+/* ── TOGGLE ── */
+.toggle-wrap{display:flex;align-items:center;justify-content:space-between;padding:9px 0}
+.toggle-info{flex:1}
+.toggle-title{font-size:13px;font-weight:500;color:var(--text)}
+.toggle-desc{font-size:11.5px;color:var(--text3);margin-top:1px}
+.toggle{width:38px;height:22px;border-radius:11px;background:var(--green);cursor:pointer;position:relative;flex-shrink:0;transition:background .2s}
+.toggle.off{background:var(--border2)}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;background:white;border-radius:50%;top:3px;right:3px;transition:right .2s}
+.toggle.off::after{right:auto;left:3px}
+
+/* ── TIMER ── */
+.timer-display{font-family:var(--font-head);font-size:42px;font-weight:700;color:var(--text);text-align:center;letter-spacing:3px;padding:16px 0}
+.timer-running .timer-display{color:var(--green)}
+
+/* ── SCORE CIRCLE ── */
+.score-wrap{text-align:center;padding:12px 0}
+.score-big{font-family:var(--font-head);font-size:60px;font-weight:700;line-height:1}
+.score-grade{font-size:13px;font-weight:500;margin-top:4px}
+
+/* ── CHECKIN ── */
+.checkin-loc{font-size:11.5px;color:var(--text3);display:flex;align-items:center;gap:5px;justify-content:center;margin:8px 0}
+
+/* ── NOTIFICATION PANEL ── */
+.notif-panel{position:absolute;top:52px;right:12px;width:300px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-md);z-index:100;display:none}
+.notif-panel.on{display:block}
+.notif-header{padding:12px 14px 8px;font-weight:600;font-size:13px;border-bottom:1px solid var(--border)}
+.notif-item{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:var(--surface2)}
+.notif-title{font-size:12.5px;font-weight:500;color:var(--text)}
+.notif-time{font-size:11px;color:var(--text3);margin-top:1px}
+.notif-dot-r{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
+.notif-dot-a{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0}
+.notif-dot-g{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* ── TAG PILLS ── */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11.5px;border:1px solid var(--border2);margin:3px;cursor:pointer;transition:all .12s;background:var(--surface);color:var(--text2)}
+.tag.on{background:var(--green);color:white;border-color:var(--green)}
+.tag:hover:not(.on){background:var(--surface2)}
+
+/* ── WHATSAPP BUBBLE ── */
+.wa-bubble{background:#dcf8c6;border-radius:8px 8px 0 8px;padding:8px 11px;font-size:12.5px;color:#111;max-width:85%;margin-left:auto;margin-bottom:6px}
+.wa-bubble .wa-meta{font-size:10px;color:#888;text-align:right;margin-top:3px}
+.wa-in{background:var(--surface);border-radius:8px 8px 8px 0;margin-left:0;margin-right:auto;border:1px solid var(--border)}
+.wa-chat{background:#e5ddd5;border-radius:var(--r);padding:12px;min-height:120px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:720px){
+  .sidebar{width:160px}
+  .grid4{grid-template-columns:1fr 1fr}
+  .grid3{grid-template-columns:1fr 1fr}
+  .timer-display{font-size:32px}
+}
+@media(max-width:540px){
+  .sidebar{display:none!important}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr}
+  .mod-nav .mn{padding:5px 9px;font-size:11.5px}
+}
+
+/* ── ANIMATIONS ── */
+.page.on{animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{animation:cardIn .2s ease}
+@keyframes cardIn{from{opacity:.5}to{opacity:1}}
+
+/* ════════════════════════════════════════
+   PROPOSAL TRACKER — added styles
+════════════════════════════════════════ */
+/* ── Proposal kanban board ── */
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;min-height:500px}
+.kanban::-webkit-scrollbar{height:6px}
+.kb-col{min-width:220px;max-width:220px;flex-shrink:0}
+.kb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 4px}
+.kb-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.kb-count{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--surface2);color:var(--text2)}
+.kb-total{font-size:10px;color:var(--text3);margin-top:2px}
+.kb-cards{display:flex;flex-direction:column;gap:8px;min-height:200px}
+/* ── Proposal card (kanban) ── */
+.prop-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--border-radius-lg);padding:12px;cursor:pointer;transition:all .2s;position:relative}
+.prop-card:hover{border-color:var(--g);box-shadow:0 4px 14px rgba(0,0,0,.09);transform:translateY(-1px)}
+.prop-card.won{border-left:3px solid var(--g)}
+.prop-card.lost{opacity:.6}
+.prop-card.overdue::before{content:'';position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.pc-title{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:4px;line-height:1.35}
+.pc-client{font-size:11.5px;color:var(--color-text-secondary);margin-bottom:8px}
+.pc-value{font-size:14px;font-weight:700;color:var(--color-text-primary);font-family:var(--font-head,var(--font-sans));margin-bottom:6px}
+.pc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.pc-prob{font-size:11px;font-weight:600;padding:2px 6px;border-radius:5px}
+.pc-followup{font-size:10.5px;color:var(--color-text-tertiary);display:flex;align-items:center;gap:3px}
+.pc-followup.due{color:var(--color-text-warning);font-weight:500}
+.pc-followup.overdue{color:var(--color-text-danger);font-weight:600}
+.prob-bar{height:3px;border-radius:2px;background:var(--color-border-tertiary);overflow:hidden;margin-bottom:6px}
+.prob-fill{height:100%;border-radius:2px;transition:width .4s}
+/* ── Proposal detail panel ── */
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:480px;background:var(--color-background-primary);border-left:1px solid var(--color-border-tertiary);z-index:200;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;box-shadow:-4px 0 24px rgba(0,0,0,.1)}
+.detail-panel.open{transform:translateX(0)}
+.dp-top{padding:16px 18px;border-bottom:1px solid var(--color-border-tertiary);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0}
+.dp-close{width:28px;height:28px;border-radius:var(--border-radius-md);border:1px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--color-text-secondary);flex-shrink:0;background:var(--color-background-primary)}
+.dp-close:hover{background:var(--color-background-secondary)}
+.dp-body{flex:1;overflow-y:auto;padding:16px 18px}
+.dp-footer{padding:12px 18px;border-top:1px solid var(--color-border-tertiary);flex-shrink:0;display:flex;gap:8px;justify-content:flex-end}
+.dp-num{font-size:11px;font-weight:600;color:var(--color-text-tertiary);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase}
+.dp-title{font-size:17px;font-weight:600;color:var(--color-text-primary);line-height:1.2;margin-bottom:6px}
+.dp-client{font-size:13px;color:var(--color-text-secondary)}
+/* ── Stage stepper ── */
+.stage-steps{display:flex;margin:14px 0;overflow-x:auto}
+.stage-step{flex:1;min-width:60px;text-align:center;padding:6px 4px;font-size:10px;color:var(--color-text-tertiary);border-bottom:2px solid var(--color-border-tertiary);cursor:pointer;transition:all .15s;white-space:nowrap}
+.stage-step.done{border-color:var(--g);color:var(--g2);font-weight:500}
+.stage-step.current{border-color:var(--g);color:var(--g2);font-weight:600;background:var(--g4, #f0faf6)}
+.stage-step.terminal.won{border-color:var(--g);color:var(--g2)}
+.stage-step.terminal.lost{border-color:var(--red, #E24B4A);color:#A32D2D}
+.stage-step:hover:not(.current):not(.terminal){background:var(--color-background-secondary);color:var(--color-text-primary)}
+/* ── Activity feed ── */
+.activity-feed{display:flex;flex-direction:column;gap:0}
+.act-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--color-border-tertiary)}
+.act-item:last-child{border-bottom:none}
+.act-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+.act-body{flex:1}
+.act-content{font-size:12.5px;color:var(--color-text-primary);line-height:1.5}
+.act-meta{font-size:11px;color:var(--color-text-tertiary);margin-top:3px;display:flex;align-items:center;gap:8px}
+.act-outcome{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600}
+.act-outcome.positive{background:var(--color-background-success);color:var(--color-text-success)}
+.act-outcome.negative{background:var(--color-background-danger);color:var(--color-text-danger)}
+.act-outcome.neutral{background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)}
+/* ── Add activity form ── */
+.add-act-form{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;margin-top:12px}
+.act-type-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.atp{padding:4px 10px;border-radius:15px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .12s;font-family:inherit}
+.atp.on{background:var(--g);color:#fff;border-color:var(--g)}
+.atp:hover:not(.on){border-color:var(--g);color:var(--g)}
+/* ── Transition buttons ── */
+.transition-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.trans-btn{padding:6px 12px;border-radius:20px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid;transition:all .15s;font-family:inherit}
+.trans-btn.next{border-color:var(--g);color:var(--g2);background:var(--color-background-success)}
+.trans-btn.next:hover{background:var(--g);color:#fff}
+.trans-btn.won{border-color:var(--g);color:#fff;background:var(--g)}
+.trans-btn.won:hover{background:var(--g2)}
+.trans-btn.lost{border-color:#E24B4A;color:#A32D2D;background:#FCEBEB}
+.trans-btn.lost:hover{background:#E24B4A;color:#fff}
+.trans-btn.stalled{border-color:#BA7517;color:#BA7517;background:#FAEEDA}
+/* ── Follow-up box ── */
+.followup-box{background:#FAEEDA;border-radius:var(--border-radius-md);padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;color:#633806}
+.followup-box.overdue{background:#FCEBEB;color:#A32D2D}
+.followup-box .fu-label{font-size:12px;font-weight:600}
+.followup-box .fu-date{font-size:12px;color:var(--color-text-secondary)}
+/* ── Convert to contract banner ── */
+.convert-banner{background:var(--g);border-radius:var(--border-radius-lg);padding:16px;color:#fff;margin-bottom:14px}
+.convert-banner h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.convert-banner p{font-size:12px;opacity:.85;margin-bottom:12px}
+.convert-banner .btn-white{background:#fff;color:var(--g2);border:none;font-weight:600;width:100%;justify-content:center;padding:9px;border-radius:var(--border-radius-md);cursor:pointer;font-family:inherit;display:flex;align-items:center}
+.convert-banner .btn-white:hover{background:#f0faf6}
+/* ── Pipeline funnel ── */
+.funnel-bar{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.funnel-row{display:flex;align-items:center;gap:10px}
+.funnel-label{width:130px;font-size:12px;color:var(--color-text-secondary);flex-shrink:0}
+.funnel-track{flex:1;height:8px;border-radius:4px;background:var(--color-border-tertiary);overflow:hidden}
+.funnel-fill{height:100%;border-radius:4px}
+.funnel-stats{display:flex;gap:8px;font-size:11px;width:90px;text-align:right;flex-shrink:0}
+.funnel-count{font-weight:600;color:var(--color-text-primary)}
+.funnel-value{color:var(--color-text-tertiary)}
+/* ── Proposals table ── */
+.proposals-table{width:100%;border-collapse:collapse;font-size:13px}
+.proposals-table th{text-align:left;padding:6px 10px;font-size:11px;font-weight:600;color:var(--color-text-tertiary);border-bottom:1px solid var(--color-border-tertiary);letter-spacing:.03em}
+.proposals-table td{padding:10px 10px;border-bottom:1px solid var(--color-border-tertiary);vertical-align:middle}
+.proposals-table tr:hover td{background:var(--color-background-secondary);cursor:pointer}
+.proposals-table tr:last-child td{border-bottom:none}
+/* ── New proposal modal ── */
+.prop-modal-wrap{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.4)}
+.prop-modal-wrap.on{display:flex}
+.prop-modal{background:var(--color-background-primary);border-radius:var(--border-radius-xl,24px);max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.prop-modal-head{padding:18px 22px;border-bottom:1px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between}
+.prop-modal-title{font-size:16px;font-weight:600;color:var(--color-text-primary)}
+.prop-modal-body{padding:20px 22px}
+.prop-modal-foot{padding:14px 22px;border-top:1px solid var(--color-border-tertiary);display:flex;justify-content:flex-end;gap:8px}
+/* ── Overlay ── */
+.prop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:199;display:none}
+.prop-overlay.on{display:block}
+/* ── View tabs (proposal sub-nav) ── */
+.prop-view-tabs{display:flex;gap:2px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:3px;margin-bottom:16px}
+.pvtab{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:var(--color-text-secondary);transition:all .15s;border:none;background:none;font-family:inherit}
+.pvtab:hover{color:var(--color-text-primary)}
+.pvtab.on{background:var(--color-background-primary);color:var(--color-text-primary);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+/* ── Empty state ── */
+.prop-empty{text-align:center;padding:48px 20px;color:var(--color-text-tertiary)}
+.prop-empty-icon{font-size:36px;margin-bottom:12px;opacity:.4}
+.prop-empty-title{font-size:15px;font-weight:600;color:var(--color-text-secondary);margin-bottom:6px}
+@media(max-width:720px){
+  .detail-panel{width:100%;left:0;right:0}
+  .kanban{min-height:300px}
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+    <span class="logo-text">Afri<em>Quote</em></span>
+  </div>
+  <div class="mod-nav" id="modNav">
+    <div class="mn on" onclick="switchMod('finance',this)" title="Quotes, invoices & payments"><span style="margin-right:5px">💰</span>Finance</div>
+    <div class="mn" onclick="switchMod('sites',this)" title="GPS check-in, site logs & budget"><span style="margin-right:5px">📍</span>Sites</div>
+    <div class="mn" onclick="switchMod('contracts',this)" title="E-sign contracts & scope guard"><span style="margin-right:5px">✍️</span>Contracts</div>
+    <div class="mn" onclick="switchMod('time',this)" title="Time tracking & billing"><span style="margin-right:5px">⏱️</span>Time</div>
+    <div class="mn" onclick="switchMod('tax',this)" title="VAT, WHT & FIRS deadlines"><span style="margin-right:5px">📊</span>Tax</div>
+    <div class="mn" onclick="switchMod('cashflow',this)" title="Cash flow forecasting & expenses"><span style="margin-right:5px">📈</span>Cash flow</div>
+    <div class="mn" onclick="switchMod('health',this)" title="Business health score"><span style="margin-right:5px">💡</span>Health</div>
+    <div class="mn" onclick="switchMod('proposals',this)" title="Proposal pipeline & follow-ups"><span style="margin-right:5px">📋</span>Proposals</div>
+  </div>
+  <div class="top-right">
+    <div class="notif-btn" id="notifBtn" onclick="toggleNotif()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1a5 5 0 0 0-5 5v3l-1.5 2h13L13 9V6a5 5 0 0 0-5-5zm0 14a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2z"/></svg>
+      <div class="notif-dot"></div>
+    </div>
+    <div class="user-av">AO</div>
+  </div>
+  <!-- Notification panel -->
+  <div class="notif-panel" id="notifPanel">
+    <div class="notif-header">Notifications</div>
+    <div class="notif-item"><div style="display:flex;align-items:flex-start;gap:8px"><div class="notif-dot-r" style="margin-top:3px"></div><div><div class="notif-title">VAT return due in 8 days</div><div class="notif-time">Nigeria · Apr 15 · ₦93,750 payable</div></div></div></div>
+    <div class="notif-item"><div style="display:flex;align-items:flex-start;gap:8px"><div class="notif-dot-a" style="margin-top:3px"></div><div><div class="notif-title">Scope alert — TradaKo Ltd</div><div class="notif-time">Blog addition requested · Outside SOW</div></div></div></div>
+    <div class="notif-item"><div style="display:flex;align-items:flex-start;gap:8px"><div class="notif-dot-r" style="margin-top:3px"></div><div><div class="notif-title">Invoice overdue — NovaPay Kenya</div><div class="notif-time">KES 47,500 · 7 days past due</div></div></div></div>
+    <div class="notif-item"><div style="display:flex;align-items:flex-start;gap:8px"><div class="notif-dot-g" style="margin-top:3px"></div><div><div class="notif-title">Quote accepted — BetaRide Lagos</div><div class="notif-time">₦320,000 brand identity package</div></div></div></div>
+    <div class="notif-item"><div style="display:flex;align-items:flex-start;gap:8px"><div class="notif-dot-a" style="margin-top:3px"></div><div><div class="notif-title">Permit expired — Kigali Tower</div><div class="notif-time">KGL-2024-0312 · Work must pause</div></div></div></div>
+  </div>
+</div>
+
+<div class="body">
+
+<!-- ═══ SIDEBARS ═══ -->
+<div class="sidebar on" id="sb-finance">
+  <div class="sb-sect">
+    <div class="sb-lbl">Finance</div>
+    <div class="sb-item on" onclick="showPage('fin-dashboard',this)"><div class="sb-dot"></div>Dashboard</div>
+    <div class="sb-item" onclick="showPage('fin-quotes',this)"><div class="sb-dot"></div>Quotes</div>
+    <div class="sb-item" onclick="showPage('fin-invoices',this)"><div class="sb-dot"></div>Invoices</div>
+    <div class="sb-item" onclick="showPage('fin-new-quote',this)"><div class="sb-dot"></div>New quote</div>
+  </div>
+  <div class="sb-sect">
+    <div class="sb-lbl">Payments</div>
+    <div class="sb-item" onclick="showPage('fin-payments',this)"><div class="sb-dot"></div>Payment methods</div>
+    <div class="sb-item" onclick="showPage('fin-clients',this)"><div class="sb-dot"></div>Clients</div>
+  </div>
+</div>
+
+<div class="sidebar" id="sb-sites">
+  <div class="sb-sect">
+    <div class="sb-lbl">Monitor</div>
+    <div class="sb-item on" onclick="showPage('site-overview',this)"><div class="sb-dot"></div>Overview</div>
+    <div class="sb-item" onclick="showPage('site-all',this)"><div class="sb-dot"></div>All sites <div class="sb-badge amber">4</div></div>
+    <div class="sb-item" onclick="showPage('site-alerts',this)"><div class="sb-dot"></div>Alerts <div class="sb-badge">2</div></div>
+    <div class="sb-item" onclick="showPage('site-weather',this)"><div class="sb-dot"></div>Weather</div>
+  </div>
+  <div class="sb-sect">
+    <div class="sb-lbl">Projects</div>
+    <div class="sb-item" onclick="showPage('site-tasks',this)"><div class="sb-dot"></div>Tasks</div>
+    <div class="sb-item" onclick="showPage('site-milestones',this)"><div class="sb-dot"></div>Milestones</div>
+    <div class="sb-item" onclick="showPage('site-docs',this)"><div class="sb-dot"></div>Documents</div>
+  </div>
+  <div class="sb-sect">
+    <div class="sb-lbl">Field</div>
+    <div class="sb-item" onclick="showPage('site-checkin',this)"><div class="sb-dot"></div>Check-in / out</div>
+    <div class="sb-item" onclick="showPage('site-log',this)"><div class="sb-dot"></div>Field log</div>
+    <div class="sb-item" onclick="showPage('site-team',this)"><div class="sb-dot"></div>Team</div>
+  </div>
+</div>
+
+<div class="sidebar" id="sb-contracts">
+  <div class="sb-sect">
+    <div class="sb-lbl">Contracts</div>
+    <div class="sb-item on" onclick="showPage('con-list',this)"><div class="sb-dot"></div>All contracts</div>
+    <div class="sb-item" onclick="showPage('con-new',this)"><div class="sb-dot"></div>New contract</div>
+    <div class="sb-item" onclick="showPage('con-scope',this)"><div class="sb-dot"></div>Scope tracker <div class="sb-badge">2</div></div>
+    <div class="sb-item" onclick="showPage('con-templates',this)"><div class="sb-dot"></div>Templates</div>
+  </div>
+  <div class="sb-sect">
+    <div class="sb-lbl">Clients</div>
+    <div class="sb-item" onclick="showPage('con-comms',this)"><div class="sb-dot"></div>Comms log</div>
+    <div class="sb-item" onclick="showPage('con-portal',this)"><div class="sb-dot"></div>Client portal</div>
+  </div>
+</div>
+
+<div class="sidebar" id="sb-time">
+  <div class="sb-sect">
+    <div class="sb-lbl">Time</div>
+    <div class="sb-item on" onclick="showPage('time-tracker',this)"><div class="sb-dot"></div>Tracker</div>
+    <div class="sb-item" onclick="showPage('time-log',this)"><div class="sb-dot"></div>Time log</div>
+    <div class="sb-item" onclick="showPage('time-reports',this)"><div class="sb-dot"></div>Reports</div>
+  </div>
+</div>
+
+<div class="sidebar" id="sb-tax">
+  <div class="sb-sect">
+    <div class="sb-lbl">Tax</div>
+    <div class="sb-item on" onclick="showPage('tax-dashboard',this)"><div class="sb-dot"></div>Dashboard</div>
+    <div class="sb-item" onclick="showPage('tax-vat',this)"><div class="sb-dot"></div>VAT returns</div>
+    <div class="sb-item" onclick="showPage('tax-wht',this)"><div class="sb-dot"></div>Withholding tax</div>
+    <div class="sb-item" onclick="showPage('tax-deadlines',this)"><div class="sb-dot"></div>Deadlines <div class="sb-badge">1</div></div>
+  </div>
+</div>
+
+<div class="sidebar" id="sb-cashflow">
+  <div class="sb-sect">
+    <div class="sb-lbl">Cash flow</div>
+    <div class="sb-item on" onclick="showPage('cf-overview',this)"><div class="sb-dot"></div>Overview</div>
+    <div class="sb-item" onclick="showPage('cf-forecast',this)"><div class="sb-dot"></div>Forecast</div>
+    <div class="sb-item" onclick="showPage('cf-expenses',this)"><div class="sb-dot"></div>Expenses</div>
+  </div>
+</div>
+
+<div class="sidebar" id="sb-health">
+  <div class="sb-sect">
+    <div class="sb-lbl">Business health</div>
+    <div class="sb-item on" onclick="showPage('health-score',this)"><div class="sb-dot"></div>Health score</div>
+    <div class="sb-item" onclick="showPage('health-rates',this)"><div class="sb-dot"></div>Rate calculator</div>
+    <div class="sb-item" onclick="showPage('health-retainers',this)"><div class="sb-dot"></div>Retainers</div>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="main" id="mainContent">
+
+<!-- ════════════════════════════════
+     FINANCE MODULE
+════════════════════════════════ -->
+
+<!-- Finance Dashboard -->
+<div id="fin-dashboard" class="page on">
+  <div class="ph">
+    <div><div class="pt">Good morning, Adaeze ✦</div><div class="pt-sub">Tuesday, April 7 · 3 items need your attention</div></div>
+    <button class="btn btn-primary btn-icon" onclick="showPage('fin-new-quote',null);switchMod('finance',document.querySelector('.mn'))">+ New quote</button>
+  </div>
+  <div class="grid4">
+    <div class="stat-card"><div class="label">Revenue this month</div><div class="value">₦1.24M</div><div class="sub green-sub">↑ 18% vs last month</div></div>
+    <div class="stat-card"><div class="label">Active quotes</div><div class="value">7</div><div class="sub amber-sub">3 awaiting response</div></div>
+    <div class="stat-card"><div class="label">Outstanding invoices</div><div class="value">₦380K</div><div class="sub red-sub">2 overdue</div></div>
+    <div class="stat-card"><div class="label">Avg. close time</div><div class="value">4.2d</div><div class="sub green-sub">Industry avg: 8d</div></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="card">
+        <div class="card-title">Recent quotes</div>
+        <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark)">BR</div><div class="row-info"><div class="row-title">Brand identity package</div><div class="row-sub">BetaRide Lagos · Apr 1</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:600">₦320,000</div><span class="badge b-ok">Accepted</span></div></div>
+        <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber)">TK</div><div class="row-info"><div class="row-title">Website redesign</div><div class="row-sub">TradaKo Ltd · Apr 3</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:600">₦850,000</div><span class="badge b-blue">Sent</span></div></div>
+        <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue)">AC</div><div class="row-info"><div class="row-title">Social media retainer</div><div class="row-sub">AgroConnect GH · Apr 5</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:600">GH₵4,200</div><span class="badge b-warn">Pending</span></div></div>
+        <div class="row"><div class="av" style="background:var(--red-light);color:#A32D2D">NP</div><div class="row-info"><div class="row-title">IT audit &amp; report</div><div class="row-sub">NovaPay Kenya · Mar 28</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:600">KES 95,000</div><span class="badge b-danger">Overdue</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revenue by service</div>
+        <div class="hbar-row"><span class="hbar-label">Design</span><div class="hbar-track"><div class="hbar-fill" style="width:78%;background:var(--green)"></div></div><span class="hbar-val" style="color:var(--green)">₦780K</span></div>
+        <div class="hbar-row"><span class="hbar-label">Development</span><div class="hbar-track"><div class="hbar-fill" style="width:55%;background:var(--blue)"></div></div><span class="hbar-val" style="color:var(--blue)">₦550K</span></div>
+        <div class="hbar-row"><span class="hbar-label">Strategy</span><div class="hbar-track"><div class="hbar-fill" style="width:38%;background:var(--amber)"></div></div><span class="hbar-val" style="color:var(--amber)">₦380K</span></div>
+        <div class="hbar-row"><span class="hbar-label">Social</span><div class="hbar-track"><div class="hbar-fill" style="width:22%;background:var(--purple)"></div></div><span class="hbar-val" style="color:var(--purple)">₦220K</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Active alerts</div>
+        <div class="alert-box alert-red"><strong>VAT return due in 8 days</strong> — Q1 2026 filing. ₦93,750 payable to FIRS by Apr 15.</div>
+        <div class="alert-box alert-amber"><strong>Scope alert — TradaKo Ltd</strong> — Client requested blog addition. Outside original SOW. Raise a change order.</div>
+        <div class="alert-box alert-green"><strong>Milestone complete — Lekki Housing</strong> — Block C structural framing signed off by site supervisor.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Top clients</div>
+        <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark)">BR</div><div class="row-info"><div class="row-title">BetaRide Lagos</div><div class="row-sub">3 projects · ₦1.1M lifetime</div></div><span class="badge b-ok">Active</span></div>
+        <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber)">TK</div><div class="row-info"><div class="row-title">TradaKo Ltd</div><div class="row-sub">2 projects · ₦850K lifetime</div></div><span class="badge b-warn">In progress</span></div>
+        <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue)">AC</div><div class="row-info"><div class="row-title">AgroConnect GH</div><div class="row-sub">1 project · GH₵4,200</div></div><span class="badge b-blue">Retainer</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quotes List -->
+<div id="fin-quotes" class="page">
+  <div class="ph"><div class="pt">Quotes</div><button class="btn btn-primary" onclick="showPage('fin-new-quote',null)">+ New quote</button></div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Quote</th><th>Client</th><th>Amount</th><th>Sent</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><div class="td-bold">Brand identity package</div><div class="td-muted" style="font-size:11px">Incl. 2 revision rounds</div></td><td>BetaRide Lagos</td><td class="td-bold">₦320,000</td><td>Apr 1</td><td><span class="badge b-ok">Accepted</span></td><td><button class="btn btn-sm">Invoice</button></td></tr>
+        <tr><td><div class="td-bold">Website redesign — Ph.1</div><div class="td-muted" style="font-size:11px">⚑ Scope alert active</div></td><td>TradaKo Ltd</td><td class="td-bold">₦850,000</td><td>Apr 3</td><td><span class="badge b-blue">Sent</span></td><td><button class="btn btn-sm">Follow up</button></td></tr>
+        <tr><td><div class="td-bold">Social media retainer 3mo</div></td><td>AgroConnect GH</td><td class="td-bold">GH₵4,200</td><td>Apr 5</td><td><span class="badge b-warn">Pending</span></td><td><button class="btn btn-sm">Remind</button></td></tr>
+        <tr><td><div class="td-bold">IT audit &amp; risk report</div></td><td>NovaPay Kenya</td><td class="td-bold">KES 95,000</td><td>Mar 28</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger">Chase</button></td></tr>
+        <tr><td><div class="td-bold">E-commerce strategy</div></td><td>ShopLync ZA</td><td class="td-bold">R 18,500</td><td>—</td><td><span class="badge b-gray">Draft</span></td><td><button class="btn btn-sm btn-primary">Send</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Invoices -->
+<div id="fin-invoices" class="page">
+  <div class="ph"><div class="pt">Invoices</div><button class="btn btn-primary">+ New invoice</button></div>
+  <div class="alert-box alert-amber"><strong>₦380,000 outstanding</strong> across 2 invoices. NovaPay Kenya is 7 days overdue — chase now to protect cash flow.</div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Invoice #</th><th>Client</th><th>Description</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td class="td-bold">INV-0041</td><td>BetaRide Lagos</td><td>Brand identity package</td><td class="td-bold">₦320,000</td><td>Apr 15</td><td><span class="badge b-ok">Paid</span></td><td><button class="btn btn-sm">Receipt</button></td></tr>
+        <tr><td class="td-bold">INV-0040</td><td>NovaPay Kenya</td><td>IT audit deposit (50%)</td><td class="td-bold">KES 47,500</td><td>Mar 30</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger">Chase</button></td></tr>
+        <tr><td class="td-bold">INV-0039</td><td>AgroConnect GH</td><td>Social media retainer</td><td class="td-bold">GH₵4,200</td><td>Apr 20</td><td><span class="badge b-blue">Sent</span></td><td><button class="btn btn-sm">View</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- New Quote Builder -->
+<div id="fin-new-quote" class="page">
+  <div class="ph"><div class="pt">New quote</div><div style="display:flex;gap:8px"><button class="btn">Save draft</button><button class="btn btn-primary">Send quote</button></div></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Client details</div>
+      <div class="fg"><label class="fl">Client name</label><input class="fc" placeholder="Company or individual"></div>
+      <div class="fg"><label class="fl">Country</label><select class="fc"><option>Nigeria</option><option>Ghana</option><option>Kenya</option><option>South Africa</option><option>Rwanda</option><option>Côte d'Ivoire</option><option>Tanzania</option><option>Egypt</option></select></div>
+      <div class="fg"><label class="fl">Currency</label><select class="fc" id="q-currency"><option value="₦">NGN – Nigerian Naira (₦)</option><option value="GH₵">GHS – Ghanaian Cedi (GH₵)</option><option value="KES">KES – Kenyan Shilling</option><option value="R">ZAR – South African Rand (R)</option><option value="$">USD – US Dollar ($)</option><option value="£">GBP – British Pound (£)</option></select></div>
+      <div class="fg"><label class="fl">Email / WhatsApp</label><input class="fc" placeholder="+234 or email address"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Quote details</div>
+      <div class="fg"><label class="fl">Quote title</label><input class="fc" placeholder="e.g. Brand identity package"></div>
+      <div class="fg"><label class="fl">Valid until</label><input class="fc" type="date"></div>
+      <div class="fg"><label class="fl">VAT / Tax rate</label><select class="fc" id="q-vat" onchange="calcQuoteTotals()"><option value="0">0% – No tax</option><option value="7.5" selected>7.5% – Nigeria VAT</option><option value="12.5">12.5% – Ghana VAT</option><option value="16">16% – Kenya VAT</option><option value="15">15% – South Africa VAT</option><option value="18">18% – Rwanda VAT</option></select></div>
+      <div class="fg"><label class="fl">Payment terms</label><select class="fc"><option>50% upfront, 50% on delivery</option><option>100% upfront</option><option>Net 14 days</option><option>Net 30 days</option><option>Milestone-based</option></select></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Line items</div>
+    <table class="tbl" id="lineTable">
+      <thead><tr><th style="width:45%">Description</th><th style="width:12%">Qty</th><th style="width:20%">Unit price</th><th style="width:18%">Total</th><th style="width:5%"></th></tr></thead>
+      <tbody id="lineBody">
+        <tr><td><input class="fc" placeholder="Service or product" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td><input class="fc" type="number" value="1" min="1" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td><input class="fc" type="number" placeholder="0" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td id="lt0" style="font-size:13px;color:var(--text3)">—</td><td><span style="cursor:pointer;color:var(--text3);font-size:16px" onclick="removeLine(this)">×</span></td></tr>
+        <tr><td><input class="fc" placeholder="Service or product" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td><input class="fc" type="number" value="1" min="1" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td><input class="fc" type="number" placeholder="0" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td id="lt1" style="font-size:13px;color:var(--text3)">—</td><td><span style="cursor:pointer;color:var(--text3);font-size:16px" onclick="removeLine(this)">×</span></td></tr>
+      </tbody>
+    </table>
+    <button class="btn btn-sm" style="margin-top:8px" onclick="addLine()">+ Add item</button>
+    <div id="quoteTotals" style="display:none;text-align:right;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="display:flex;justify-content:flex-end;gap:20px;font-size:13px;margin-bottom:5px"><span style="color:var(--text3)">Subtotal</span><span id="q-sub" style="font-weight:600">—</span></div>
+      <div style="display:flex;justify-content:flex-end;gap:20px;font-size:13px;margin-bottom:8px"><span style="color:var(--text3)" id="q-vat-label">VAT (7.5%)</span><span id="q-vat-val" style="font-weight:600">—</span></div>
+      <div style="display:flex;justify-content:flex-end;gap:20px;font-size:16px;font-weight:700"><span>Total</span><span id="q-total" style="color:var(--green)">—</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Send via</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+      <div class="tag on" onclick="toggleTag(this)">Email</div>
+      <div class="tag" onclick="toggleTag(this)">WhatsApp</div>
+      <div class="tag" onclick="toggleTag(this)">Shareable link</div>
+    </div>
+    <button class="btn-wa">Send via WhatsApp</button>
+  </div>
+</div>
+
+<!-- Payment Methods -->
+<div id="fin-payments" class="page">
+  <div class="ph"><div class="pt">Payment methods</div></div>
+  <div class="card">
+    <div class="card-title">Accept payments across Africa</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r)">Paystack<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">NG · GH · KE · ZA</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">Flutterwave<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">20+ countries</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">M-Pesa<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">Kenya · Tanzania</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">MTN MoMo<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">GH · NG · RW · UG</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">Airtel Money<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">KE · TZ · NG · UG</div></div>
+      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r)">Bank transfer<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">All countries</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Live exchange rates</div>
+    <table class="tbl"><thead><tr><th>Currency</th><th>Rate to USD</th><th>Status</th></tr></thead><tbody>
+      <tr><td>₦ NGN – Nigerian Naira</td><td class="td-bold">1,620</td><td><span class="badge b-ok">Live</span></td></tr>
+      <tr><td>GH₵ GHS – Ghanaian Cedi</td><td class="td-bold">16.4</td><td><span class="badge b-ok">Live</span></td></tr>
+      <tr><td>KES – Kenyan Shilling</td><td class="td-bold">129</td><td><span class="badge b-ok">Live</span></td></tr>
+      <tr><td>R ZAR – South African Rand</td><td class="td-bold">18.7</td><td><span class="badge b-ok">Live</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- Clients -->
+<div id="fin-clients" class="page">
+  <div class="ph"><div class="pt">Clients</div><button class="btn btn-primary">+ Add client</button></div>
+  <div class="card">
+    <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark);width:36px;height:36px">BR</div><div class="row-info"><div class="row-title">BetaRide Lagos</div><div class="row-sub">Nigeria · 3 projects · ₦1.1M lifetime</div></div><span class="badge b-ok">Active</span></div>
+    <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber);width:36px;height:36px">TK</div><div class="row-info"><div class="row-title">TradaKo Ltd</div><div class="row-sub">Nigeria · 2 projects · ₦850K lifetime</div></div><span class="badge b-warn">In progress</span></div>
+    <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue);width:36px;height:36px">AC</div><div class="row-info"><div class="row-title">AgroConnect GH</div><div class="row-sub">Ghana · 1 project · GH₵4,200</div></div><span class="badge b-blue">Retainer</span></div>
+    <div class="row"><div class="av" style="background:var(--red-light);color:#A32D2D;width:36px;height:36px">NP</div><div class="row-info"><div class="row-title">NovaPay Kenya</div><div class="row-sub">Kenya · 1 project · KES 95K</div></div><span class="badge b-danger">Overdue</span></div>
+    <div class="row"><div class="av" style="background:var(--surface2);color:var(--text3);width:36px;height:36px">SL</div><div class="row-info"><div class="row-title">ShopLync ZA</div><div class="row-sub">South Africa · 1 project · R 18,500</div></div><span class="badge b-gray">New</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SITES MODULE
+════════════════════════════════ -->
+
+<div id="site-overview" class="page">
+  <div class="ph"><div class="pt">Site overview</div><button class="btn btn-primary" onclick="showPage('site-all',null)">+ Add site</button></div>
+  <div class="grid4">
+    <div class="stat-card"><div class="label">Active sites</div><div class="value">4</div><div class="sub green-sub">2 on track</div></div>
+    <div class="stat-card"><div class="label">Open tasks</div><div class="value">18</div><div class="sub amber-sub">6 overdue</div></div>
+    <div class="stat-card"><div class="label">Team on-site today</div><div class="value">11</div><div class="sub green-sub">3 sites staffed</div></div>
+    <div class="stat-card"><div class="label">Critical alerts</div><div class="value" style="color:var(--red)">2</div><div class="sub red-sub">Require action</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Active sites</div>
+      <div class="site-card"><div class="site-head"><div><div class="site-name">Lekki Phase 2 Housing</div><div class="site-loc">Lagos, Nigeria · Construction</div></div><span class="badge b-ok">On track</span></div><div class="prog-track"><div class="prog-fill" style="width:62%;background:var(--green)"></div></div><div class="site-meta"><span>Phase 3 of 5</span><span>62%</span><span>PM: Chukwuemeka</span><span>4 on site</span></div></div>
+      <div class="site-card"><div class="site-head"><div><div class="site-name">Accra Tech Hub</div><div class="site-loc">East Legon, Ghana · Interior</div></div><span class="badge b-warn">Delayed</span></div><div class="prog-track"><div class="prog-fill" style="width:41%;background:var(--amber)"></div></div><div class="site-meta"><span>Phase 2 of 4</span><span>41%</span><span>PM: Abena</span><span>0 on site (rain)</span></div></div>
+      <div class="site-card"><div class="site-head"><div><div class="site-name">Nairobi Office Block</div><div class="site-loc">Westlands, Kenya · Civil works</div></div><span class="badge b-ok">On track</span></div><div class="prog-track"><div class="prog-fill" style="width:28%;background:var(--green)"></div></div><div class="site-meta"><span>Phase 1 of 6</span><span>28%</span><span>PM: Kamau</span><span>3 on site</span></div></div>
+      <div class="site-card"><div class="site-head"><div><div class="site-name">Kigali Mixed-Use Tower</div><div class="site-loc">Nyarugenge, Rwanda · Structural</div></div><span class="badge b-danger">At risk</span></div><div class="prog-track"><div class="prog-fill" style="width:12%;background:var(--red)"></div></div><div class="site-meta"><span>Phase 1 of 7</span><span>12%</span><span>PM: Sandrine</span><span>Permit blocked</span></div></div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Active alerts</div>
+        <div class="alert-box alert-red"><strong>Permit expired — Kigali Tower.</strong> Building permit KGL-2024-0312 lapsed 3 days ago. All structural works must pause until renewed with Rwanda Development Board.</div>
+        <div class="alert-box alert-amber"><strong>Material delay — Accra Tech Hub.</strong> Electrical conduit delivery pushed to Apr 12. Phase 2 ceiling at risk. Consider sourcing locally.</div>
+        <div class="alert-box alert-green"><strong>Milestone complete — Lekki Housing.</strong> Block C structural framing signed off by site supervisor.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Weather across sites</div>
+        <div class="row"><div class="row-info"><div class="row-title">Lagos</div><div class="row-sub">Partly cloudy · 32°C</div></div><span class="badge b-ok">Safe to work</span></div>
+        <div class="row"><div class="row-info"><div class="row-title">Accra</div><div class="row-sub">Heavy rain · 27°C</div></div><span class="badge b-danger">Work paused</span></div>
+        <div class="row"><div class="row-info"><div class="row-title">Nairobi</div><div class="row-sub">Overcast · 22°C</div></div><span class="badge b-ok">Safe to work</span></div>
+        <div class="row"><div class="row-info"><div class="row-title">Kigali</div><div class="row-sub">Clear · 24°C</div></div><span class="badge b-warn">Permit issue</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="site-all" class="page">
+  <div class="ph"><div class="pt">All sites</div><button class="btn btn-primary">+ Add site</button></div>
+  <div class="site-card"><div class="site-head"><div><div class="site-name">Lekki Phase 2 Housing</div><div class="site-loc">Lagos Island, Nigeria · Residential · Client: BetaRide Estates</div></div><span class="badge b-ok">On track</span></div><div class="prog-track"><div class="prog-fill" style="width:62%;background:var(--green)"></div></div><div class="site-meta"><span>Budget: ₦380M</span><span>Spent: ₦235M (62%)</span><span>4 on site</span><span>Phase 3/5</span></div></div>
+  <div class="site-card"><div class="site-head"><div><div class="site-name">Accra Tech Hub</div><div class="site-loc">East Legon, Ghana · Interior fit-out · Client: AgroConnect GH</div></div><span class="badge b-warn">Delayed</span></div><div class="prog-track"><div class="prog-fill" style="width:41%;background:var(--amber)"></div></div><div class="site-meta"><span>Budget: GH₵1.8M</span><span>Spent: GH₵740K (41%)</span><span>0 (weather)</span><span>Phase 2/4</span></div></div>
+  <div class="site-card"><div class="site-head"><div><div class="site-name">Nairobi Office Block</div><div class="site-loc">Westlands, Kenya · Civil &amp; structural · Client: NovaPay Kenya</div></div><span class="badge b-ok">On track</span></div><div class="prog-track"><div class="prog-fill" style="width:28%;background:var(--green)"></div></div><div class="site-meta"><span>Budget: KES 95M</span><span>Spent: KES 26M (28%)</span><span>3 on site</span><span>Phase 1/6</span></div></div>
+  <div class="site-card"><div class="site-head"><div><div class="site-name">Kigali Mixed-Use Tower</div><div class="site-loc">Nyarugenge, Rwanda · Structural · Client: ShopLync ZA</div></div><span class="badge b-danger">At risk</span></div><div class="prog-track"><div class="prog-fill" style="width:12%;background:var(--red)"></div></div><div class="site-meta"><span>Budget: RWF 2.4B</span><span>Spent: RWF 288M (12%)</span><span>0 (permit)</span><span>Phase 1/7</span></div></div>
+</div>
+
+<div id="site-alerts" class="page">
+  <div class="ph"><div class="pt">Alerts</div></div>
+  <div class="card">
+    <div class="alert-box alert-red" style="margin-bottom:12px"><strong>Permit expired — Kigali Tower</strong><br>Building permit KGL-2024-0312 lapsed Apr 4. All structural works must stop. Renewal must be submitted to Rwanda Development Board within 5 business days to avoid penalty.<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-sm btn-danger">Mark resolved</button><button class="btn btn-sm">Get permit help</button></div></div>
+    <div class="alert-box alert-amber"><strong>Material delay — Accra Tech Hub</strong><br>Electrical conduit delivery pushed to Apr 12 by supplier. Phase 2 ceiling cannot proceed. Consider sourcing locally from Kumasi Steel.<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-sm">Mark resolved</button><button class="btn btn-sm btn-amber">Draft client note</button></div></div>
+  </div>
+</div>
+
+<div id="site-weather" class="page">
+  <div class="ph"><div class="pt">Site weather</div></div>
+  <div class="grid2">
+    <div class="card"><div style="font-size:36px;font-weight:700;color:var(--text);font-family:var(--font-head);margin:6px 0">32°C</div><div class="card-title">Lagos — Lekki Housing</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Partly cloudy · Humidity 68% · Wind 12 km/h</div><span class="badge b-ok">Safe to work</span><div class="divider"></div><div style="font-size:12px;color:var(--text3)">Forecast: Clear through Apr 10 · No rain expected</div></div>
+    <div class="card"><div style="font-size:36px;font-weight:700;color:var(--red);font-family:var(--font-head);margin:6px 0">27°C</div><div class="card-title">Accra — Tech Hub</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Heavy rain · Humidity 89% · Wind 22 km/h</div><span class="badge b-danger">Work paused</span><div class="divider"></div><div style="font-size:12px;color:var(--text3)">Forecast: Rain until Apr 8 evening · Resume Apr 9</div></div>
+    <div class="card"><div style="font-size:36px;font-weight:700;color:var(--text);font-family:var(--font-head);margin:6px 0">22°C</div><div class="card-title">Nairobi — Office Block</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Overcast · Humidity 55% · Wind 8 km/h</div><span class="badge b-ok">Safe to work</span><div class="divider"></div><div style="font-size:12px;color:var(--text3)">Forecast: Possible light rain Apr 9 · Monitor</div></div>
+    <div class="card"><div style="font-size:36px;font-weight:700;color:var(--text);font-family:var(--font-head);margin:6px 0">24°C</div><div class="card-title">Kigali — Mixed-Use Tower</div><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Clear skies · Humidity 44% · Wind 6 km/h</div><span class="badge b-warn">Permit issue</span><div class="divider"></div><div style="font-size:12px;color:var(--text3)">Weather is fine — blocked by permit, not weather</div></div>
+  </div>
+</div>
+
+<div id="site-tasks" class="page">
+  <div class="ph"><div class="pt">Tasks</div><button class="btn btn-primary">+ Add task</button></div>
+  <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">
+    <div class="tag on" onclick="filterTag(this)">All sites</div>
+    <div class="tag" onclick="filterTag(this)">Lekki Housing</div>
+    <div class="tag" onclick="filterTag(this)">Accra Tech Hub</div>
+    <div class="tag" onclick="filterTag(this)">Nairobi Office</div>
+    <div class="tag" onclick="filterTag(this)">Kigali Tower</div>
+  </div>
+  <div class="card"><div class="card-title">In progress</div>
+    <div class="row"><div id="tc0" class="chk" onclick="toggleCheck(this,'tc0')"></div><div class="row-info"><div class="row-title">Pour foundation slab — Block D</div><div class="row-sub">Lekki Housing · Due Apr 9 · High priority</div></div><div class="av" style="background:var(--green-light);color:var(--green-dark)">CE</div><span class="badge b-warn">In progress</span></div>
+    <div class="row"><div id="tc1" class="chk" onclick="toggleCheck(this,'tc1')"></div><div class="row-info"><div class="row-title">Install suspended ceiling — Floor 2</div><div class="row-sub">Accra Tech Hub · Due Apr 10</div></div><div class="av" style="background:var(--amber-light);color:var(--amber)">AB</div><span class="badge b-warn">In progress</span></div>
+    <div class="row"><div id="tc2" class="chk" onclick="toggleCheck(this,'tc2')"></div><div class="row-info"><div class="row-title">Excavation — Basement level 2</div><div class="row-sub">Nairobi Office · Due Apr 11</div></div><div class="av" style="background:var(--blue-light);color:var(--blue)">KM</div><span class="badge b-warn">In progress</span></div>
+  </div>
+  <div class="card"><div class="card-title">Overdue</div>
+    <div class="row"><div id="tc3" class="chk" onclick="toggleCheck(this,'tc3')"></div><div class="row-info"><div class="row-title">Submit structural engineer report</div><div class="row-sub">Kigali Tower · Was due Apr 4 · Critical</div></div><div class="av" style="background:var(--red-light);color:#A32D2D">SN</div><span class="badge b-danger">Overdue</span></div>
+    <div class="row"><div id="tc4" class="chk" onclick="toggleCheck(this,'tc4')"></div><div class="row-info"><div class="row-title">Client walkthrough — Phase 1 sign-off</div><div class="row-sub">Lekki Housing · Was due Apr 5</div></div><div class="av" style="background:var(--green-light);color:var(--green-dark)">CE</div><span class="badge b-danger">Overdue</span></div>
+  </div>
+  <div class="card"><div class="card-title">Completed this week</div>
+    <div class="row"><div class="chk dn"></div><div class="row-info"><div class="row-title" style="text-decoration:line-through;color:var(--text3)">Block C structural framing</div><div class="row-sub">Lekki Housing · Completed Apr 6</div></div><span class="badge b-ok">Done</span></div>
+    <div class="row"><div class="chk dn"></div><div class="row-info"><div class="row-title" style="text-decoration:line-through;color:var(--text3)">Plumbing rough-in — Ground floor</div><div class="row-sub">Accra Tech Hub · Completed Apr 5</div></div><span class="badge b-ok">Done</span></div>
+  </div>
+</div>
+
+<div id="site-milestones" class="page">
+  <div class="ph"><div class="pt">Milestones</div><button class="btn btn-primary">+ Add milestone</button></div>
+  <div class="card"><div class="card-title">Lekki Phase 2 Housing</div>
+    <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark)">1</div><div class="row-info"><div class="row-title">Site preparation &amp; survey</div><div class="row-sub">Completed · All conditions met · Signed off</div></div><div style="text-align:right"><span class="badge b-ok">Done</span><div style="font-size:10px;color:var(--text3);margin-top:3px">Mar 14</div></div></div>
+    <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark)">2</div><div class="row-info"><div class="row-title">Block A–C structural framing</div><div class="row-sub">Completed · QA passed · Client acknowledged</div></div><div style="text-align:right"><span class="badge b-ok">Done</span><div style="font-size:10px;color:var(--text3);margin-top:3px">Apr 6</div></div></div>
+    <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber)">3</div><div class="row-info"><div class="row-title">Foundation pour — Block D</div><div class="row-sub">In progress · 3 tasks remaining · On schedule</div></div><div style="text-align:right"><span class="badge b-warn">Active</span><div style="font-size:10px;color:var(--text3);margin-top:3px">Apr 15</div></div></div>
+    <div class="row"><div class="av" style="background:var(--surface2);color:var(--text3)">4</div><div class="row-info"><div class="row-title">MEP rough-in all blocks</div><div class="row-sub">Not started · Depends on milestone 3</div></div><div style="text-align:right"><span class="badge b-gray">Upcoming</span><div style="font-size:10px;color:var(--text3);margin-top:3px">May 2</div></div></div>
+  </div>
+  <div class="card"><div class="card-title">Kigali Mixed-Use Tower</div>
+    <div class="alert-box alert-red"><strong>Milestone 1 blocked:</strong> Permit approval &amp; mobilisation cannot proceed. Building permit KGL-2024-0312 lapsed Apr 4. Action required immediately.</div>
+  </div>
+</div>
+
+<div id="site-docs" class="page">
+  <div class="ph"><div class="pt">Documents</div><button class="btn btn-primary">+ Upload</button></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">Lekki Housing</div>
+      <div class="row"><div class="av" style="background:var(--red-light);color:#A32D2D;font-size:9px">PDF</div><div class="row-info"><div class="row-title">Structural drawings Rev 3</div><div class="row-sub">Apr 2 · 4.2MB</div></div></div>
+      <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue);font-size:9px">DWG</div><div class="row-info"><div class="row-title">Site layout — Block D</div><div class="row-sub">Mar 28 · 2.1MB</div></div></div>
+      <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark);font-size:9px">XLS</div><div class="row-info"><div class="row-title">Bill of quantities v2</div><div class="row-sub">Mar 20 · 890KB</div></div></div>
+    </div>
+    <div class="card"><div class="card-title">Kigali Tower</div>
+      <div class="row"><div class="av" style="background:var(--red-light);color:#A32D2D;font-size:9px">PDF</div><div class="row-info"><div class="row-title">Permit KGL-2024-0312 <span class="badge b-danger">Expired</span></div><div class="row-sub">Jan 4 · 1.1MB</div></div></div>
+      <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue);font-size:9px">PDF</div><div class="row-info"><div class="row-title">Geotechnical survey report</div><div class="row-sub">Feb 12 · 3.8MB</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="site-checkin" class="page">
+  <div class="ph"><div class="pt">Check-in / check-out</div></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">Today — Apr 7, 2026</div>
+      <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark)">CE</div><div class="row-info"><div class="row-title">Chukwuemeka Eze</div><div class="row-sub">Lekki Housing · Since 7:42am</div></div><span class="badge b-ok">On site</span></div>
+      <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber)">AB</div><div class="row-info"><div class="row-title">Abena Boateng</div><div class="row-sub">Accra Tech Hub · Weather hold</div></div><span class="badge b-warn">Offsite</span></div>
+      <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue)">KM</div><div class="row-info"><div class="row-title">Kamau Mwangi</div><div class="row-sub">Nairobi Office · Since 8:15am</div></div><span class="badge b-ok">On site</span></div>
+      <div class="row"><div class="av" style="background:var(--red-light);color:#A32D2D">SN</div><div class="row-info"><div class="row-title">Sandrine Niyomugabo</div><div class="row-sub">Kigali Tower · Not yet checked in</div></div><span class="badge b-gray">—</span></div>
+    </div>
+    <div class="card"><div class="card-title">My check-in</div>
+      <div class="fg"><label class="fl">Select site</label><select class="fc"><option>Lekki Phase 2 Housing</option><option>Accra Tech Hub</option><option>Nairobi Office Block</option><option>Kigali Tower</option><option>Remote / office</option></select></div>
+      <div class="checkin-loc"><svg width="12" height="12" viewBox="0 0 16 16" fill="var(--text3)"><path d="M8 1a5 5 0 0 0-5 5c0 4 5 9 5 9s5-5 5-9a5 5 0 0 0-5-5zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>GPS: 6.4281° N, 3.4219° E · Lagos, NG</div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:8px" id="checkin-btn" onclick="doCheckin(this)">Check in now</button>
+      <div style="font-size:11px;color:var(--text3);text-align:center">GPS location logged with timestamp for audit trail</div>
+      <div class="divider"></div>
+      <div class="card-title">Today's log</div>
+      <div class="row"><div style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0"></div><div class="row-info"><div class="row-title">Checked in — Lekki Housing</div><div class="row-sub">7:42am · Chukwuemeka</div></div></div>
+      <div class="row"><div style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div class="row-info"><div class="row-title">Weather hold — Accra Tech Hub</div><div class="row-sub">8:05am · Abena</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="site-log" class="page">
+  <div class="ph"><div class="pt">Field log</div><button class="btn btn-primary">+ New entry</button></div>
+  <div class="card"><div class="card-title">Add field note</div>
+    <div class="grid2">
+      <div class="fg"><label class="fl">Site</label><select class="fc"><option>Lekki Phase 2 Housing</option><option>Accra Tech Hub</option><option>Nairobi Office Block</option><option>Kigali Tower</option></select></div>
+      <div class="fg"><label class="fl">Entry type</label><select class="fc"><option>Progress update</option><option>Issue / incident</option><option>Delivery received</option><option>Inspection note</option><option>Weather hold</option><option>Visitor log</option></select></div>
+    </div>
+    <div class="fg"><label class="fl">Note</label><textarea class="fc" placeholder="Describe what happened on site today..."></textarea></div>
+    <button class="btn btn-primary" style="width:100%">Save entry</button>
+  </div>
+  <div class="card"><div class="card-title">Recent entries</div>
+    <div class="row"><div style="width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Issue: Concrete pump breakdown on Block D pour. Standby pump sourced from Ogun depot — ETA 2hrs.</div><div class="row-sub">Apr 7 · 10:22am · Lekki Housing · Chukwuemeka</div></div></div>
+    <div class="row"><div style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Weather hold: Heavy rain halted ceiling installation. Crew stood down.</div><div class="row-sub">Apr 7 · 8:05am · Accra Tech Hub · Abena</div></div></div>
+    <div class="row"><div style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Delivery: 40 tonnes rebar from Mabati Rolling Mills. Inspected and accepted. Stored in bay 3.</div><div class="row-sub">Apr 6 · 3:45pm · Nairobi Office · Kamau</div></div></div>
+    <div class="row"><div style="width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Visitor: Rwanda Development Board inspector visited. Permit renewal discussed.</div><div class="row-sub">Apr 6 · 11:00am · Kigali Tower · Sandrine</div></div></div>
+  </div>
+</div>
+
+<div id="site-team" class="page">
+  <div class="ph"><div class="pt">Team</div><button class="btn btn-primary">+ Add member</button></div>
+  <div class="card">
+    <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark);width:36px;height:36px">CE</div><div class="row-info"><div class="row-title">Chukwuemeka Eze</div><div class="row-sub">Site Supervisor · Lekki Housing</div></div><div style="text-align:right"><span class="badge b-ok">On site</span><div style="font-size:11px;color:var(--text3);margin-top:3px">Since 7:42am</div></div></div>
+    <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber);width:36px;height:36px">AB</div><div class="row-info"><div class="row-title">Abena Boateng</div><div class="row-sub">Project Manager · Accra Tech Hub</div></div><div style="text-align:right"><span class="badge b-warn">Offsite</span><div style="font-size:11px;color:var(--text3);margin-top:3px">Weather hold</div></div></div>
+    <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue);width:36px;height:36px">KM</div><div class="row-info"><div class="row-title">Kamau Mwangi</div><div class="row-sub">Civil Engineer · Nairobi Office</div></div><div style="text-align:right"><span class="badge b-ok">On site</span><div style="font-size:11px;color:var(--text3);margin-top:3px">Since 8:15am</div></div></div>
+    <div class="row"><div class="av" style="background:var(--red-light);color:#A32D2D;width:36px;height:36px">SN</div><div class="row-info"><div class="row-title">Sandrine Niyomugabo</div><div class="row-sub">Project Manager · Kigali Tower</div></div><div style="text-align:right"><span class="badge b-gray">Not in</span></div></div>
+    <div class="row"><div class="av" style="background:var(--purple-light);color:var(--purple);width:36px;height:36px">AO</div><div class="row-info"><div class="row-title">Adaeze Okafor</div><div class="row-sub">Director · All sites</div></div><div style="text-align:right"><span class="badge b-purple">Admin</span></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     CONTRACTS MODULE
+════════════════════════════════ -->
+
+<div id="con-list" class="page">
+  <div class="ph"><div class="pt">Contracts</div><button class="btn btn-primary" onclick="showPage('con-new',null)">+ New contract</button></div>
+  <div class="alert-box alert-blue">Contracts with e-signatures are accepted 3× faster. All contracts include a secure client-signing link.</div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Contract</th><th>Client</th><th>Value</th><th>Status</th><th>Signed</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><div class="td-bold">Brand identity — SOW</div><div class="td-muted" style="font-size:11px">2 revision rounds included</div></td><td>BetaRide Lagos</td><td class="td-bold">₦320,000</td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Signed</span></td><td><button class="btn btn-sm">View</button></td></tr>
+        <tr><td><div class="td-bold">Website redesign — Phase 1</div><div class="td-muted" style="font-size:11px;color:var(--amber)">⚑ 1 scope alert</div></td><td>TradaKo Ltd</td><td class="td-bold">₦850,000</td><td><span class="badge b-warn">Scope alert</span></td><td><span class="badge b-ok">Signed</span></td><td><button class="btn btn-sm">Scope</button></td></tr>
+        <tr><td><div class="td-bold">Social media retainer 3mo</div><div class="td-muted" style="font-size:11px">Auto-renews Apr 30</div></td><td>AgroConnect GH</td><td class="td-bold">GH₵4,200</td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Signed</span></td><td><button class="btn btn-sm">View</button></td></tr>
+        <tr><td><div class="td-bold">IT audit &amp; risk report</div></td><td>NovaPay Kenya</td><td class="td-bold">KES 95,000</td><td><span class="badge b-gray">Pending</span></td><td><span class="badge b-warn">Awaiting</span></td><td><button class="btn btn-sm btn-primary">Send link</button></td></tr>
+        <tr><td><div class="td-bold">E-commerce strategy</div></td><td>ShopLync ZA</td><td class="td-bold">R 18,500</td><td><span class="badge b-gray">Draft</span></td><td><span class="badge b-gray">—</span></td><td><button class="btn btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="con-new" class="page">
+  <div class="ph"><div class="pt">New contract</div><div style="display:flex;gap:8px"><button class="btn">Save draft</button><button class="btn btn-primary">Send for signature</button></div></div>
+  <div class="steps"><div class="step done">Scope</div><div class="step done">Deliverables</div><div class="step active">Revisions</div><div class="step">Payment</div><div class="step">Review</div></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">Revision &amp; scope terms</div>
+      <div class="fg"><label class="fl">Revision rounds included</label><input class="fc" type="number" value="2" min="1"></div>
+      <div class="fg"><label class="fl">Out-of-scope hourly rate</label><div style="display:flex;gap:6px"><select class="fc" style="width:75px"><option>₦</option><option>GH₵</option><option>KES</option><option>R</option><option>$</option></select><input class="fc" type="number" placeholder="15,000" style="flex:1"></div></div>
+      <div class="fg"><label class="fl">Client feedback deadline (days)</label><input class="fc" type="number" value="5" min="1"></div>
+      <div class="fg"><label class="fl">If client exceeds revisions</label><select class="fc"><option>Quoted separately, requires written approval</option><option>Added to invoice at hourly rate</option><option>Work paused until change order is signed</option></select></div>
+      <div class="alert-box alert-green" style="margin-top:8px"><strong>Auto-clause added:</strong> "Additional requests beyond agreed revision rounds will be treated as a change order and quoted separately before commencement."</div>
+    </div>
+    <div class="card"><div class="card-title">Raise a change order</div>
+      <div class="fg"><label class="fl">Client</label><select class="fc"><option>TradaKo Ltd</option><option>BetaRide Lagos</option><option>AgroConnect GH</option></select></div>
+      <div class="fg"><label class="fl">Additional work requested</label><textarea class="fc" placeholder="Describe the out-of-scope request..."></textarea></div>
+      <div class="fg"><label class="fl">Additional fee</label><input class="fc" type="number" placeholder="0"></div>
+      <button class="btn btn-primary" style="width:100%">Send change order</button>
+      <button class="btn-wa">Draft via WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<div id="con-scope" class="page">
+  <div class="ph"><div class="pt">Scope creep tracker</div></div>
+  <div class="alert-box alert-red"><strong>2 active scope alerts</strong> — review before your next client meeting to avoid uncompensated work.</div>
+  <div class="card">
+    <div class="card-title">TradaKo Ltd — Website redesign</div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div><div class="row-info"><div class="row-title">"Can you also add a blog and newsletter signup?"</div><div class="row-sub">Received Apr 5 · Not in original SOW · Est. 12hrs extra work</div></div><div style="display:flex;gap:6px"><button class="btn btn-sm btn-primary">Raise CO</button><button class="btn btn-sm">Decline</button></div></div>
+    <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div class="row-info"><div class="row-title">"We want 3 more homepage concept options"</div><div class="row-sub">Received Apr 6 · Revision 2 of 2 used · Would be round 3</div></div><div style="display:flex;gap:6px"><button class="btn btn-sm btn-primary">Raise CO</button><button class="btn btn-sm">Decline</button></div></div>
+  </div>
+  <div class="card"><div class="card-title">Log incoming request</div>
+    <div class="fg"><label class="fl">Client</label><select class="fc"><option>TradaKo Ltd</option><option>BetaRide Lagos</option><option>AgroConnect GH</option></select></div>
+    <div class="fg"><label class="fl">Request description</label><textarea class="fc" placeholder="Paste client message or describe request..."></textarea></div>
+    <button class="btn btn-primary" style="width:100%">Check against scope &amp; log</button>
+  </div>
+</div>
+
+<div id="con-templates" class="page">
+  <div class="ph"><div class="pt">Contract templates</div><button class="btn btn-primary">+ Custom template</button></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">Freelance service agreement</div><p style="font-size:12px;color:var(--text2);margin-bottom:12px">Scope, deliverables, revisions, IP ownership, payment terms, termination clause. Pre-configured for Nigerian, Ghanaian, Kenyan law.</p><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" style="flex:1">Use template</button><button class="btn btn-sm">Preview</button></div></div>
+    <div class="card"><div class="card-title">Construction subcontractor</div><p style="font-size:12px;color:var(--text2);margin-bottom:12px">Site obligations, material supply, delay penalties, variation orders, retention clause. Compliant with local building codes.</p><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" style="flex:1">Use template</button><button class="btn btn-sm">Preview</button></div></div>
+    <div class="card"><div class="card-title">Retainer agreement</div><p style="font-size:12px;color:var(--text2);margin-bottom:12px">Monthly hours cap, rollover policy, priority access clause, auto-renewal, 30-day exit notice. Best for ongoing relationships.</p><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" style="flex:1">Use template</button><button class="btn btn-sm">Preview</button></div></div>
+    <div class="card"><div class="card-title">Non-disclosure agreement</div><p style="font-size:12px;color:var(--text2);margin-bottom:12px">Mutual or one-way NDA covering confidential information, IP, and client data. Applicable across all African jurisdictions.</p><div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" style="flex:1">Use template</button><button class="btn btn-sm">Preview</button></div></div>
+  </div>
+</div>
+
+<div id="con-comms" class="page">
+  <div class="ph"><div class="pt">Communication log</div><button class="btn btn-primary">+ Log interaction</button></div>
+  <div class="alert-box alert-blue">Every client call, WhatsApp message, and meeting is logged here — creating a paper trail that protects you in disputes.</div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Date</th><th>Client</th><th>Channel</th><th>Summary</th><th>Follow-up</th></tr></thead>
+      <tbody>
+        <tr><td>Apr 7</td><td>TradaKo Ltd</td><td><span class="badge b-ok">WhatsApp</span></td><td>Client requested blog addition — logged as scope alert</td><td><span class="badge b-warn">Pending CO</span></td></tr>
+        <tr><td>Apr 6</td><td>BetaRide Lagos</td><td><span class="badge b-blue">Call</span></td><td>Phase 2 timeline confirmed. Client satisfied with Block C sign-off.</td><td><span class="badge b-gray">None</span></td></tr>
+        <tr><td>Apr 5</td><td>NovaPay Kenya</td><td><span class="badge b-warn">Email</span></td><td>Contract sent for signature. Follow up if unsigned by Apr 9.</td><td><span class="badge b-warn">Follow up</span></td></tr>
+        <tr><td>Apr 4</td><td>AgroConnect GH</td><td><span class="badge b-ok">WhatsApp</span></td><td>Retainer renewal confirmed for May. Invoice scheduled Apr 25.</td><td><span class="badge b-ok">Scheduled</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="con-portal" class="page">
+  <div class="ph"><div class="pt">Client portal</div></div>
+  <div class="alert-box alert-blue">Each client gets a private portal link to view project progress, milestones, and approved documents — without accessing your financials or team data.</div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">BetaRide Lagos — portal</div><div style="font-size:11.5px;color:var(--text3);margin-bottom:10px">Active · Last viewed Apr 6 at 2:14pm</div>
+      <div class="row"><div class="row-info"><div class="row-title">Project milestones</div></div><span class="badge b-ok">Visible</span></div>
+      <div class="row"><div class="row-info"><div class="row-title">Shared documents</div></div><span class="badge b-ok">Visible</span></div>
+      <div class="row"><div class="row-info"><div class="row-title">Invoices &amp; payments</div></div><span class="badge b-gray">Hidden</span></div>
+      <button class="btn" style="width:100%;margin-top:10px">Copy portal link</button>
+    </div>
+    <div class="card"><div class="card-title">NovaPay Kenya — portal</div><div style="font-size:11.5px;color:var(--text3);margin-bottom:10px">Not activated · Contract unsigned</div>
+      <div class="alert-box alert-amber">Portal activates once client signs the contract.</div>
+      <button class="btn btn-primary" style="width:100%">Send signing link</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TIME MODULE
+════════════════════════════════ -->
+
+<div id="time-tracker" class="page">
+  <div class="ph"><div class="pt">Time tracker</div></div>
+  <div class="grid4">
+    <div class="stat-card"><div class="label">Tracked today</div><div class="value" id="today-hrs">4h 22m</div><div class="sub green-sub">2 projects</div></div>
+    <div class="stat-card"><div class="label">This week</div><div class="value">19h 45m</div><div class="sub amber-sub">3 unbilled hrs</div></div>
+    <div class="stat-card"><div class="label">Billable this month</div><div class="value">67h</div><div class="sub green-sub">₦1.005M</div></div>
+    <div class="stat-card"><div class="label">Utilisation rate</div><div class="value">84%</div><div class="sub green-sub">Above 80% target</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card" id="timer-card">
+      <div class="card-title">Timer</div>
+      <div class="fg"><label class="fl">Project</label><select class="fc"><option>TradaKo — Website redesign</option><option>BetaRide — Brand identity</option><option>AgroConnect — Social media</option><option>NovaPay — IT audit</option></select></div>
+      <div class="fg"><label class="fl">Task</label><input class="fc" placeholder="What are you working on?"></div>
+      <div class="timer-display" id="timer-disp">00:00:00</div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer(this)" style="min-width:90px">Start</button>
+        <button class="btn" onclick="resetTimer()">Reset</button>
+      </div>
+      <div class="divider"></div>
+      <div class="card-title">Manual entry</div>
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <div class="fg" style="flex:1;margin-bottom:0"><label class="fl">Hours</label><input class="fc" type="number" placeholder="0" min="0"></div>
+        <div class="fg" style="flex:1;margin-bottom:0"><label class="fl">Minutes</label><input class="fc" type="number" placeholder="0" min="0" max="59"></div>
+        <button class="btn btn-primary">Log</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Today's sessions</div>
+      <div class="row"><div class="row-info"><div class="row-title">TradaKo — Homepage wireframes</div><div class="row-sub">9:00am – 11:30am · Billable</div></div><div style="font-weight:600;font-size:13px;color:var(--text)">2h 30m</div></div>
+      <div class="row"><div class="row-info"><div class="row-title">BetaRide — Logo revisions</div><div class="row-sub">1:00pm – 2:52pm · Billable</div></div><div style="font-weight:600;font-size:13px;color:var(--text)">1h 52m</div></div>
+      <div class="row"><div class="row-info"><div class="row-title">Admin — Proposals</div><div class="row-sub">3:00pm · Non-billable · In progress</div></div><div style="font-weight:600;font-size:13px;color:var(--text3)">—</div></div>
+      <div class="divider"></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text2)">Billable value today</span><span style="font-weight:700;color:var(--green)">₦281,250</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="time-log" class="page">
+  <div class="ph"><div class="pt">Time log — this week</div><button class="btn btn-primary">Export to invoice</button></div>
+  <div class="alert-box alert-amber"><strong>₦281,250 unbilled this week.</strong> Generate an invoice now to avoid end-of-month cash gaps.</div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Date</th><th>Project</th><th>Task</th><th>Duration</th><th>Rate</th><th>Value</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Apr 7</td><td>TradaKo</td><td>Homepage wireframes</td><td>2h 30m</td><td>₦75K/hr</td><td class="td-bold">₦187,500</td><td><span class="badge b-warn">Unbilled</span></td></tr>
+        <tr><td>Apr 7</td><td>BetaRide</td><td>Logo revisions</td><td>1h 52m</td><td>₦50K/hr</td><td class="td-bold">₦93,750</td><td><span class="badge b-warn">Unbilled</span></td></tr>
+        <tr><td>Apr 6</td><td>AgroConnect</td><td>Content calendar</td><td>3h 00m</td><td>Retainer</td><td class="td-muted">Covered</td><td><span class="badge b-ok">Retainer</span></td></tr>
+        <tr><td>Apr 5</td><td>NovaPay</td><td>IT risk assessment</td><td>4h 15m</td><td>KES 5K/hr</td><td class="td-bold">KES 21,250</td><td><span class="badge b-blue">Inv #40</span></td></tr>
+        <tr><td>Apr 4</td><td>TradaKo</td><td>Discovery session</td><td>2h 00m</td><td>₦75K/hr</td><td class="td-bold">₦150,000</td><td><span class="badge b-ok">Inv #39</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="time-reports" class="page">
+  <div class="ph"><div class="pt">Time reports — April</div></div>
+  <div class="grid3">
+    <div class="card"><div class="card-title">Hours by project</div>
+      <div class="hbar-row"><span class="hbar-label">TradaKo</span><div class="hbar-track"><div class="hbar-fill" style="width:72%;background:var(--green)"></div></div><span class="hbar-val" style="color:var(--green)">28h</span></div>
+      <div class="hbar-row"><span class="hbar-label">BetaRide</span><div class="hbar-track"><div class="hbar-fill" style="width:46%;background:var(--blue)"></div></div><span class="hbar-val" style="color:var(--blue)">18h</span></div>
+      <div class="hbar-row"><span class="hbar-label">AgroConnect</span><div class="hbar-track"><div class="hbar-fill" style="width:28%;background:var(--amber)"></div></div><span class="hbar-val" style="color:var(--amber)">11h</span></div>
+      <div class="hbar-row"><span class="hbar-label">NovaPay</span><div class="hbar-track"><div class="hbar-fill" style="width:26%;background:var(--purple)"></div></div><span class="hbar-val" style="color:var(--purple)">10h</span></div>
+    </div>
+    <div class="card"><div class="card-title">Billable vs non-billable</div>
+      <div style="display:flex;gap:16px;align-items:center;margin:10px 0">
+        <div style="text-align:center"><div style="font-size:28px;font-weight:700;color:var(--green);font-family:var(--font-head)">84%</div><div style="font-size:11px;color:var(--text3)">Billable</div></div>
+        <div style="text-align:center"><div style="font-size:28px;font-weight:700;color:var(--amber);font-family:var(--font-head)">16%</div><div style="font-size:11px;color:var(--text3)">Non-billable</div></div>
+      </div>
+      <div class="prog-track" style="height:8px"><div class="prog-fill" style="width:84%;background:var(--green)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px">Target: 80% billable · You're above target ✓</div>
+    </div>
+    <div class="card"><div class="card-title">Effective hourly rate</div>
+      <div style="font-size:36px;font-weight:700;color:var(--text);font-family:var(--font-head);margin:10px 0">₦75K</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Across all projects this month</div>
+      <div class="alert-box alert-green">Above the Lagos market benchmark of ₦50K–₦80K/hr for senior designers.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TAX MODULE
+════════════════════════════════ -->
+
+<div id="tax-dashboard" class="page">
+  <div class="ph"><div class="pt">Tax dashboard</div></div>
+  <div class="alert-box alert-red"><strong>VAT return due in 8 days</strong> — Nigeria Q1 2026 filing. ₦93,750 estimated payable to FIRS. File via eFIRS portal before Apr 15.</div>
+  <div class="grid4">
+    <div class="stat-card"><div class="label">VAT collected (Q1)</div><div class="value">₦187,500</div><div class="sub" style="color:var(--text3)">At 7.5%</div></div>
+    <div class="stat-card"><div class="label">VAT payable</div><div class="value" style="color:var(--red)">₦93,750</div><div class="sub red-sub">Due Apr 15</div></div>
+    <div class="stat-card"><div class="label">WHT deducted by clients</div><div class="value">₦62,500</div><div class="sub green-sub">Creditable</div></div>
+    <div class="stat-card"><div class="label">Tax ID (TIN)</div><div class="value" style="font-size:14px">NG-0123456</div><div class="sub green-sub">Valid</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">VAT by country</div>
+      <div class="row"><div class="row-info"><div class="row-title">Nigeria (7.5%)</div><div class="row-sub">₦187,500 collected · ₦93,750 payable</div></div><span class="badge b-danger">Due Apr 15</span></div>
+      <div class="row"><div class="row-info"><div class="row-title">Ghana (12.5%)</div><div class="row-sub">GH₵525 collected · GH₵262 payable</div></div><span class="badge b-ok">Filed Mar 31</span></div>
+      <div class="row"><div class="row-info"><div class="row-title">Kenya (16%)</div><div class="row-sub">KES 15,200 collected · KES 7,600 payable</div></div><span class="badge b-gray">Upcoming</span></div>
+    </div>
+    <div class="card"><div class="card-title">Withholding tax tracker</div>
+      <div class="alert-box alert-green" style="margin-bottom:10px">Under Nigeria's 2025 NTAA, businesses earning under ₦2M/month are WHT-exempt with a valid TIN. Your TIN is active.</div>
+      <div class="row"><div class="row-info"><div class="row-title">BetaRide Lagos — 10% WHT</div><div class="row-sub">₦32,000 deducted on ₦320,000 invoice</div></div><span class="badge b-ok">Credited</span></div>
+      <div class="row"><div class="row-info"><div class="row-title">AgroConnect GH — 7.5% WHT</div><div class="row-sub">GH₵315 on GH₵4,200 retainer</div></div><span class="badge b-warn">Pending</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="tax-vat" class="page">
+  <div class="ph"><div class="pt">VAT returns</div><button class="btn btn-primary">File return</button></div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Period</th><th>Country</th><th>Rate</th><th>Collected</th><th>Payable</th><th>Deadline</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 2026</td><td>Nigeria</td><td>7.5%</td><td class="td-bold">₦187,500</td><td class="td-bold" style="color:var(--red)">₦93,750</td><td style="color:var(--red);font-weight:600">Apr 15</td><td><span class="badge b-danger">Due soon</span></td></tr>
+        <tr><td>Q1 2026</td><td>Ghana</td><td>12.5%</td><td class="td-bold">GH₵525</td><td class="td-bold">GH₵262</td><td>Mar 31</td><td><span class="badge b-ok">Filed</span></td></tr>
+        <tr><td>Q2 2026</td><td>Nigeria</td><td>7.5%</td><td class="td-muted">In progress</td><td class="td-muted">TBD</td><td>Jul 15</td><td><span class="badge b-gray">Upcoming</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="tax-wht" class="page">
+  <div class="ph"><div class="pt">Withholding tax</div></div>
+  <div class="alert-box alert-blue">Withholding tax is deducted by your clients before paying you. Keep a record of all WHT deductions to claim credit against your annual tax liability.</div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Client</th><th>Invoice</th><th>Invoice amount</th><th>WHT rate</th><th>WHT amount</th><th>Net paid</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>BetaRide Lagos</td><td>INV-0041</td><td>₦320,000</td><td>10%</td><td class="td-bold" style="color:var(--amber)">₦32,000</td><td>₦288,000</td><td><span class="badge b-ok">Credited</span></td></tr>
+        <tr><td>AgroConnect GH</td><td>INV-0039</td><td>GH₵4,200</td><td>7.5%</td><td class="td-bold" style="color:var(--amber)">GH₵315</td><td>GH₵3,885</td><td><span class="badge b-warn">Pending</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:12px;color:var(--text2)"><strong>Total WHT credits:</strong> ₦32,000 + GH₵315 — deductible from annual tax return.</div>
+  </div>
+</div>
+
+<div id="tax-deadlines" class="page">
+  <div class="ph"><div class="pt">Tax deadlines</div></div>
+  <div class="card">
+    <div class="row"><div style="width:9px;height:9px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Nigeria VAT return — Q1 2026</div><div class="row-sub">FIRS · ₦93,750 payable · File via eFIRS portal</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:600;color:var(--red)">Apr 15</div><div style="font-size:10px;color:var(--text3)">8 days</div></div></div>
+    <div class="row"><div style="width:9px;height:9px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Annual income tax — Nigeria</div><div class="row-sub">LIRS · Personal income tax · Self-employed filing</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:600;color:var(--amber)">Jun 30</div><div style="font-size:10px;color:var(--text3)">84 days</div></div></div>
+    <div class="row"><div style="width:9px;height:9px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Ghana VAT return — Q2</div><div class="row-sub">GRA · File online via GRA portal</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:600;color:var(--text2)">Jul 31</div><div style="font-size:10px;color:var(--text3)">115 days</div></div></div>
+    <div class="row"><div style="width:9px;height:9px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:4px"></div><div class="row-info"><div class="row-title">Kenya withholding VAT — monthly</div><div class="row-sub">KRA iTax · 20th of following month</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:600;color:var(--text2)">May 20</div><div style="font-size:10px;color:var(--text3)">43 days</div></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     CASH FLOW MODULE
+════════════════════════════════ -->
+
+<div id="cf-overview" class="page">
+  <div class="ph"><div class="pt">Cash flow overview</div></div>
+  <div class="grid4">
+    <div class="stat-card"><div class="label">Cash in (Apr)</div><div class="value" style="color:var(--green)">₦1.24M</div><div class="sub green-sub">↑ 18% vs Mar</div></div>
+    <div class="stat-card"><div class="label">Cash out (Apr)</div><div class="value" style="color:var(--red)">₦312K</div><div class="sub" style="color:var(--text3)">Expenses + tax</div></div>
+    <div class="stat-card"><div class="label">Net this month</div><div class="value">₦928K</div><div class="sub green-sub">Strong</div></div>
+    <div class="stat-card"><div class="label">Outstanding</div><div class="value" style="color:var(--amber)">₦380K</div><div class="sub amber-sub">2 invoices</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Monthly cash flow — last 6 months</div>
+    <div class="cash-bars">
+      <div class="cb-group"><div class="cb-bars"><div class="cb cb-in" style="height:55%"></div><div class="cb cb-out" style="height:30%"></div></div><div class="cb-lbl">Nov</div></div>
+      <div class="cb-group"><div class="cb-bars"><div class="cb cb-in" style="height:70%"></div><div class="cb cb-out" style="height:35%"></div></div><div class="cb-lbl">Dec</div></div>
+      <div class="cb-group"><div class="cb-bars"><div class="cb cb-in" style="height:45%"></div><div class="cb cb-out" style="height:40%"></div></div><div class="cb-lbl">Jan</div></div>
+      <div class="cb-group"><div class="cb-bars"><div class="cb cb-in" style="height:60%"></div><div class="cb cb-out" style="height:28%"></div></div><div class="cb-lbl">Feb</div></div>
+      <div class="cb-group"><div class="cb-bars"><div class="cb cb-in" style="height:80%"></div><div class="cb cb-out" style="height:22%"></div></div><div class="cb-lbl">Mar</div></div>
+      <div class="cb-group"><div class="cb-bars"><div class="cb cb-in" style="height:100%"></div><div class="cb cb-out" style="height:25%"></div></div><div class="cb-lbl">Apr</div></div>
+    </div>
+    <div style="display:flex;gap:16px;font-size:11px;color:var(--text3);margin-top:8px">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--green);border-radius:2px;display:inline-block"></span>Cash in</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--red-light);border:1px solid #f09595;border-radius:2px;display:inline-block"></span>Cash out</span>
+    </div>
+  </div>
+  <div class="card"><div class="card-title">Payment chaser</div>
+    <div class="row"><div class="row-info"><div class="row-title">NovaPay Kenya — KES 47,500</div><div class="row-sub">7 days overdue · Invoice #40 · Last reminded Apr 4</div></div><button class="btn btn-sm btn-danger">Chase now</button></div>
+    <div class="row"><div class="row-info"><div class="row-title">TradaKo Ltd — ₦425,000</div><div class="row-sub">Due Apr 20 · Invoice #41 · Not yet overdue</div></div><button class="btn btn-sm">Send reminder</button></div>
+  </div>
+</div>
+
+<div id="cf-forecast" class="page">
+  <div class="ph"><div class="pt">Cash flow forecast</div></div>
+  <div class="alert-box alert-blue">Based on confirmed quotes, signed contracts, and payment terms. Updates automatically when quotes are accepted.</div>
+  <div class="alert-box alert-amber"><strong>Note:</strong> April VAT payment of ₦93,750 falls Apr 7–14. Reserve this before distribution.</div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Period</th><th>Expected in</th><th>Expected out</th><th>Net</th><th>Confidence</th></tr></thead>
+      <tbody>
+        <tr><td class="td-bold">Apr 7–14</td><td style="color:var(--green);font-weight:600">₦320,000</td><td style="color:var(--red)">₦93,750</td><td class="td-bold">₦226,250</td><td><span class="badge b-ok">High</span></td></tr>
+        <tr><td class="td-bold">Apr 15–21</td><td style="color:var(--green);font-weight:600">₦425,000</td><td style="color:var(--red)">₦60,000</td><td class="td-bold">₦365,000</td><td><span class="badge b-ok">High</span></td></tr>
+        <tr><td class="td-bold">Apr 22–30</td><td style="color:var(--green);font-weight:600">₦850,000</td><td style="color:var(--red)">₦85,000</td><td class="td-bold">₦765,000</td><td><span class="badge b-warn">Medium</span></td></tr>
+        <tr><td class="td-bold">May (full)</td><td style="color:var(--green);font-weight:600">₦1.1M</td><td style="color:var(--red)">₦280,000</td><td class="td-bold">₦820,000</td><td><span class="badge b-warn">Estimate</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="cf-expenses" class="page">
+  <div class="ph"><div class="pt">Expenses</div><button class="btn btn-primary">+ Log expense</button></div>
+  <div class="grid3">
+    <div class="stat-card"><div class="label">Total expenses (Apr)</div><div class="value">₦312,000</div></div>
+    <div class="stat-card"><div class="label">Largest category</div><div class="value" style="font-size:16px">Software</div><div class="sub amber-sub">₦85,000</div></div>
+    <div class="stat-card"><div class="label">Tax-deductible</div><div class="value" style="color:var(--green)">₦280,000</div><div class="sub green-sub">90% of expenses</div></div>
+  </div>
+  <div class="card"><div class="card-title">Expense log</div>
+    <div class="row"><div class="row-info"><div class="row-title">Adobe Creative Cloud</div><div class="row-sub">Apr 1 · Software · Tax-deductible</div></div><span style="font-weight:600;font-size:13px">₦45,000</span></div>
+    <div class="row"><div class="row-info"><div class="row-title">Generator fuel — site visits</div><div class="row-sub">Apr 3 · Operations · Tax-deductible</div></div><span style="font-weight:600;font-size:13px">₦28,000</span></div>
+    <div class="row"><div class="row-info"><div class="row-title">Figma Pro subscription</div><div class="row-sub">Apr 1 · Software · Tax-deductible</div></div><span style="font-weight:600;font-size:13px">₦15,000</span></div>
+    <div class="row"><div class="row-info"><div class="row-title">Laptop repair</div><div class="row-sub">Apr 5 · Equipment · Tax-deductible</div></div><span style="font-weight:600;font-size:13px">₦55,000</span></div>
+    <div class="row"><div class="row-info"><div class="row-title">Data &amp; internet (Apr)</div><div class="row-sub">Apr 1 · Infrastructure · Tax-deductible</div></div><span style="font-weight:600;font-size:13px">₦18,000</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     HEALTH MODULE
+════════════════════════════════ -->
+
+<div id="health-score" class="page">
+  <div class="ph"><div class="pt">Business health score</div></div>
+  <div class="grid2">
+    <div class="card" style="text-align:center">
+      <div style="font-family:var(--font-head);font-size:72px;font-weight:700;color:var(--green);line-height:1;margin:10px 0">78</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:8px">Overall health score</div>
+      <span class="badge b-ok" style="font-size:12px;padding:4px 12px">Healthy</span>
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Score based on 6 dimensions. Updated daily from your real data.</div>
+      <div class="alert-box alert-amber" style="text-align:left"><strong>Improve your score:</strong> File your VAT return (+5 pts) and add 1 more signed contract (+3 pts) to reach 86.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Score breakdown</div>
+      <div class="hbar-row"><span class="hbar-label">Cash flow</span><div class="hbar-track"><div class="hbar-fill" style="width:88%;background:var(--green)"></div></div><span class="hbar-val" style="color:var(--green)">88</span></div>
+      <div class="hbar-row"><span class="hbar-label">Invoice speed</span><div class="hbar-track"><div class="hbar-fill" style="width:82%;background:var(--green)"></div></div><span class="hbar-val" style="color:var(--green)">82</span></div>
+      <div class="hbar-row"><span class="hbar-label">Contracts</span><div class="hbar-track"><div class="hbar-fill" style="width:75%;background:var(--blue)"></div></div><span class="hbar-val" style="color:var(--blue)">75</span></div>
+      <div class="hbar-row"><span class="hbar-label">Tax compliance</span><div class="hbar-track"><div class="hbar-fill" style="width:65%;background:var(--amber)"></div></div><span class="hbar-val" style="color:var(--amber)">65</span></div>
+      <div class="hbar-row"><span class="hbar-label">Client diversity</span><div class="hbar-track"><div class="hbar-fill" style="width:72%;background:var(--blue)"></div></div><span class="hbar-val" style="color:var(--blue)">72</span></div>
+      <div class="hbar-row"><span class="hbar-label">Scope protection</span><div class="hbar-track"><div class="hbar-fill" style="width:60%;background:var(--amber)"></div></div><span class="hbar-val" style="color:var(--amber)">60</span></div>
+      <div class="divider"></div>
+      <div style="font-size:11.5px;color:var(--text3)">Tax compliance (65) and scope protection (60) are your lowest scores. Address these to hit 85+.</div>
+    </div>
+  </div>
+</div>
+
+<div id="health-rates" class="page">
+  <div class="ph"><div class="pt">Rate calculator</div></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">Find your minimum viable rate</div>
+      <div class="fg"><label class="fl">Monthly income target</label><div style="display:flex;gap:6px"><select class="fc" style="width:75px" id="rc-curr" onchange="calcRate()"><option>₦</option><option>GH₵</option><option>KES</option><option>R</option><option>$</option></select><input class="fc" id="rc-target" type="number" placeholder="500,000" oninput="calcRate()" style="flex:1"></div></div>
+      <div class="fg"><label class="fl">Billable hours per month</label><input class="fc" id="rc-hrs" type="number" value="80" oninput="calcRate()"></div>
+      <div class="fg"><label class="fl">Monthly expenses</label><input class="fc" id="rc-exp" type="number" placeholder="80,000" oninput="calcRate()"></div>
+      <div class="fg"><label class="fl">Tax rate (%)</label><input class="fc" id="rc-tax" type="number" value="7.5" oninput="calcRate()"></div>
+      <div class="divider"></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;color:var(--text2)">Minimum hourly rate</span><span id="rc-result" style="font-size:28px;font-weight:700;color:var(--green);font-family:var(--font-head)">—</span></div>
+      <div style="font-size:11.5px;color:var(--text3);margin-top:6px" id="rc-note">Enter your income target above.</div>
+    </div>
+    <div class="card"><div class="card-title">Market benchmarks — Africa 2026</div>
+      <div class="row"><div class="row-info"><div class="row-title">Graphic designer — Lagos</div></div><div style="font-size:12px;color:var(--text2);white-space:nowrap">₦25K–₦80K/hr</div></div>
+      <div class="row"><div class="row-info"><div class="row-title">Web developer — Nairobi</div></div><div style="font-size:12px;color:var(--text2);white-space:nowrap">KES 3K–8K/hr</div></div>
+      <div class="row"><div class="row-info"><div class="row-title">PM / consultant — Accra</div></div><div style="font-size:12px;color:var(--text2);white-space:nowrap">GH₵200–600/hr</div></div>
+      <div class="row"><div class="row-info"><div class="row-title">Software engineer — SA</div></div><div style="font-size:12px;color:var(--text2);white-space:nowrap">R350–R900/hr</div></div>
+      <div class="row"><div class="row-info"><div class="row-title">Architect / engineer — NG</div></div><div style="font-size:12px;color:var(--text2);white-space:nowrap">₦40K–₦120K/hr</div></div>
+      <div class="row"><div class="row-info"><div class="row-title">Remote / international</div></div><div style="font-size:12px;color:var(--text2);white-space:nowrap">$30–$150/hr</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="health-retainers" class="page">
+  <div class="ph"><div class="pt">Retainer agreements</div><button class="btn btn-primary">+ New retainer</button></div>
+  <div class="alert-box alert-blue">Retainers give you predictable monthly income. AgroConnect's retainer alone covers your base expenses every month.</div>
+  <div class="card"><div class="card-title">Active retainers</div>
+    <div class="row"><div class="av" style="background:var(--blue-light);color:var(--blue);width:36px;height:36px">AC</div><div class="row-info"><div class="row-title">AgroConnect GH — Social media</div><div class="row-sub">GH₵4,200/month · 20hrs included · Auto-renews Apr 30 · Month 2 of 3</div></div><span class="badge b-ok">Active</span></div>
+    <div class="row"><div class="av" style="background:var(--surface2);color:var(--text3);width:36px;height:36px">+</div><div class="row-info"><div class="row-title" style="color:var(--text3)">Add another retainer client</div><div class="row-sub">2+ retainers = 60% less income anxiety</div></div><button class="btn btn-sm btn-primary">+ Add</button></div>
+  </div>
+  <div class="card"><div class="card-title">Income stability</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Retainers currently cover <strong style="color:var(--green)">34%</strong> of your monthly income target. Aim for 50% for financial stability.</div>
+    <div class="prog-track" style="height:10px"><div class="prog-fill" style="width:34%;background:var(--green)"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:5px"><span>0%</span><span style="color:var(--green);font-weight:600">You're here: 34%</span><span>Target: 50%</span></div>
+    <div class="alert-box alert-green" style="margin-top:12px">Adding one more ₦200K/month retainer would put you at 50% stable income and significantly improve your health score.</div>
+  </div>
+</div>
+
+
+
+<!-- ════════════════════════════════════════
+     PROPOSALS MODULE
+════════════════════════════════════════ -->
+
+<!-- Pipeline page -->
+<div id="prop-pipeline" class="page">
+  <div class="ph">
+    <div><div class="pt">Proposal pipeline</div><div class="pt-sub" id="prop-pipeline-sub">Loading...</div></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input id="prop-search" class="fc" placeholder="Search..." style="width:180px;padding:6px 10px;font-size:12.5px" oninput="propApplySearch(this.value)">
+      <button class="btn btn-primary btn-sm" onclick="propOpenModal()">+ New proposal</button>
+    </div>
+  </div>
+  <div class="prop-view-tabs">
+    <button class="pvtab on" onclick="propSwitchSubView('pipeline',this)">Kanban</button>
+    <button class="pvtab" onclick="propSwitchSubView('list',this)">List</button>
+    <button class="pvtab" onclick="propSwitchSubView('analytics',this)">Analytics</button>
+    <button class="pvtab" onclick="propSwitchSubView('followups',this)">Follow-ups</button>
+  </div>
+  <!-- kanban sub-view -->
+  <div id="prop-sub-pipeline" class="prop-sub on">
+    <div class="kanban" id="prop-kanban-board"></div>
+  </div>
+  <!-- list sub-view -->
+  <div id="prop-sub-list" class="prop-sub" style="display:none">
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="proposals-table"><thead><tr>
+        <th style="padding-left:14px">Proposal</th>
+        <th>Client</th><th>Value</th><th>Stage</th><th>Probability</th><th>Follow-up</th><th>Type</th>
+      </tr></thead>
+      <tbody id="prop-list-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- analytics sub-view -->
+  <div id="prop-sub-analytics" class="prop-sub" style="display:none">
+    <div class="grid4">
+      <div class="stat-card"><div class="label">Total pipeline</div><div class="value" id="pan-total">₦—</div><div class="sub green-sub" id="pan-active-lbl"></div></div>
+      <div class="stat-card"><div class="label">Weighted value</div><div class="value green-sub" id="pan-weighted">₦—</div><div class="sub" style="color:var(--text3)">By probability</div></div>
+      <div class="stat-card"><div class="label">Win rate</div><div class="value" id="pan-winrate">—</div><div class="sub" id="pan-wr-sub" style="color:var(--text3)"></div></div>
+      <div class="stat-card"><div class="label">Avg. close time</div><div class="value" id="pan-avgdays">—</div><div class="sub" style="color:var(--text3)">Won proposals</div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-title">Stage funnel</div><div id="pan-funnel"></div></div>
+      <div class="card"><div class="card-title">By proposal type</div><div id="pan-bytype"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-title">Win / loss analysis</div><div id="pan-winloss"></div></div>
+      <div class="card"><div class="card-title">Pipeline by currency</div><div id="pan-currency"></div></div>
+    </div>
+  </div>
+  <!-- follow-ups sub-view -->
+  <div id="prop-sub-followups" class="prop-sub" style="display:none">
+    <div id="prop-followups-list"></div>
+  </div>
+</div>
+
+<!-- List redirect -->
+<div id="prop-list" class="page">
+  <script>document.addEventListener('DOMContentLoaded',function(){if(document.getElementById('prop-list').classList.contains('on')){propSwitchSubView('list',null);}});</script>
+</div>
+<div id="prop-analytics" class="page">
+  <script>document.addEventListener('DOMContentLoaded',function(){if(document.getElementById('prop-analytics').classList.contains('on')){propSwitchSubView('analytics',null);}});</script>
+</div>
+<div id="prop-followups" class="page">
+  <script>document.addEventListener('DOMContentLoaded',function(){if(document.getElementById('prop-followups').classList.contains('on')){propSwitchSubView('followups',null);}});</script>
+</div>
+
+</div><!-- end main -->
+
+<div class="sidebar" id="sb-proposals">
+  <div class="sb-sect">
+    <div class="sb-lbl">Pipeline</div>
+    <div class="sb-item on" onclick="showPage('prop-pipeline',this)"><div class="sb-dot"></div>Pipeline board</div>
+    <div class="sb-item" onclick="showPage('prop-list',this)"><div class="sb-dot"></div>All proposals</div>
+    <div class="sb-item" onclick="showPage('prop-analytics',this)"><div class="sb-dot"></div>Analytics</div>
+    <div class="sb-item" onclick="showPage('prop-followups',this)"><div class="sb-dot"></div>Follow-ups<div class="sb-badge" id="sb-prop-fu" style="background:#E24B4A;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:auto;font-weight:600">2</div></div>
+  </div>
+  <div class="sb-sect">
+    <div class="sb-lbl">Closed</div>
+    <div class="sb-item" onclick="propFilterStage('won',this)"><div class="sb-dot"></div>Won</div>
+    <div class="sb-item" onclick="propFilterStage('lost',this)"><div class="sb-dot"></div>Lost</div>
+  </div>
+</div>
+
+</div><!-- end body -->
+</div><!-- end shell -->
+
+<script>
+// ── MODULE / PAGE ROUTING ──
+const modSidebars={finance:'sb-finance',sites:'sb-sites',contracts:'sb-contracts',time:'sb-time',tax:'sb-tax',cashflow:'sb-cashflow',health:'sb-health',proposals:'sb-proposals'};
+const modDefaults={finance:'fin-dashboard',sites:'site-overview',contracts:'con-list',time:'time-tracker',tax:'tax-dashboard',cashflow:'cf-overview',health:'health-score',proposals:'prop-pipeline'};
+
+function switchMod(mod,el){
+  document.querySelectorAll('.mn').forEach(m=>m.classList.remove('on'));
+  if(el) el.classList.add('on');
+  Object.values(modSidebars).forEach(id=>{const s=document.getElementById(id);if(s)s.classList.remove('on')});
+  const sb=document.getElementById(modSidebars[mod]);
+  if(sb){sb.classList.add('on')}
+  showPage(modDefaults[mod],null);
+  // set first sidebar item active
+  if(sb){
+    sb.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+    const first=sb.querySelector('.sb-item');
+    if(first)first.classList.add('on');
+  }
+}
+
+function showPage(id,sidebarEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const p=document.getElementById(id);
+  if(p)p.classList.add('on');
+  if(sidebarEl){
+    const sb=sidebarEl.closest('.sidebar');
+    if(sb) sb.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+    sidebarEl.classList.add('on');
+  }
+}
+
+// ── NOTIFICATIONS ──
+function toggleNotif(){
+  const p=document.getElementById('notifPanel');
+  p.classList.toggle('on');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#notifBtn')&&!e.target.closest('#notifPanel')){
+    document.getElementById('notifPanel').classList.remove('on');
+  }
+});
+
+// ── QUOTE LINE ITEMS ──
+let lineCount=2;
+function addLine(){
+  const tbody=document.getElementById('lineBody');
+  const idx=lineCount++;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input class="fc" placeholder="Service or product" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td><input class="fc" type="number" value="1" min="1" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td><input class="fc" type="number" placeholder="0" oninput="calcQuoteTotals()" style="padding:5px 8px"></td><td id="lt${idx}" style="font-size:13px;color:var(--text3)">—</td><td><span style="cursor:pointer;color:var(--text3);font-size:16px" onclick="removeLine(this)">×</span></td>`;
+  tbody.appendChild(tr);
+}
+function removeLine(el){
+  const tr=el.closest('tr');
+  if(document.querySelectorAll('#lineBody tr').length>1){tr.remove();calcQuoteTotals();}
+}
+function calcQuoteTotals(){
+  const rows=document.querySelectorAll('#lineBody tr');
+  let sub=0;
+  rows.forEach((row,i)=>{
+    const inputs=row.querySelectorAll('input');
+    const qty=parseFloat(inputs[1]?.value)||0;
+    const price=parseFloat(inputs[2]?.value)||0;
+    const t=qty*price;
+    const cell=row.querySelector('td:nth-child(4)');
+    if(cell){cell.textContent=t>0?t.toLocaleString():'—';cell.style.color=t>0?'var(--text)':'var(--text3)';}
+    sub+=t;
+  });
+  if(sub>0){
+    const vr=parseFloat(document.getElementById('q-vat')?.value)||0;
+    const vat=sub*(vr/100);
+    const curr=document.getElementById('q-currency')?.value||'₦';
+    document.getElementById('q-sub').textContent=curr+sub.toLocaleString();
+    document.getElementById('q-vat-label').textContent=`VAT (${vr}%)`;
+    document.getElementById('q-vat-val').textContent=curr+Math.round(vat).toLocaleString();
+    document.getElementById('q-total').textContent=curr+Math.round(sub+vat).toLocaleString();
+    document.getElementById('quoteTotals').style.display='block';
+  } else {
+    document.getElementById('quoteTotals').style.display='none';
+  }
+}
+document.getElementById('q-vat')?.addEventListener('change',calcQuoteTotals);
+document.getElementById('q-currency')?.addEventListener('change',calcQuoteTotals);
+
+// ── TIMER ──
+let timerOn=false,timerSecs=0,timerInterval;
+function toggleTimer(btn){
+  timerOn=!timerOn;
+  const card=document.getElementById('timer-card');
+  if(timerOn){
+    timerInterval=setInterval(()=>{timerSecs++;updateTimerDisplay();},1000);
+    btn.textContent='Stop';btn.style.background='var(--red)';btn.style.borderColor='var(--red)';
+    if(card)card.classList.add('timer-running');
+  } else {
+    clearInterval(timerInterval);
+    btn.textContent='Start';btn.style.background='var(--green)';btn.style.borderColor='var(--green)';
+    if(card)card.classList.remove('timer-running');
+  }
+}
+function resetTimer(){
+  clearInterval(timerInterval);timerOn=false;timerSecs=0;updateTimerDisplay();
+  const btn=document.getElementById('timer-btn');
+  if(btn){btn.textContent='Start';btn.style.background='var(--green)';btn.style.borderColor='var(--green)';}
+  const card=document.getElementById('timer-card');
+  if(card)card.classList.remove('timer-running');
+}
+function updateTimerDisplay(){
+  const h=Math.floor(timerSecs/3600),m=Math.floor((timerSecs%3600)/60),s=timerSecs%60;
+  const el=document.getElementById('timer-disp');
+  if(el)el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ── RATE CALCULATOR ──
+function calcRate(){
+  const t=parseFloat(document.getElementById('rc-target')?.value)||0;
+  const h=parseFloat(document.getElementById('rc-hrs')?.value)||80;
+  const e=parseFloat(document.getElementById('rc-exp')?.value)||0;
+  const tax=parseFloat(document.getElementById('rc-tax')?.value)||0;
+  const curr=document.getElementById('rc-curr')?.value||'₦';
+  if(t>0&&h>0){
+    const gross=(t+e)/(1-(tax/100));
+    const rate=Math.ceil(gross/h/100)*100;
+    document.getElementById('rc-result').textContent=curr+rate.toLocaleString()+'/hr';
+    document.getElementById('rc-note').textContent=`To net ${curr}${t.toLocaleString()}/month after ${tax}% tax and ${curr}${e.toLocaleString()} expenses.`;
+  } else {
+    document.getElementById('rc-result').textContent='—';
+    document.getElementById('rc-note').textContent='Enter your income target above.';
+  }
+}
+
+// ── TASK CHECKBOXES ──
+function toggleCheck(el){
+  el.classList.toggle('dn');
+  const row=el.closest('.row');
+  const title=row?.querySelector('.row-title');
+  if(title){
+    if(el.classList.contains('dn')){title.style.textDecoration='line-through';title.style.color='var(--text3)';}
+    else{title.style.textDecoration='none';title.style.color='var(--text)';}
+  }
+}
+
+// ── TOGGLES ──
+function doToggle(el){el.classList.toggle('off')}
+function filterTag(el){
+  el.closest('div').querySelectorAll('.tag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+}
+function toggleTag(el){el.classList.toggle('on')}
+
+// ── CHECK-IN ──
+let checkedIn=false;
+function doCheckin(btn){
+  checkedIn=!checkedIn;
+  btn.textContent=checkedIn?'Check out':'Check in now';
+  btn.style.background=checkedIn?'var(--red)':'var(--green)';
+  btn.style.borderColor=checkedIn?'var(--red)':'var(--green)';
+}
+
+// ── INIT ──
+switchMod('finance', document.querySelector('.mn.on'));
+
+// Proposal module render trigger
+const _origSwitch = switchMod;
+function switchMod(mod, el) {
+  _origSwitch(mod, el);
+  if (mod === 'proposals') setTimeout(propRenderAll, 60);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   PROPOSAL TRACKER MODULE — AfriQuote
+═══════════════════════════════════════════════════════════ */
+const PROP_STAGES_ORDER=['draft','sent','viewed','meeting_scheduled','negotiating','won','lost','stalled','expired'];
+const PROP_STAGE_LABELS={draft:'Draft',sent:'Sent',viewed:'Viewed',meeting_scheduled:'Meeting',negotiating:'Negotiating',won:'Won',lost:'Lost',stalled:'Stalled',expired:'Expired'};
+const PROP_TRANSITIONS={draft:['sent'],sent:['viewed','stalled','lost'],viewed:['meeting_scheduled','negotiating','stalled','lost'],meeting_scheduled:['negotiating','won','stalled','lost'],negotiating:['won','lost','stalled'],stalled:['sent','negotiating','lost'],won:[],lost:[],expired:[]};
+const PROP_TERMINAL=new Set(['won','lost','expired']);
+const PROP_KANBAN_STAGES=['draft','sent','viewed','meeting_scheduled','negotiating'];
+const propCurrSym={NGN:'₦',GHS:'GH₵',KES:'KES',ZAR:'R',USD:'$',GBP:'£'};
+
+function propFmt(v,c='NGN'){const s=propCurrSym[c]||c;if(v>=1e6)return s+(v/1e6).toFixed(2).replace(/\.00$/,'')+'M';if(v>=1e3)return s+Math.round(v/1e3)+'K';return s+v.toLocaleString();}
+function propFmtDate(d){return d?new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short'}):'—';}
+function propDaysFromNow(d){return d?Math.ceil((new Date(d)-Date.now())/86400000):null;}
+function propUid(){return Math.random().toString(36).slice(2,10);}
+function propInDays(n){return new Date(Date.now()+n*86400000).toISOString().split('T')[0];}
+function propProbColor(p){if(p>=75)return'#1D9E75';if(p>=50)return'#BA7517';if(p>=25)return'#185FA5';return'#888780';}
+function propProbBg(p){if(p>=75)return'#E1F5EE';if(p>=50)return'#FAEEDA';if(p>=25)return'#E6F1FB';return'#f4f5f3';}
+
+let proposals=[
+  {id:'p1',number:'PRO-0001',stage:'negotiating',title:'Digital transformation roadmap',clientName:'BetaRide Lagos',company:'BetaRide Estates',currency:'NGN',proposalType:'technology',estimatedValue:2400000,winProbabilityOverride:75,description:'End-to-end digital transformation covering ERP, mobile app, and data analytics.',scopeOfWork:'Phase 1: Discovery. Phase 2: ERP. Phase 3: Mobile. Phase 4: Analytics.',deliverables:['Architecture doc','ERP system','iOS & Android app','Analytics dashboard'],timeline:'6 months',country:'NG',validUntil:propInDays(18),followUpDate:propInDays(3),followUpMethod:'whatsapp',clientEmail:'projects@betaride.ng',clientWhatsapp:'+234 801 100 0001',viewCount:5,lastViewedAt:propInDays(-1),sentAt:propInDays(-14),stageChangedAt:propInDays(-4),wonAt:null,lostAt:null,lostReason:null,readyForContract:false,contractId:null,quoteId:null,activities:[{id:'a1',type:'stage_change',content:'Proposal PRO-0001 created.',auto:true,createdAt:propInDays(-14)},{id:'a2',type:'email_sent',content:'Proposal sent with PDF. Receipt confirmed.',outcome:'positive',createdAt:propInDays(-14)},{id:'a3',type:'stage_change',content:'Stage moved from Sent to Viewed.',auto:true,createdAt:propInDays(-12)},{id:'a4',type:'call',content:'30min intro call. Impressed. Asked for phased budget.',outcome:'positive',createdAt:propInDays(-10)},{id:'a5',type:'meeting',content:'Presentation at BetaRide HQ. 4 stakeholders. Very engaged.',outcome:'positive',createdAt:propInDays(-7)},{id:'a6',type:'follow_up',content:'Sent revised timeline (5 months) and phased payment.',outcome:'neutral',createdAt:propInDays(-3)}]},
+  {id:'p2',number:'PRO-0002',stage:'viewed',title:'Brand identity & design system',clientName:'TradaKo Ltd',company:'TradaKo Ltd',currency:'NGN',proposalType:'creative',estimatedValue:580000,winProbabilityOverride:null,description:'Full brand identity refresh — logo, guidelines, and design system.',scopeOfWork:'Logo (3 concepts), brand guidelines PDF, Figma design system 40+ components.',deliverables:['Logo suite','Brand guidelines','Figma design system','Social kit'],timeline:'8 weeks',country:'NG',validUntil:propInDays(10),followUpDate:propInDays(2),followUpMethod:'whatsapp',clientEmail:'info@tradako.com',clientWhatsapp:'+234 802 200 0002',viewCount:3,lastViewedAt:propInDays(-1),sentAt:propInDays(-5),stageChangedAt:propInDays(-2),wonAt:null,lostAt:null,lostReason:null,readyForContract:false,contractId:null,quoteId:null,activities:[{id:'b1',type:'stage_change',content:'Proposal PRO-0002 created.',auto:true,createdAt:propInDays(-8)},{id:'b2',type:'email_sent',content:'Proposal emailed with branded PDF cover.',outcome:'positive',createdAt:propInDays(-5)},{id:'b3',type:'stage_change',content:'Stage moved from Sent to Viewed.',auto:true,createdAt:propInDays(-2)}]},
+  {id:'p3',number:'PRO-0003',stage:'meeting_scheduled',title:'Agriculture platform — AgroConnect',clientName:'AgroConnect GH',company:'AgroConnect Ghana',currency:'GHS',proposalType:'technology',estimatedValue:85000,winProbabilityOverride:null,description:'Farmer-to-buyer marketplace for Ghanaian agricultural supply chain.',scopeOfWork:'Web platform + mobile app for farmers. Admin panel for buyers.',deliverables:['Marketplace web app','Farmer mobile app','Admin panel','API docs'],timeline:'4 months',country:'GH',validUntil:propInDays(14),followUpDate:propInDays(1),followUpMethod:'call',clientEmail:'design@agroconnect.gh',clientWhatsapp:'+233 244 300 003',viewCount:2,lastViewedAt:propInDays(-2),sentAt:propInDays(-9),stageChangedAt:propInDays(-1),wonAt:null,lostAt:null,lostReason:null,readyForContract:false,contractId:null,quoteId:null,activities:[{id:'c1',type:'stage_change',content:'Proposal PRO-0003 created.',auto:true,createdAt:propInDays(-12)},{id:'c2',type:'email_sent',content:'Sent proposal. Highlighted local experience.',outcome:'positive',createdAt:propInDays(-9)},{id:'c3',type:'call',content:'Brief intro call. Very interested. Asked to schedule presentation.',outcome:'positive',createdAt:propInDays(-5)},{id:'c4',type:'stage_change',content:'Stage moved to Meeting scheduled.',auto:false,createdAt:propInDays(-1)}]},
+  {id:'p4',number:'PRO-0004',stage:'won',title:'IT infrastructure audit — NovaPay',clientName:'NovaPay Kenya',company:'NovaPay Ltd',currency:'KES',proposalType:'consulting',estimatedValue:220000,winProbabilityOverride:100,description:'Comprehensive IT audit: security, infrastructure, compliance.',scopeOfWork:'Network security audit, pen testing, GDPR review.',deliverables:['Security audit report','Risk register','Remediation roadmap'],timeline:'6 weeks',country:'KE',validUntil:propInDays(30),followUpDate:null,followUpMethod:'email',clientEmail:'ops@novapay.ke',clientWhatsapp:'+254 722 400 004',viewCount:4,lastViewedAt:propInDays(-3),sentAt:propInDays(-21),stageChangedAt:propInDays(-3),wonAt:propInDays(-3),lostAt:null,lostReason:null,readyForContract:true,contractId:'CON-NK001',quoteId:null,activities:[{id:'d1',type:'stage_change',content:'Proposal PRO-0004 created.',auto:true,createdAt:propInDays(-25)},{id:'d2',type:'email_sent',content:'Detailed proposal with FinTech audit case studies.',outcome:'positive',createdAt:propInDays(-21)},{id:'d3',type:'call',content:'Technical review call with CTO. High confidence.',outcome:'positive',createdAt:propInDays(-14)},{id:'d4',type:'meeting',content:'Final presentation. Budget approved. Requested contract.',outcome:'positive',createdAt:propInDays(-7)},{id:'d5',type:'stage_change',content:'Stage moved to Won.',auto:false,createdAt:propInDays(-3)},{id:'d6',type:'note',content:'Converted to contract CON-NK001. Awaiting CFO signature.',auto:true,createdAt:propInDays(-3)}]},
+  {id:'p5',number:'PRO-0005',stage:'lost',title:'E-commerce strategy & implementation',clientName:'ShopLync ZA',company:'ShopLync Pty Ltd',currency:'ZAR',proposalType:'consulting',estimatedValue:95000,winProbabilityOverride:0,description:'E-commerce channel strategy, platform selection, and launch support.',scopeOfWork:'Market analysis, platform recommendation, Shopify build, launch campaign.',deliverables:['Strategy deck','Platform setup','Product catalogue','Launch report'],timeline:'10 weeks',country:'ZA',validUntil:propInDays(-5),followUpDate:null,followUpMethod:'email',clientEmail:'digital@shoplync.co.za',clientWhatsapp:'+27 82 500 0005',viewCount:6,lastViewedAt:propInDays(-10),sentAt:propInDays(-28),stageChangedAt:propInDays(-8),wonAt:null,lostAt:propInDays(-8),lostReason:'Client reduced budget and decided to build with in-house team.',readyForContract:false,contractId:null,quoteId:null,activities:[{id:'e1',type:'stage_change',content:'Proposal PRO-0005 created.',auto:true,createdAt:propInDays(-32)},{id:'e2',type:'email_sent',content:'Sent with market analysis preview.',outcome:'positive',createdAt:propInDays(-28)},{id:'e3',type:'call',content:'Discovery call. Budget confirmed. Positive.',outcome:'positive',createdAt:propInDays(-20)},{id:'e4',type:'follow_up',content:'Sent case studies. No response.',outcome:'neutral',createdAt:propInDays(-15)},{id:'e5',type:'stage_change',content:'Stage moved to Lost. Budget reduced.',auto:false,createdAt:propInDays(-8)}]}
+];
+
+function propDerived(p){const prob=(p.winProbabilityOverride!==null&&p.winProbabilityOverride!==undefined)?p.winProbabilityOverride:propStageProbability(p.stage);const fd=propDaysFromNow(p.followUpDate);return{...p,estimatedProbability:prob,weightedValue:Math.round((p.estimatedValue||0)*prob/100),isOverdue:p.followUpDate&&fd<0&&!PROP_TERMINAL.has(p.stage),followUpDaysFromNow:fd,isTerminal:PROP_TERMINAL.has(p.stage)};}
+function propStageProbability(s){return{draft:5,sent:20,viewed:35,meeting_scheduled:55,negotiating:75,won:100,lost:0,stalled:15,expired:0}[s]||0;}
+function propGetStats(){const all=proposals.map(propDerived);const active=all.filter(p=>!PROP_TERMINAL.has(p.stage));const won=all.filter(p=>p.stage==='won');const lost=all.filter(p=>p.stage==='lost');const decided=won.length+lost.length;const fu7=active.filter(p=>{const d=propDaysFromNow(p.followUpDate);return d!==null&&d>=0&&d<=7;});const wonC=won.filter(p=>p.wonAt&&p.sentAt);return{total:all.length,active:active.length,won:won.length,lost:lost.length,overdue:active.filter(p=>p.isOverdue).length,followUps7:fu7.length,winRate:decided>0?Math.round(won.length/decided*100):0,totalPipeline:active.reduce((s,p)=>s+(p.estimatedValue||0),0),weightedPipeline:active.reduce((s,p)=>s+(p.weightedValue||0),0),avgClose:wonC.length?Math.round(wonC.reduce((s,p)=>s+(new Date(p.wonAt)-new Date(p.sentAt))/86400000,0)/wonC.length):null};}
+
+let propCurrentSubView='pipeline',propCurrentFilter=null,propSearchQuery='',propCurrentId=null,propEditingId=null,propActType={};
+
+function propUpdateSidebar(){const s=propGetStats();const el=document.getElementById('sb-prop-fu');if(el)el.textContent=s.followUps7;const sub=document.getElementById('prop-pipeline-sub');if(sub)sub.textContent=`${s.active} active · ${propFmt(s.totalPipeline,'NGN')} total · ${propFmt(s.weightedPipeline,'NGN')} weighted`;}
+
+function propGetFiltered(){let list=proposals.map(propDerived);if(propCurrentFilter)list=list.filter(p=>p.stage===propCurrentFilter);if(propSearchQuery){const q=propSearchQuery.toLowerCase();list=list.filter(p=>p.title.toLowerCase().includes(q)||p.clientName.toLowerCase().includes(q)||(p.company||'').toLowerCase().includes(q));}list.sort((a,b)=>{const aT=PROP_TERMINAL.has(a.stage)?1:0,bT=PROP_TERMINAL.has(b.stage)?1:0;if(aT!==bT)return aT-bT;return(b.estimatedValue||0)-(a.estimatedValue||0);});return list;}
+
+function propRenderKanban(){const board=document.getElementById('prop-kanban-board');if(!board)return;const filtered=propGetFiltered();const stagesToShow=propCurrentFilter?[propCurrentFilter,'won','lost']:[...PROP_KANBAN_STAGES,'won','lost'];board.innerHTML=stagesToShow.map(stage=>{const cards=filtered.filter(p=>p.stage===stage);const totalV=cards.reduce((s,p)=>s+(p.estimatedValue||0),0);return`<div class="kb-col"><div class="kb-head"><div><div class="kb-title">${PROP_STAGE_LABELS[stage]||stage}</div>${totalV>0?`<div class="kb-total">${propFmt(totalV,'NGN')}</div>`:''}</div><div class="kb-count">${cards.length}</div></div><div class="kb-cards">${cards.length?cards.map(p=>propRenderCard(p)).join(''):'<div style="padding:12px;text-align:center;font-size:11.5px;color:var(--color-text-tertiary)">No proposals</div>'}</div></div>`;}).join('');}
+
+function propRenderCard(p){const fd=p.followUpDaysFromNow;let fuClass='',fuText='';if(p.followUpDate&&!p.isTerminal){if(fd<0){fuClass='overdue';fuText=`${Math.abs(fd)}d overdue`;}else if(fd===0){fuClass='due';fuText='Today';}else if(fd===1){fuClass='due';fuText='Tomorrow';}else{fuText=propFmtDate(p.followUpDate);}}return`<div class="prop-card ${p.stage} ${p.isOverdue?'overdue':''}" onclick="propOpenDetail('${p.id}')"><div class="pc-title">${p.title}</div><div class="pc-client">${p.clientName}${p.company&&p.company!==p.clientName?` · ${p.company}`:''}</div>${p.estimatedValue>0?`<div class="pc-value">${propFmt(p.estimatedValue,p.currency)}</div>`:''}<div class="prob-bar"><div class="prob-fill" style="width:${p.estimatedProbability}%;background:${propProbColor(p.estimatedProbability)}"></div></div><div class="pc-bottom"><span class="pc-prob" style="background:${propProbBg(p.estimatedProbability)};color:${propProbColor(p.estimatedProbability)}">${p.estimatedProbability}%</span>${fuText?`<div class="pc-followup ${fuClass}">↺ ${fuText}</div>`:''}</div></div>`;}
+
+function propStageBadge(s){const cls={draft:'b-gray',sent:'b-info',viewed:'b-info',meeting_scheduled:'b-purple',negotiating:'b-warn',won:'b-ok',lost:'b-danger',stalled:'b-warn',expired:'b-danger'};return`<span class="badge ${cls[s]||'b-gray'}">${PROP_STAGE_LABELS[s]||s}</span>`;}
+
+function propRenderList(){const tbody=document.getElementById('prop-list-tbody');if(!tbody)return;const list=propGetFiltered();if(!list.length){tbody.innerHTML='<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--color-text-tertiary)">No proposals yet. Click + New proposal to get started.</td></tr>';return;}tbody.innerHTML=list.map(p=>{const fd=p.followUpDaysFromNow;const fuStr=p.followUpDate&&!p.isTerminal?(fd<0?`<span style="color:#E24B4A;font-weight:600">${Math.abs(fd)}d late</span>`:fd===0?`<span style="color:#BA7517;font-weight:600">Today</span>`:fd===1?`<span style="color:#BA7517">Tomorrow</span>`:propFmtDate(p.followUpDate)):'—';return`<tr onclick="propOpenDetail('${p.id}')"><td style="padding-left:14px"><div style="font-weight:600;font-size:12.5px;color:var(--color-text-primary)">${p.title}</div><div style="font-size:11px;color:var(--color-text-tertiary)">${p.number}</div></td><td style="font-size:12.5px">${p.clientName}</td><td style="font-weight:600;font-size:13px">${propFmt(p.estimatedValue,p.currency)}</td><td>${propStageBadge(p.stage)}</td><td><div style="display:flex;align-items:center;gap:6px"><div style="width:50px;height:5px;border-radius:3px;background:var(--color-border-tertiary);overflow:hidden"><div style="width:${p.estimatedProbability}%;height:100%;background:${propProbColor(p.estimatedProbability)};border-radius:3px"></div></div><span style="font-size:11.5px;font-weight:600;color:${propProbColor(p.estimatedProbability)}">${p.estimatedProbability}%</span></div></td><td style="font-size:12px">${fuStr}</td><td><span class="badge b-gray" style="font-size:10.5px;text-transform:capitalize">${p.proposalType}</span></td></tr>`;}).join('');}
+
+function propRenderAnalytics(){const stats=propGetStats();const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};set('pan-total',propFmt(stats.totalPipeline,'NGN'));set('pan-active-lbl',`${stats.active} active proposals`);set('pan-weighted',propFmt(stats.weightedPipeline,'NGN'));set('pan-winrate',stats.winRate+'%');set('pan-wr-sub',`${stats.won} won, ${stats.lost} lost`);set('pan-avgdays',stats.avgClose!==null?stats.avgClose+'d':'—');
+const fEl=document.getElementById('pan-funnel');if(fEl){const stages=[...PROP_KANBAN_STAGES,'won','lost'];const maxC=Math.max(...stages.map(s=>proposals.filter(p=>p.stage===s).length),1);fEl.innerHTML=stages.map(s=>{const ps=proposals.filter(p=>p.stage===s);const pct=Math.round(ps.length/maxC*100);const color=s==='won'?'#1D9E75':s==='lost'?'#E24B4A':'#185FA5';const val=ps.reduce((sum,p)=>sum+(p.estimatedValue||0),0);return`<div class="hbar-row"><span class="hbar-label" style="width:120px;font-size:11.5px;color:var(--color-text-secondary)">${PROP_STAGE_LABELS[s]}</span><div class="hbar-track"><div class="hbar-fill" style="width:${pct}%;background:${color}"></div></div><div class="hbar-val" style="color:${color}">${ps.length}</div></div>`;}).join('');}
+const tEl=document.getElementById('pan-bytype');if(tEl){const types={};proposals.filter(p=>!PROP_TERMINAL.has(p.stage)).forEach(p=>{types[p.proposalType]=(types[p.proposalType]||0)+(p.estimatedValue||0);});const mx=Math.max(...Object.values(types),1);tEl.innerHTML=Object.entries(types).sort((a,b)=>b[1]-a[1]).map(([t,v])=>`<div class="hbar-row"><span class="hbar-label" style="width:120px;font-size:11.5px;color:var(--color-text-secondary);text-transform:capitalize">${t}</span><div class="hbar-track"><div class="hbar-fill" style="width:${Math.round(v/mx*100)}%;background:#1D9E75"></div></div><div class="hbar-val" style="color:#1D9E75">${propFmt(v,'NGN')}</div></div>`).join('');}
+const wEl=document.getElementById('pan-winloss');if(wEl){const wps=proposals.filter(p=>p.stage==='won'),lps=proposals.filter(p=>p.stage==='lost');const wV=wps.reduce((s,p)=>s+(p.estimatedValue||0),0),lV=lps.reduce((s,p)=>s+(p.estimatedValue||0),0);const mx=Math.max(wV,lV,1);wEl.innerHTML=`<div class="hbar-row"><span class="hbar-label" style="width:60px;font-size:11.5px;color:var(--color-text-secondary)">Won</span><div class="hbar-track"><div class="hbar-fill" style="width:${Math.round(wV/mx*100)}%;background:#1D9E75"></div></div><div class="hbar-val" style="color:#1D9E75">${wps.length}</div></div><div class="hbar-row"><span class="hbar-label" style="width:60px;font-size:11.5px;color:var(--color-text-secondary)">Lost</span><div class="hbar-track"><div class="hbar-fill" style="width:${Math.round(lV/mx*100)}%;background:#E24B4A"></div></div><div class="hbar-val" style="color:#E24B4A">${lps.length}</div></div><div style="margin-top:10px;font-size:12px;color:var(--color-text-secondary)">Win rate: <strong style="color:#1D9E75">${propGetStats().winRate}%</strong></div>${lps.filter(p=>p.lostReason).map(p=>`<div style="font-size:11.5px;color:var(--color-text-secondary);padding:4px 0;border-bottom:1px solid var(--color-border-tertiary)">${p.clientName}: ${p.lostReason}</div>`).join('')}`;}
+const cEl=document.getElementById('pan-currency');if(cEl){const curs={};proposals.filter(p=>!PROP_TERMINAL.has(p.stage)).forEach(p=>{curs[p.currency]=(curs[p.currency]||0)+(p.estimatedValue||0);});const mc=Math.max(...Object.values(curs),1);cEl.innerHTML=Object.entries(curs).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div class="hbar-row"><span class="hbar-label" style="width:60px;font-size:11.5px;color:var(--color-text-secondary)">${c}</span><div class="hbar-track"><div class="hbar-fill" style="width:${Math.round(v/mc*100)}%;background:#534AB7"></div></div><div class="hbar-val" style="color:#534AB7">${propFmt(v,c)}</div></div>`).join('');}}
+
+function propRenderFollowUps(){const el=document.getElementById('prop-followups-list');if(!el)return;const all=proposals.map(propDerived).filter(p=>!PROP_TERMINAL.has(p.stage)&&p.followUpDate);const overdue=all.filter(p=>p.followUpDaysFromNow<0).sort((a,b)=>a.followUpDaysFromNow-b.followUpDaysFromNow);const upcoming=all.filter(p=>p.followUpDaysFromNow>=0).sort((a,b)=>a.followUpDaysFromNow-b.followUpDaysFromNow);let html='';if(overdue.length){html+=`<div class="alert-box alert-red"><strong>${overdue.length} overdue follow-up${overdue.length>1?'s':''}</strong> — take action to avoid losing these proposals.</div>`;html+=propFollowUpTable(overdue);}if(upcoming.length){html+=`<div class="card-title" style="margin:16px 0 10px">Upcoming (${upcoming.length})</div>`;html+=propFollowUpTable(upcoming);}if(!overdue.length&&!upcoming.length)html='<div class="prop-empty"><div class="prop-empty-icon">✓</div><div class="prop-empty-title">All caught up</div><div style="font-size:13px">No follow-ups due in the next 7 days.</div></div>';el.innerHTML=html;}
+
+function propFollowUpTable(list){const icons={email:'✉',whatsapp:'💬',call:'📞',meeting:'📅',other:'→'};return`<div class="card" style="padding:0;overflow:hidden"><table class="proposals-table"><thead><tr><th style="padding-left:14px">Proposal</th><th>Client</th><th>Due</th><th>Method</th><th>Stage</th><th></th></tr></thead><tbody>${list.map(p=>{const fd=p.followUpDaysFromNow;const ds=fd<0?`<span style="color:#E24B4A;font-weight:600">${Math.abs(fd)}d late</span>`:fd===0?`<span style="color:#BA7517;font-weight:600">Today</span>`:fd===1?`<span style="color:#BA7517">Tomorrow</span>`:propFmtDate(p.followUpDate);return`<tr onclick="propOpenDetail('${p.id}')"><td style="padding-left:14px"><div style="font-weight:600;font-size:12.5px">${p.title}</div><div style="font-size:11px;color:var(--color-text-tertiary)">${p.number}</div></td><td>${p.clientName}</td><td>${ds}</td><td>${icons[p.followUpMethod]||'→'} <span style="font-size:12px;text-transform:capitalize">${p.followUpMethod||'email'}</span></td><td>${propStageBadge(p.stage)}</td><td style="text-align:right;padding-right:12px"><button class="btn" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();propQuickLog('${p.id}')">Log action</button></td></tr>`;}).join('')}</tbody></table></div>`;}
+
+function propOpenDetail(id){const p=proposals.map(propDerived).find(x=>x.id===id);if(!p)return;propCurrentId=id;const panel=document.getElementById('propDetailPanel');if(!panel)return;document.getElementById('pdp-num').textContent=p.number;document.getElementById('pdp-title').textContent=p.title;document.getElementById('pdp-client').textContent=p.clientName+(p.company&&p.company!==p.clientName?` · ${p.company}`:'');document.getElementById('pdp-body').innerHTML=propBuildDetail(p);panel.classList.add('open');document.getElementById('propOverlay').classList.add('on');}
+function propCloseDetail(){document.getElementById('propDetailPanel')?.classList.remove('open');document.getElementById('propOverlay')?.classList.remove('on');propCurrentId=null;}
+
+function propBuildDetail(p){const allS=PROP_STAGES_ORDER.filter(s=>s!=='expired');const doneIdx=allS.indexOf(p.stage);const trans=PROP_TRANSITIONS[p.stage]||[];
+const stepper=`<div class="stage-steps">${allS.map((s,i)=>{const cls=p.stage===s?'current'+(PROP_TERMINAL.has(s)?' terminal '+s:''):PROP_TERMINAL.has(s)?'':i<doneIdx?'done':'';return`<div class="stage-step ${cls}" onclick="if(!${p.isTerminal})propDoTransition('${p.id}','${s}')">${PROP_STAGE_LABELS[s]}</div>`;}).join('')}</div>`;
+let fu='';if(p.followUpDate&&!p.isTerminal){const fd=p.followUpDaysFromNow,isOD=fd<0;fu=`<div class="followup-box ${isOD?'overdue':''}"><div style="font-size:16px">${isOD?'⚠':'📅'}</div><div><div class="fu-label">${isOD?'Follow-up overdue':'Follow-up scheduled'}</div><div class="fu-date">${p.followUpMethod} · ${propFmtDate(p.followUpDate)}${isOD?` (${Math.abs(fd)} days late)`:fd===0?' (Today)':fd===1?' (Tomorrow)':`(in ${fd} days)`}</div></div></div>`;}
+let convert='';if(p.stage==='won'&&!p.contractId){convert=`<div class="convert-banner"><h4>🎉 Proposal Won!</h4><p>Convert to a signed contract and formalise this win.</p><button class="btn-white" onclick="propDoConvert('${p.id}')">Convert to contract →</button></div>`;}else if(p.contractId){convert=`<div class="alert-box alert-green">✓ Converted to contract <strong>${p.contractId}</strong>. Awaiting signature.</div>`;}
+const transBtns=!p.isTerminal&&trans.length?`<div class="transition-bar">${trans.map(t=>{const cls=t==='won'?'won':t==='lost'?'lost':t==='stalled'?'stalled':'next';return`<button class="trans-btn ${cls}" onclick="propDoTransition('${p.id}','${t}')">${PROP_STAGE_LABELS[t]}</button>`;}).join('')}</div>`:'';
+const info=`<div class="grid2" style="margin-bottom:12px"><div class="stat-card"><div class="label">Estimated value</div><div class="value">${propFmt(p.estimatedValue,p.currency)}</div></div><div class="stat-card"><div class="label">Weighted value</div><div class="value" style="color:#1D9E75">${propFmt(p.weightedValue,p.currency)}</div><div class="sub" style="color:var(--color-text-tertiary)">at ${p.estimatedProbability}%</div></div></div><div class="grid2" style="margin-bottom:12px"><div class="stat-card"><div class="label">Type</div><div style="font-size:14px;font-weight:600;margin-top:4px;text-transform:capitalize">${p.proposalType}</div></div><div class="stat-card"><div class="label">Valid until</div><div style="font-size:14px;font-weight:600;margin-top:4px;color:${p.validUntil&&propDaysFromNow(p.validUntil)<3?'#E24B4A':'var(--color-text-primary)'}">${propFmtDate(p.validUntil)}</div></div></div>`;
+let scope='';if(p.description||p.scopeOfWork){scope=`<div class="card"><div class="card-title">Proposal details</div>${p.description?`<p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px">${p.description}</p>`:''}${p.scopeOfWork?`<div style="height:1px;background:var(--color-border-tertiary);margin:10px 0"></div><div style="font-size:12px;font-weight:600;margin-bottom:5px">Scope of work</div><p style="font-size:12.5px;color:var(--color-text-secondary)">${p.scopeOfWork}</p>`:''}${p.deliverables?.length?`<div style="height:1px;background:var(--color-border-tertiary);margin:10px 0"></div><div style="font-size:12px;font-weight:600;margin-bottom:5px">Deliverables</div><ul style="font-size:12.5px;color:var(--color-text-secondary);margin-left:18px">${p.deliverables.map(d=>`<li>${d}</li>`).join('')}</ul>`:''}${p.timeline?`<div style="margin-top:8px;font-size:12px;color:var(--color-text-secondary)">Timeline: <strong>${p.timeline}</strong></div>`:''}</div>`;}
+const contact=`<div class="card"><div class="card-title">Client contact</div>${p.clientEmail?`<div class="row"><div class="row-info"><div class="row-title">${p.clientEmail}</div><div class="row-sub">Email</div></div><a href="mailto:${p.clientEmail}" class="btn btn-sm">✉ Send</a></div>`:''} ${p.clientWhatsapp?`<div class="row"><div class="row-info"><div class="row-title">${p.clientWhatsapp}</div><div class="row-sub">WhatsApp</div></div><button class="btn btn-sm" style="background:#25D366;color:#fff;border:none" onclick="alert('Opening WhatsApp...')">💬</button></div>`:''}</div>`;
+const actIcons={stage_change:'⬡',email_sent:'✉',whatsapp_sent:'💬',call:'📞',meeting:'📅',follow_up:'↺',note:'◎',document_shared:'📎',other:'•'};const actColors={stage_change:'#E6F1FB',email_sent:'#E1F5EE',call:'#EEEDFE',meeting:'#FAEEDA',follow_up:'#FAEEDA',note:'var(--color-background-secondary)'};
+const acts=[...(p.activities||[])].reverse();
+const feed=`<div class="activity-feed">${acts.map(a=>`<div class="act-item"><div class="act-icon" style="background:${actColors[a.type]||'var(--color-background-secondary)'}">${actIcons[a.type]||'•'}</div><div class="act-body"><div class="act-content">${a.content}</div><div class="act-meta"><span>${propFmtDate(a.createdAt)}</span>${a.outcome?`<span class="act-outcome ${a.outcome}">${a.outcome}</span>`:''}${a.auto?'<span style="font-size:10px;color:var(--color-text-tertiary)">auto</span>':''}</div></div></div>`).join('')}</div>`;
+const addAct=p.isTerminal?'':`<div class="add-act-form"><div style="font-size:12px;font-weight:600;margin-bottom:8px">Log activity</div><div class="act-type-pills" id="patp-${p.id}">${['note','follow_up','call','meeting','email_sent','whatsapp_sent'].map((t,i)=>`<button class="atp ${i===0?'on':''}" onclick="propSelectActType(this,'${p.id}','${t}')" data-type="${t}">${t.replace('_',' ')}</button>`).join('')}</div><textarea class="fc" id="pact-content-${p.id}" placeholder="What happened? What was discussed?" style="min-height:55px;margin-bottom:8px"></textarea><div class="grid2" style="margin-bottom:8px"><select class="fc" id="pact-outcome-${p.id}" style="font-size:12px"><option value="">Outcome (optional)</option><option value="positive">Positive</option><option value="neutral">Neutral</option><option value="negative">Negative</option></select><input class="fc" id="pact-fu-${p.id}" type="date" title="Next follow-up date"></div><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="propSaveActivity('${p.id}')">Save activity</button></div>`;
+return `${stepper}${fu}${convert}${transBtns}${info}${scope}${contact}<div class="card"><div class="card-title">Activity timeline <span style="font-size:11px;font-weight:400;color:var(--color-text-tertiary)">(${acts.length} entries)</span></div>${feed}${addAct}</div>`;}
+
+function propSelectActType(el,pid,type){document.querySelectorAll(`#patp-${pid} .atp`).forEach(b=>b.classList.remove('on'));el.classList.add('on');propActType[pid]=type;}
+function propSaveActivity(pid){const content=document.getElementById(`pact-content-${pid}`)?.value?.trim();if(!content)return;const outcome=document.getElementById(`pact-outcome-${pid}`)?.value||null;const fuDate=document.getElementById(`pact-fu-${pid}`)?.value||null;const type=propActType[pid]||'note';const idx=proposals.findIndex(p=>p.id===pid);if(idx===-1)return;proposals[idx].activities=[...(proposals[idx].activities||[]),{id:propUid(),type,content,outcome:outcome||null,auto:false,createdAt:new Date().toISOString()}];if(fuDate)proposals[idx].followUpDate=fuDate;propRenderAll();propOpenDetail(pid);}
+function propQuickLog(id){const content=prompt('Quick note for this follow-up:');if(!content)return;const idx=proposals.findIndex(p=>p.id===id);if(idx===-1)return;proposals[idx].activities=[...(proposals[idx].activities||[]),{id:propUid(),type:'follow_up',content,outcome:null,auto:false,createdAt:new Date().toISOString()}];propRenderAll();propOpenDetail(id);}
+
+function propDoTransition(id,newStage){const idx=proposals.findIndex(p=>p.id===id);if(idx===-1)return;const p=proposals[idx];if(!(PROP_TRANSITIONS[p.stage]||[]).includes(newStage))return;let reason=null;if(newStage==='lost'){reason=prompt('Reason for loss (optional):');if(reason===null)return;}const now2=new Date().toISOString();const fuD={sent:3,viewed:2,meeting_scheduled:1,negotiating:2};proposals[idx]={...p,stage:newStage,stageChangedAt:now2,sentAt:newStage==='sent'?now2:p.sentAt,viewCount:newStage==='viewed'?(p.viewCount||0)+1:p.viewCount,lastViewedAt:newStage==='viewed'?now2:p.lastViewedAt,wonAt:newStage==='won'?now2:p.wonAt,lostAt:newStage==='lost'?now2:p.lostAt,lostReason:newStage==='lost'?(reason||null):p.lostReason,readyForContract:newStage==='won'?true:p.readyForContract,followUpDate:fuD[newStage]?propInDays(fuD[newStage]):p.followUpDate,activities:[...(p.activities||[]),{id:propUid(),type:'stage_change',content:`Stage moved from "${PROP_STAGE_LABELS[p.stage]}" to "${PROP_STAGE_LABELS[newStage]}"${reason?'. Reason: '+reason:'.'}`,auto:false,createdAt:now2}]};propRenderAll();if(propCurrentId===id)propOpenDetail(id);}
+
+function propDoConvert(id){const idx=proposals.findIndex(p=>p.id===id);if(idx===-1)return;const ref='CON-'+propUid().toUpperCase().slice(0,6);proposals[idx].contractId=ref;proposals[idx].activities=[...(proposals[idx].activities||[]),{id:propUid(),type:'note',content:`Converted to contract ${ref}. Ready for signature.`,auto:true,createdAt:new Date().toISOString()}];propRenderAll();if(propCurrentId===id)propOpenDetail(id);}
+
+function propOpenModal(id=null){propEditingId=id;document.getElementById('prop-modal-title').textContent=id?'Edit proposal':'New proposal';if(id){const p=proposals.find(x=>x.id===id);if(p){const map={title:p.title,client:p.clientName,value:p.estimatedValue||'',currency:p.currency,type:p.proposalType,country:p.country,desc:p.description||'',scope:p.scopeOfWork||'',email:p.clientEmail||'',whatsapp:p.clientWhatsapp||'',valid:p.validUntil||'',followup:p.followUpDate||'',prob:p.winProbabilityOverride!==null&&p.winProbabilityOverride!==undefined?p.winProbabilityOverride:''};Object.entries(map).forEach(([k,v])=>{const el=document.getElementById('pf-'+k);if(el)el.value=v;});}}else{['pf-title','pf-client','pf-value','pf-desc','pf-scope','pf-email','pf-whatsapp','pf-prob'].forEach(k=>{const el=document.getElementById(k);if(el)el.value='';});const vEl=document.getElementById('pf-valid');if(vEl)vEl.value=propInDays(30);const fEl=document.getElementById('pf-followup');if(fEl)fEl.value=propInDays(3);}document.getElementById('propModal').classList.add('on');}
+function propCloseModal(){document.getElementById('propModal')?.classList.remove('on');propEditingId=null;}
+function propSaveProposal(){const title=document.getElementById('pf-title')?.value?.trim();const client=document.getElementById('pf-client')?.value?.trim();if(!title||!client){alert('Title and client name are required.');return;}const prob=document.getElementById('pf-prob')?.value;const data={title,clientName:client,estimatedValue:Number(document.getElementById('pf-value')?.value)||0,currency:document.getElementById('pf-currency')?.value||'NGN',proposalType:document.getElementById('pf-type')?.value||'services',country:document.getElementById('pf-country')?.value||'NG',description:document.getElementById('pf-desc')?.value||null,scopeOfWork:document.getElementById('pf-scope')?.value||null,clientEmail:document.getElementById('pf-email')?.value||null,clientWhatsapp:document.getElementById('pf-whatsapp')?.value||null,validUntil:document.getElementById('pf-valid')?.value||null,followUpDate:document.getElementById('pf-followup')?.value||null,winProbabilityOverride:prob!==''?Number(prob):null,followUpMethod:'email'};if(propEditingId){const idx=proposals.findIndex(p=>p.id===propEditingId);if(idx!==-1)proposals[idx]={...proposals[idx],...data};}else{const num=`PRO-${String(proposals.length+1).padStart(4,'0')}`;proposals.push({id:propUid(),number:num,stage:'draft',viewCount:0,lastViewedAt:null,sentAt:null,wonAt:null,lostAt:null,lostReason:null,stageChangedAt:new Date().toISOString(),readyForContract:false,contractId:null,quoteId:null,company:null,deliverables:[],timeline:null,activities:[{id:propUid(),type:'stage_change',content:`Proposal ${num} created.`,auto:true,createdAt:new Date().toISOString()}],...data});}propCloseModal();propRenderAll();}
+
+function propFilterStage(stage,el){propCurrentFilter=stage;if(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));el.classList.add('on');}showPage('prop-pipeline',null);propRenderAll();}
+function propApplySearch(q){propSearchQuery=q.toLowerCase();propRenderAll();}
+function propSwitchSubView(view,el){propCurrentSubView=view;document.querySelectorAll('.prop-sub').forEach(s=>{s.style.display='none';s.classList.remove('on');});const el2=document.getElementById('prop-sub-'+view);if(el2){el2.style.display='block';el2.classList.add('on');}if(el){document.querySelectorAll('.pvtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}propRenderCurrent();}
+function propRenderCurrent(){propUpdateSidebar();if(propCurrentSubView==='pipeline')propRenderKanban();if(propCurrentSubView==='list')propRenderList();if(propCurrentSubView==='analytics')propRenderAnalytics();if(propCurrentSubView==='followups')propRenderFollowUps();}
+function propRenderAll(){propUpdateSidebar();propRenderKanban();propRenderList();propRenderAnalytics();propRenderFollowUps();}
+
+
+// Init proposals
+document.addEventListener('DOMContentLoaded', function() { setTimeout(propRenderAll, 100); });
+
+</script>
+
+<!-- ── Proposal detail overlay ── -->
+<div class="prop-overlay" id="propOverlay" onclick="propCloseDetail()"></div>
+
+<!-- ── Proposal detail panel ── -->
+<div class="detail-panel" id="propDetailPanel">
+  <div class="dp-top">
+    <div style="flex:1">
+      <div class="dp-num" id="pdp-num">PRO-0001</div>
+      <div class="dp-title" id="pdp-title">Proposal title</div>
+      <div class="dp-client" id="pdp-client">Client name</div>
+    </div>
+    <button class="dp-close" onclick="propCloseDetail()">✕</button>
+  </div>
+  <div class="dp-body" id="pdp-body"></div>
+  <div class="dp-footer">
+    <button class="btn" onclick="propCloseDetail()">Close</button>
+    <button class="btn btn-primary" style="font-size:12px" onclick="propOpenModal(propCurrentId)">Edit</button>
+  </div>
+</div>
+
+<!-- ── New proposal modal ── -->
+<div class="prop-modal-wrap" id="propModal">
+  <div class="prop-modal">
+    <div class="prop-modal-head">
+      <span class="prop-modal-title" id="prop-modal-title">New proposal</span>
+      <button class="dp-close" onclick="propCloseModal()">✕</button>
+    </div>
+    <div class="prop-modal-body">
+      <div class="grid2">
+        <div class="fg"><label class="fl">Title *</label><input class="fc" id="pf-title" placeholder="e.g. Digital transformation roadmap"></div>
+        <div class="fg"><label class="fl">Client name *</label><input class="fc" id="pf-client" placeholder="Company or contact name"></div>
+      </div>
+      <div class="grid2">
+        <div class="fg"><label class="fl">Estimated value</label><input class="fc" id="pf-value" type="number" placeholder="0"></div>
+        <div class="fg"><label class="fl">Currency</label>
+          <select class="fc" id="pf-currency">
+            <option value="NGN">NGN — Nigerian Naira (₦)</option>
+            <option value="GHS">GHS — Ghanaian Cedi (GH₵)</option>
+            <option value="KES">KES — Kenyan Shilling</option>
+            <option value="ZAR">ZAR — South African Rand (R)</option>
+            <option value="USD">USD — US Dollar ($)</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="fg"><label class="fl">Proposal type</label>
+          <select class="fc" id="pf-type">
+            <option value="services">Services</option><option value="technology">Technology</option>
+            <option value="consulting">Consulting</option><option value="construction">Construction</option>
+            <option value="creative">Creative</option><option value="other">Other</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Country</label>
+          <select class="fc" id="pf-country">
+            <option value="NG">Nigeria</option><option value="GH">Ghana</option>
+            <option value="KE">Kenya</option><option value="ZA">South Africa</option><option value="RW">Rwanda</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Description</label><textarea class="fc" id="pf-desc" placeholder="Brief overview of what you are proposing..."></textarea></div>
+      <div class="fg"><label class="fl">Scope of work</label><textarea class="fc" id="pf-scope" placeholder="Detailed scope of work..."></textarea></div>
+      <div class="grid2">
+        <div class="fg"><label class="fl">Client email</label><input class="fc" id="pf-email" type="email" placeholder="client@company.com"></div>
+        <div class="fg"><label class="fl">Client WhatsApp</label><input class="fc" id="pf-whatsapp" placeholder="+234..."></div>
+      </div>
+      <div class="grid2">
+        <div class="fg"><label class="fl">Valid until</label><input class="fc" id="pf-valid" type="date"></div>
+        <div class="fg"><label class="fl">Follow-up date</label><input class="fc" id="pf-followup" type="date"></div>
+      </div>
+      <div class="fg"><label class="fl">Win probability override (%)</label><input class="fc" id="pf-prob" type="number" min="0" max="100" placeholder="Leave blank to auto-estimate"></div>
+    </div>
+    <div class="prop-modal-foot">
+      <button class="btn" onclick="propCloseModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="propSaveProposal()">Save proposal</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

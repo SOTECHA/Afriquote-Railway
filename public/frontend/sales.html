@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfriQuote — Tools Built for African Professionals</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#1D9E75;--g2:#0F6E56;--gl:#E1F5EE;--gx:#f0faf6;
+  --ink:#0C0E0D;--ink2:#2a3328;--ink3:#6b7a6c;
+  --bg:#F8F6F1;--s:#fff;--s2:#f0ede6;--s3:#e5e1d8;
+  --b:#dddad2;--b2:#c8c4ba;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
+
+/* ── GLOBAL NAV ── */
+.global-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(248,246,241,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--b);
+  display:flex;align-items:center;padding:0 28px;height:56px;gap:4px;
+}
+.gn-logo{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);margin-right:16px;white-space:nowrap}
+.gn-logo em{color:var(--g);font-style:normal}
+.gn-items{display:flex;gap:2px;overflow-x:auto;flex:1}
+.gn-items::-webkit-scrollbar{display:none}
+.gn-item{
+  padding:6px 12px;border-radius:8px;font-size:12px;font-weight:500;
+  color:var(--ink3);cursor:pointer;border:none;background:none;
+  font-family:var(--sans);white-space:nowrap;transition:all .15s;text-decoration:none;
+  display:flex;align-items:center;gap:5px;
+}
+.gn-item:hover{background:var(--s2);color:var(--ink)}
+.gn-item.on{background:var(--ink);color:#fff}
+.gn-item .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.gn-cta{
+  margin-left:auto;background:var(--g);color:#fff;border:none;
+  padding:8px 18px;border-radius:8px;font-size:12.5px;font-weight:600;
+  cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:background .15s;
+  text-decoration:none;display:flex;align-items:center;
+}
+.gn-cta:hover{background:var(--g2)}
+
+/* ── HERO STRIP ── */
+.hero-strip{
+  margin-top:56px;
+  background:var(--ink);color:#fff;
+  padding:80px 48px 72px;
+  position:relative;overflow:hidden;
+}
+.hero-strip::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 30% 0%,rgba(29,158,117,.22),transparent 65%),
+            radial-gradient(ellipse 50% 40% at 90% 100%,rgba(186,117,23,.15),transparent 55%);
+}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:1100px;margin:0 auto;position:relative}
+.hero-left .eyebrow{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px}
+.hero-left h1{font-family:var(--serif);font-size:clamp(36px,5vw,64px);font-weight:800;line-height:1.0;letter-spacing:-.03em;margin-bottom:20px}
+.hero-left h1 em{color:#6FDBAF;font-style:italic}
+.hero-left p{font-size:16px;color:rgba(255,255,255,.65);line-height:1.75;max-width:440px;margin-bottom:28px}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px}
+.hero-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,.7)}
+.hero-right{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero-mvp-card{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;
+  text-decoration:none;
+}
+.hero-mvp-card:hover{background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.hero-mvp-card .num{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);margin-bottom:8px}
+.hero-mvp-card .name{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px;line-height:1.3}
+.hero-mvp-card .price{font-size:11px;color:rgba(255,255,255,.45)}
+@media(max-width:768px){.hero-grid{grid-template-columns:1fr}.hero-right{display:none}}
+
+/* ═══════════════════════════════════════
+   MVP 1 — INVOICE SENDER
+   Aesthetic: Editorial · Dark ink · Precision
+═══════════════════════════════════════ */
+#mvp1{background:#0C0E0D}
+.sp1-hero{
+  padding:100px 48px 80px;max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 480px;gap:64px;align-items:center;
+}
+.sp1-tag{font-family:var(--mono);font-size:10px;color:var(--g);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.sp1-tag::before{content:'';display:inline-block;width:20px;height:1px;background:var(--g)}
+.sp1-h1{font-family:var(--serif);font-size:clamp(40px,5vw,68px);font-weight:800;color:#fff;line-height:1.0;letter-spacing:-.03em;margin-bottom:22px}
+.sp1-h1 em{color:#6FDBAF;font-style:italic}
+.sp1-lead{font-size:17px;color:rgba(255,255,255,.6);line-height:1.8;margin-bottom:36px}
+.sp1-proof{display:flex;gap:28px;margin-bottom:40px;flex-wrap:wrap}
+.sp1-stat .n{font-family:var(--serif);font-size:32px;font-weight:700;color:#fff;line-height:1}
+.sp1-stat .l{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px}
+.sp1-cta{display:inline-flex;align-items:center;gap:8px;background:var(--g);color:#fff;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:var(--sans)}
+.sp1-cta:hover{background:var(--g2);transform:translateY(-1px)}
+.sp1-free{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.35)}
+.sp1-free::before{content:'';display:inline-block;width:14px;height:1px;background:rgba(255,255,255,.2)}
+.sp1-mockup{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:24px;font-size:12px;
+}
+.sp1-mock-bar{display:flex;gap:5px;margin-bottom:14px}
+.sp1-mock-dot{width:10px;height:10px;border-radius:50%}
+.inv-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:10px}
+.inv-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:11.5px}
+.inv-row:last-child{border-bottom:none}
+.inv-row .lbl{color:rgba(255,255,255,.4)}
+.inv-row .val{color:#fff;font-weight:500}
+.inv-total{display:flex;justify-content:space-between;padding:10px 0 0;font-size:14px}
+.inv-total .lbl{color:rgba(255,255,255,.5)}
+.inv-total .val{color:#6FDBAF;font-weight:700;font-family:var(--serif)}
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#fff;padding:10px;border-radius:8px;font-size:12px;font-weight:600;margin-top:10px;cursor:pointer}
+/* features strip */
+.sp1-features{background:#111412;padding:64px 48px}
+.sp1-features-inner{max-width:1100px;margin:0 auto}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin-top:40px}
+.feat-cell{background:#111412;padding:28px 26px}
+.feat-cell .fc-icon{font-size:22px;margin-bottom:12px}
+.feat-cell h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px}
+.feat-cell p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6}
+/* pricing */
+.sp1-price{background:#0C0E0D;padding:80px 48px;border-top:1px solid rgba(255,255,255,.06)}
+.price-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.price-card{border-radius:16px;padding:28px 30px}
+.price-card.free{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.price-card.pro{background:var(--g);border:1px solid var(--g)}
+.price-card .tier{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.price-card.free .tier{color:rgba(255,255,255,.4)}
+.price-card.pro .tier{color:rgba(255,255,255,.8)}
+.price-card .amount{font-family:var(--serif);font-size:40px;font-weight:700;line-height:1;margin-bottom:4px}
+.price-card.free .amount{color:#fff}
+.price-card.pro .amount{color:#fff}
+.price-card .per{font-size:12px;opacity:.5;margin-bottom:18px}
+.price-list{list-style:none}
+.price-list li{font-size:13px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:8px;align-items:center}
+.price-list li::before{content:'✓';font-size:10px;color:var(--g);flex-shrink:0}
+.price-card.pro .price-list li::before{color:rgba(255,255,255,.7)}
+.price-list li{color:rgba(255,255,255,.65)}
+.price-list li:last-child{border-bottom:none}
+@media(max-width:820px){.sp1-hero{grid-template-columns:1fr}.sp1-mockup{display:none}.feat-grid{grid-template-columns:1fr 1fr}.price-inner{grid-template-columns:1fr}}
+
+/* ═══════════════════════════════════════
+   MVP 2 — PROPOSAL TRACKER
+   Aesthetic: Warm · Earthy · Premium consultancy
+═══════════════════════════════════════ */
+#mvp2{background:#FAF8F3}
+.sp2-hero{
+  padding:100px 48px 80px;max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:start;
+}
+.sp2-eyebrow{display:inline-flex;align-items:center;gap:8px;background:#F5EDD4;border:1px solid #E8D69A;border-radius:20px;padding:5px 14px;font-size:11px;font-weight:600;color:#7A5C00;margin-bottom:20px}
+.sp2-h1{font-family:var(--serif);font-size:clamp(38px,5vw,64px);font-weight:800;color:#1C1A14;line-height:1.0;letter-spacing:-.03em;margin-bottom:22px}
+.sp2-h1 em{font-style:italic;color:#BA7517}
+.sp2-lead{font-size:16px;color:#5C5345;line-height:1.8;margin-bottom:32px}
+.sp2-numbers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:36px}
+.sp2-num-card{background:#fff;border:1px solid #E8E4DC;border-radius:12px;padding:16px}
+.sp2-num-card .n{font-family:var(--serif);font-size:26px;font-weight:700;color:#1C1A14;line-height:1;margin-bottom:3px}
+.sp2-num-card .l{font-size:11px;color:#8C8070}
+.sp2-cta{display:inline-flex;align-items:center;gap:8px;background:#1C1A14;color:#FAF8F3;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:var(--sans)}
+.sp2-cta:hover{background:#2E2C24;transform:translateY(-1px)}
+.sp2-cta-sub{font-size:12px;color:#8C8070;margin-top:10px}
+/* pipeline visual */
+.pipeline-vis{background:#fff;border:1px solid #E8E4DC;border-radius:20px;padding:20px}
+.pipe-header{font-size:11px;font-weight:600;color:#8C8070;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.pipe-stages{display:flex;flex-direction:column;gap:8px}
+.pipe-stage{border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pipe-stage .ps-name{font-size:12.5px;font-weight:500;color:#1C1A14}
+.pipe-stage .ps-val{font-family:var(--serif);font-size:14px;font-weight:700}
+.pipe-stage .ps-prob{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px}
+.ps-neg{background:#FFF3D6;}.ps-neg .ps-prob{background:#BA7517;color:#fff}
+.ps-view{background:#F0F4FF;}.ps-view .ps-prob{background:#185FA5;color:#fff}
+.ps-meet{background:#F0FBF6;}.ps-meet .ps-prob{background:#1D9E75;color:#fff}
+.ps-won{background:#E1F5EE;border:1px solid #A0D9C0;}.ps-won .ps-prob{background:#0F6E56;color:#fff}
+.pipe-total{border-top:1px solid #E8E4DC;margin-top:14px;padding-top:12px;display:flex;justify-content:space-between}
+.pipe-total .lbl{font-size:12px;color:#8C8070}
+.pipe-total .val{font-family:var(--serif);font-size:18px;font-weight:700;color:#1D9E75}
+/* features */
+.sp2-features{background:#1C1A14;padding:72px 48px}
+.sp2-features-inner{max-width:1100px;margin:0 auto}
+.sp2-sect-tag{font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#6FDBAF;margin-bottom:14px}
+.sp2-sect-h{font-family:var(--serif);font-size:34px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.02em}
+.sp2-feat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:36px}
+.sp2-feat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:22px}
+.sp2-feat h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px}
+.sp2-feat p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6}
+.sp2-feat .icon{font-size:20px;margin-bottom:10px}
+/* sp2 price */
+.sp2-price{background:#FAF8F3;padding:80px 48px;border-top:1px solid #E8E4DC}
+.sp2-price-inner{max-width:680px;margin:0 auto;text-align:center}
+.sp2-price-inner h2{font-family:var(--serif);font-size:40px;font-weight:700;color:#1C1A14;margin-bottom:8px;letter-spacing:-.02em}
+.sp2-price-inner p{font-size:15px;color:#5C5345;margin-bottom:36px}
+.sp2-price-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:left}
+.sp2-pc{border-radius:16px;padding:24px 26px}
+.sp2-pc.free{background:#fff;border:1px solid #E8E4DC}
+.sp2-pc.pro{background:#1C1A14;border:1px solid #1C1A14}
+.sp2-pc .t{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.sp2-pc.free .t{color:#8C8070}.sp2-pc.pro .t{color:#6FDBAF}
+.sp2-pc .a{font-family:var(--serif);font-size:36px;font-weight:700;line-height:1;margin-bottom:16px}
+.sp2-pc.free .a{color:#1C1A14}.sp2-pc.pro .a{color:#fff}
+.sp2-pc ul{list-style:none}
+.sp2-pc li{font-size:13px;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.06);display:flex;gap:7px}
+.sp2-pc.pro li{border-color:rgba(255,255,255,.06);color:rgba(255,255,255,.65)}
+.sp2-pc.free li{color:#3D3528}
+.sp2-pc li::before{content:'→';font-size:10px;flex-shrink:0;margin-top:2px}
+.sp2-pc.free li::before{color:#1D9E75}.sp2-pc.pro li::before{color:#6FDBAF}
+.sp2-pc li:last-child{border-bottom:none}
+@media(max-width:820px){.sp2-hero{grid-template-columns:1fr}.pipeline-vis{display:none}.sp2-feat-row{grid-template-columns:1fr}.sp2-price-cards{grid-template-columns:1fr}.sp2-numbers{grid-template-columns:1fr 1fr}}
+
+/* ═══════════════════════════════════════
+   MVP 3 — TAX CALCULATOR
+   Aesthetic: Clean data · Government trust · Authoritative
+═══════════════════════════════════════ */
+#mvp3{background:#fff}
+.sp3-hero{
+  padding:96px 48px 72px;max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 420px;gap:56px;align-items:center;
+}
+.sp3-flag-row{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap}
+.sp3-flag{background:#F0F4FF;border:1px solid #C8D4F0;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:#185FA5}
+.sp3-h1{font-family:var(--serif);font-size:clamp(36px,5vw,60px);font-weight:700;color:#0D1117;line-height:1.05;letter-spacing:-.025em;margin-bottom:18px}
+.sp3-h1 em{font-style:italic;color:#1D9E75}
+.sp3-lead{font-size:15px;color:#4A5568;line-height:1.8;margin-bottom:28px}
+.sp3-trust{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#F8FAF9;border:1px solid #C8E6DA;border-radius:10px;margin-bottom:28px}
+.sp3-trust .icon{font-size:18px;flex-shrink:0}
+.sp3-trust .t{font-size:12.5px;color:#0F6E56;font-weight:500}
+.sp3-cta-row{display:flex;gap:10px;flex-wrap:wrap}
+.sp3-cta{display:inline-flex;align-items:center;gap:7px;background:var(--g);color:#fff;padding:13px 24px;border-radius:9px;font-size:13.5px;font-weight:600;text-decoration:none;border:none;cursor:pointer;font-family:var(--sans);transition:all .18s}
+.sp3-cta:hover{background:#0F6E56;transform:translateY(-1px)}
+.sp3-cta2{display:inline-flex;align-items:center;gap:7px;background:#fff;color:#0D1117;padding:13px 24px;border-radius:9px;font-size:13.5px;font-weight:600;text-decoration:none;border:1.5px solid #C8D0C8;cursor:pointer;font-family:var(--sans);transition:all .18s}
+.sp3-cta2:hover{border-color:#999}
+/* tax mockup */
+.tax-mockup{background:#F8F9FA;border:1px solid #E2E8E4;border-radius:20px;overflow:hidden}
+.tax-mock-top{background:#1D9E75;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.tax-mock-top .t{font-size:12px;font-weight:600;color:#fff}
+.tax-mock-top .v{font-family:var(--serif);font-size:22px;font-weight:700;color:#fff}
+.tax-mock-body{padding:16px}
+.tax-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:8px;margin-bottom:5px;font-size:12.5px}
+.tax-row.highlight{background:#fff;border:1px solid #E2E8E4}
+.tax-row .lbl{color:#4A5568}
+.tax-row .val{font-weight:600;color:#0D1117}
+.tax-row .val.green{color:#1D9E75}
+.tax-row .val.amber{color:#BA7517}
+.deadline-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;background:#fff;border:1px solid #E2E8E4;margin-bottom:5px}
+.deadline-item .d{font-size:12px;color:#4A5568}
+.deadline-item .badge{font-size:10px;padding:2px 8px;border-radius:6px;font-weight:600}
+.badge-danger{background:#FEE2E2;color:#B91C1C}
+.badge-warn{background:#FEF3C7;color:#92400E}
+.badge-ok{background:#E1F5EE;color:#0F6E56}
+/* sp3 countries */
+.sp3-countries{background:#0D1117;padding:72px 48px}
+.sp3-countries-inner{max-width:1100px;margin:0 auto}
+.country-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:36px}
+.country-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 14px;text-align:center;transition:all .2s;cursor:pointer}
+.country-card:hover{background:rgba(255,255,255,.09);transform:translateY(-2px)}
+.country-card .flag{font-size:28px;margin-bottom:8px}
+.country-card .name{font-size:12px;font-weight:600;color:#fff;margin-bottom:2px}
+.country-card .rate{font-size:11px;color:rgba(255,255,255,.4)}
+.country-card .auth{font-size:10px;color:#6FDBAF;margin-top:4px}
+/* sp3 ntaa */
+.sp3-ntaa{background:#F0FBF6;padding:60px 48px;border-top:1px solid #C8E6DA}
+.sp3-ntaa-inner{max-width:800px;margin:0 auto;text-align:center}
+.sp3-ntaa h2{font-family:var(--serif);font-size:36px;font-weight:700;color:#0C2B1F;margin-bottom:12px;letter-spacing:-.02em}
+.sp3-ntaa p{font-size:15px;color:#2D6A4F;line-height:1.75;margin-bottom:24px}
+.ntaa-rule{background:#fff;border:1px solid #A8D5BC;border-radius:12px;padding:18px 22px;margin-bottom:10px;text-align:left;display:flex;gap:12px;align-items:flex-start}
+.ntaa-rule .icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.ntaa-rule .txt{font-size:13px;color:#1A4731;line-height:1.6}
+.ntaa-rule strong{display:block;font-size:13px;font-weight:600;margin-bottom:2px}
+@media(max-width:820px){.sp3-hero{grid-template-columns:1fr}.tax-mockup{display:none}.country-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* ═══════════════════════════════════════
+   MVP 4 — QUOTE BUILDER
+   Aesthetic: Energetic · Bold · Speed
+═══════════════════════════════════════ */
+#mvp4{background:#F5F0E8}
+.sp4-hero{
+  padding:96px 48px 80px;max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+}
+.sp4-timer-badge{display:inline-flex;align-items:center;gap:8px;background:#1C1A14;color:#fff;border-radius:10px;padding:8px 16px;font-family:var(--mono);font-size:12px;margin-bottom:24px}
+.sp4-timer-badge .pulse{width:8px;height:8px;border-radius:50%;background:#6FDBAF;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.sp4-h1{font-family:var(--serif);font-size:clamp(38px,5vw,66px);font-weight:800;color:#1C1A14;line-height:.98;letter-spacing:-.04em;margin-bottom:22px}
+.sp4-h1 em{font-style:italic;color:#BA7517;display:block}
+.sp4-lead{font-size:16px;color:#5C5345;line-height:1.75;margin-bottom:32px}
+.sp4-demo-bar{background:#1C1A14;border-radius:12px;padding:16px 18px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between}
+.sp4-demo-bar .label{font-size:11px;color:rgba(255,255,255,.4)}
+.sp4-demo-bar .time{font-family:var(--mono);font-size:26px;font-weight:700;color:#6FDBAF;letter-spacing:-.02em}
+.sp4-demo-bar .status{font-size:11px;color:rgba(255,255,255,.4)}
+.sp4-cta{display:inline-flex;align-items:center;gap:8px;background:#BA7517;color:#fff;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:var(--sans)}
+.sp4-cta:hover{background:#9A6010;transform:translateY(-1px)}
+.sp4-cta-note{font-size:11.5px;color:#8C8070;margin-top:10px}
+/* quote visual */
+.quote-vis{background:#fff;border:1px solid #E5E0D8;border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.qv-top{background:#1C1A14;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.qv-top .logo{font-family:var(--serif);font-size:13px;font-weight:700;color:#fff}
+.qv-top .num{font-size:11px;color:rgba(255,255,255,.35);font-family:var(--mono)}
+.qv-body{padding:16px}
+.qv-client{background:#F5F0E8;border-radius:8px;padding:9px 12px;margin-bottom:12px}
+.qv-client .lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8C8070;margin-bottom:2px}
+.qv-client .name{font-size:13px;font-weight:600;color:#1C1A14}
+.qv-table-head{display:grid;grid-template-columns:1fr 50px 80px;gap:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8C8070;padding:0 0 5px;border-bottom:1px solid #E5E0D8;margin-bottom:6px}
+.qv-line{display:grid;grid-template-columns:1fr 50px 80px;gap:4px;padding:4px 0;border-bottom:1px solid #F0EBE3;font-size:11.5px}
+.qv-line .desc{color:#1C1A14}
+.qv-line .qty,.qv-line .total{text-align:right;color:#5C5345}
+.qv-total-row{display:flex;justify-content:space-between;padding:8px 0 3px;font-size:12px}
+.qv-total-row .l{color:#8C8070}
+.qv-total-row .v{font-weight:600}
+.qv-grand{display:flex;justify-content:space-between;padding:8px 0 0;border-top:1px solid #1C1A14;margin-top:4px}
+.qv-grand .l{font-size:13px;font-weight:600;color:#1C1A14}
+.qv-grand .v{font-family:var(--serif);font-size:18px;font-weight:700;color:#1D9E75}
+.qv-valid{background:#FEF3C7;border-radius:7px;padding:7px 10px;text-align:center;margin-top:10px;font-size:10.5px;color:#92400E;font-weight:500}
+/* sp4 steps */
+.sp4-steps{background:#1C1A14;padding:72px 48px}
+.sp4-steps-inner{max-width:1100px;margin:0 auto}
+.sp4-steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+.sp4-step{position:relative}
+.sp4-step .step-num{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.25);margin-bottom:10px}
+.sp4-step h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px}
+.sp4-step p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6}
+.sp4-step .arrow{position:absolute;top:8px;right:-8px;color:rgba(255,255,255,.15);font-size:18px}
+.sp4-step:last-child .arrow{display:none}
+@media(max-width:820px){.sp4-hero{grid-template-columns:1fr}.quote-vis{display:none}.sp4-steps-grid{grid-template-columns:1fr 1fr}}
+
+/* ═══════════════════════════════════════
+   MVP 5 — SITE DAILY REPORT
+   Aesthetic: Industrial · Concrete · Blueprint feel
+═══════════════════════════════════════ */
+#mvp5{background:#1A1E1B}
+.sp5-hero{
+  padding:96px 48px 80px;max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+}
+.sp5-badge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 12px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:22px}
+.sp5-h1{font-family:var(--serif);font-size:clamp(36px,5vw,62px);font-weight:800;color:#fff;line-height:1.0;letter-spacing:-.03em;margin-bottom:20px}
+.sp5-h1 em{color:#6FDBAF;font-style:italic}
+.sp5-lead{font-size:16px;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:28px}
+.sp5-problem{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 20px;margin-bottom:28px}
+.sp5-problem .p-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:10px}
+.sp5-problem .p-item{font-size:13px;color:rgba(255,255,255,.5);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:8px}
+.sp5-problem .p-item:last-child{border-bottom:none}
+.sp5-problem .p-item::before{content:'✗';color:#E24B4A;font-size:11px;flex-shrink:0;margin-top:1px}
+.sp5-cta{display:inline-flex;align-items:center;gap:8px;background:var(--g);color:#fff;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:var(--sans)}
+.sp5-cta:hover{background:var(--g2);transform:translateY(-1px)}
+.sp5-free{font-size:12px;color:rgba(255,255,255,.25);margin-top:10px}
+/* site mockup */
+.site-mockup{background:#111612;border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden}
+.sm-topbar{background:var(--g);padding:10px 14px;display:flex;align-items:center;gap:8px}
+.sm-topbar .logo{font-family:var(--serif);font-size:12px;font-weight:700;color:#fff}
+.sm-topbar .site-name{font-size:11px;color:rgba(255,255,255,.65);margin-left:auto}
+.sm-body{padding:14px}
+.sm-checkin{background:rgba(29,158,117,.15);border:1px solid rgba(29,158,117,.3);border-radius:10px;padding:12px;margin-bottom:10px}
+.sm-ci-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.sm-ci-head .status{font-size:11px;font-weight:600;color:#6FDBAF}
+.sm-ci-head .timer{font-family:var(--mono);font-size:16px;font-weight:700;color:#fff}
+.sm-ci-gps{font-size:10px;color:rgba(255,255,255,.35);font-family:var(--mono)}
+.sm-section{background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.sm-section .s-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.25);margin-bottom:6px}
+.sm-section .s-val{font-size:12px;color:rgba(255,255,255,.65);line-height:1.5}
+.sm-prog{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.sm-prog .pct{font-family:var(--serif);font-size:20px;font-weight:700;color:#fff}
+.sm-prog .bar{flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.sm-prog .fill{height:100%;background:var(--g);border-radius:3px;width:62%}
+.sm-wa{background:#25D366;border-radius:8px;padding:9px;text-align:center;font-size:11px;font-weight:600;color:#fff;margin-top:8px;cursor:pointer}
+/* sp5 features */
+.sp5-features{background:#131816;padding:72px 48px;border-top:1px solid rgba(255,255,255,.05)}
+.sp5-features-inner{max-width:1100px;margin:0 auto}
+.sp5-feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin-top:36px}
+.sp5-feat{background:#131816;padding:26px}
+.sp5-feat .icon{font-size:20px;margin-bottom:10px}
+.sp5-feat h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px}
+.sp5-feat p{font-size:12.5px;color:rgba(255,255,255,.35);line-height:1.6}
+/* sp5 price */
+.sp5-price{background:#1A1E1B;padding:80px 48px;border-top:1px solid rgba(255,255,255,.05)}
+.sp5-price-inner{max-width:720px;margin:0 auto;text-align:center}
+.sp5-price-inner h2{font-family:var(--serif);font-size:38px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.02em}
+.sp5-price-inner p{font-size:15px;color:rgba(255,255,255,.45);margin-bottom:32px}
+.sp5-price-box{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;margin-bottom:24px}
+.sp5-pb{border-radius:14px;padding:22px 24px}
+.sp5-pb.free{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.sp5-pb.pro{background:var(--g);border:1px solid var(--g)}
+.sp5-pb .tier{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;color:rgba(255,255,255,.5)}
+.sp5-pb .amt{font-family:var(--serif);font-size:32px;font-weight:700;color:#fff;margin-bottom:14px;line-height:1}
+.sp5-pb ul{list-style:none}
+.sp5-pb li{font-size:12.5px;color:rgba(255,255,255,.6);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:7px}
+.sp5-pb li:last-child{border-bottom:none}
+.sp5-pb li::before{content:'✓';font-size:10px;color:rgba(255,255,255,.4);flex-shrink:0}
+.sp5-pb.pro li::before{color:rgba(255,255,255,.8)}
+@media(max-width:820px){.sp5-hero{grid-template-columns:1fr}.site-mockup{display:none}.sp5-feat-grid{grid-template-columns:1fr 1fr}.sp5-price-box{grid-template-columns:1fr}}
+
+/* ═══════════════════════════════════════
+   MVP 6 — HEALTH SCORE
+   Aesthetic: Soft · Clinical · Hopeful
+═══════════════════════════════════════ */
+#mvp6{background:#F0F7FF}
+.sp6-hero{
+  padding:96px 48px 80px;max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center;
+}
+.sp6-question{background:#fff;border:1px solid #C8D8EE;border-radius:20px;padding:28px;font-size:13px;color:#1A2744;margin-bottom:22px}
+.sp6-question p{font-size:14px;font-weight:500;margin-bottom:14px;line-height:1.5}
+.sp6-opt{padding:9px 12px;border-radius:8px;border:1.5px solid #C8D8EE;margin-bottom:6px;cursor:pointer;transition:all .15s;font-size:13px;color:#2A3A6A;display:flex;align-items:center;gap:8px}
+.sp6-opt.sel{border-color:#185FA5;background:#EBF2FF;color:#185FA5;font-weight:500}
+.sp6-opt::before{content:'';width:14px;height:14px;border-radius:50%;border:2px solid #C8D8EE;flex-shrink:0;transition:all .15s}
+.sp6-opt.sel::before{border-color:#185FA5;background:#185FA5}
+.sp6-progress{background:#EBF2FF;border-radius:4px;height:4px;margin-bottom:8px;overflow:hidden}
+.sp6-progress-fill{height:100%;background:#185FA5;border-radius:4px;width:40%}
+.sp6-prog-label{display:flex;justify-content:space-between;font-size:11px;color:#7A9AC0;margin-bottom:20px}
+.sp6-h1{font-family:var(--serif);font-size:clamp(36px,5vw,60px);font-weight:700;color:#0D1F3C;line-height:1.05;letter-spacing:-.025em;margin-bottom:18px}
+.sp6-h1 em{font-style:italic;color:#185FA5}
+.sp6-lead{font-size:15px;color:#3A4F6A;line-height:1.8;margin-bottom:28px}
+.sp6-cta{display:inline-flex;align-items:center;gap:8px;background:#185FA5;color:#fff;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:var(--sans)}
+.sp6-cta:hover{background:#0C447C;transform:translateY(-1px)}
+.sp6-cta-note{font-size:12px;color:#7A9AC0;margin-top:10px}
+/* score reveal */
+.sp6-score{background:#0D1F3C;padding:72px 48px}
+.sp6-score-inner{max-width:1100px;margin:0 auto}
+.score-display{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:24px;margin-top:32px}
+.score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#185FA5,#1D9E75);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.score-circle .num{font-family:var(--serif);font-size:44px;font-weight:700;color:#fff;line-height:1}
+.score-grade{font-size:18px;font-weight:600;color:#fff;margin-bottom:8px}
+.score-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:28px}
+.dim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:600px}
+.dim-item{background:rgba(255,255,255,.05);border-radius:10px;padding:12px}
+.dim-item .name{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:5px}
+.dim-item .score-n{font-family:var(--serif);font-size:20px;font-weight:700;color:#fff;margin-bottom:4px}
+.dim-item .bar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.dim-item .fill{height:100%;border-radius:2px}
+/* sp6 features */
+.sp6-what{background:#fff;padding:72px 48px;border-top:1px solid #C8D8EE}
+.sp6-what-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.sp6-what h2{font-family:var(--serif);font-size:38px;font-weight:700;color:#0D1F3C;letter-spacing:-.02em;margin-bottom:14px}
+.sp6-what p{font-size:15px;color:#3A4F6A;line-height:1.75;margin-bottom:24px}
+.sp6-dim-list{display:flex;flex-direction:column;gap:8px}
+.sp6-dim{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#F0F7FF;border-radius:10px}
+.sp6-dim .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sp6-dim .txt h4{font-size:13px;font-weight:600;color:#0D1F3C;margin-bottom:1px}
+.sp6-dim .txt p{font-size:12px;color:#5A7090;line-height:1.4}
+@media(max-width:820px){.sp6-hero{grid-template-columns:1fr;}.sp6-question{display:none}.dim-grid{grid-template-columns:repeat(2,1fr)}.sp6-what-inner{grid-template-columns:1fr}}
+
+/* ═══════════════════════════════════════
+   GLOBAL SECTIONS
+═══════════════════════════════════════ */
+.section-label{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+.section-h{font-family:var(--serif);font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:10px}
+.divider-line{height:1px;background:rgba(255,255,255,.08)}
+.white-divider{height:1px;background:#E5E0D8}
+
+/* ═══════════════════════════════════════
+   BOTTOM CTA + FOOTER
+═══════════════════════════════════════ */
+.final-cta{
+  background:var(--ink);
+  padding:100px 48px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.final-cta::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(29,158,117,.2),transparent 70%);
+}
+.final-cta .fc-label{font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;position:relative}
+.final-cta h2{font-family:var(--serif);font-size:clamp(32px,5vw,56px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.05;margin-bottom:16px;position:relative}
+.final-cta h2 em{color:#6FDBAF;font-style:italic}
+.final-cta p{font-size:16px;color:rgba(255,255,255,.5);max-width:520px;margin:0 auto 36px;line-height:1.75;position:relative}
+.final-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.final-btn-g{display:inline-flex;align-items:center;gap:8px;background:var(--g);color:#fff;padding:15px 32px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:var(--sans)}
+.final-btn-g:hover{background:var(--g2);transform:translateY(-2px)}
+.final-btn-w{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);color:#fff;padding:15px 32px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-family:var(--sans)}
+.final-btn-w:hover{background:rgba(255,255,255,.15)}
+
+.footer{background:#0A0C0B;padding:40px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{font-family:var(--serif);font-size:17px;font-weight:700;color:#fff}
+.footer-logo em{color:var(--g);font-style:normal}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.3);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:rgba(255,255,255,.6)}
+.footer-right{font-size:12px;color:rgba(255,255,255,.2)}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .7s ease both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}.d4{animation-delay:.4s}
+@media(max-width:600px){
+  .sp1-hero,.sp2-hero,.sp3-hero,.sp4-hero,.sp5-hero,.sp6-hero{padding:72px 20px 56px;gap:28px}
+  .sp1-features,.sp2-features,.sp3-countries,.sp3-ntaa,.sp4-steps,.sp5-features,.sp5-price,.sp6-score,.sp6-what,.sp1-price,.sp2-price{padding:48px 20px}
+  .hero-strip{padding:56px 20px}
+  .final-cta{padding:72px 24px}
+  .footer{padding:28px 20px}
+  .feat-grid,.sp5-feat-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ GLOBAL NAV ══ -->
+<nav class="global-nav" id="gNav">
+  <span class="gn-logo">Afri<em>Quote</em></span>
+  <div class="gn-items">
+    <a class="gn-item on" href="#mvp1"><span class="dot" style="background:#6FDBAF"></span>Invoice Sender</a>
+    <a class="gn-item" href="#mvp2"><span class="dot" style="background:#BA7517"></span>Proposal Tracker</a>
+    <a class="gn-item" href="#mvp3"><span class="dot" style="background:#1D9E75"></span>Tax Calculator</a>
+    <a class="gn-item" href="#mvp4"><span class="dot" style="background:#BA7517"></span>Quote Builder</a>
+    <a class="gn-item" href="#mvp5"><span class="dot" style="background:#6FDBAF"></span>Site Reports</a>
+    <a class="gn-item" href="#mvp6"><span class="dot" style="background:#185FA5"></span>Health Score</a>
+  </div>
+  <a class="gn-cta" href="#mvp1">Try free →</a>
+</nav>
+
+<!-- ══ HERO STRIP ══ -->
+<div class="hero-strip">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="eyebrow">AfriQuote tools — Built for Africa</div>
+      <h1>Six tools.<br>Every problem<br><em>African professionals</em> face.</h1>
+      <p>Free to try. No credit card. Built for Nigeria, Ghana, Kenya, South Africa, and Rwanda — with Paystack, M-Pesa, WHT, and WhatsApp built in from day one.</p>
+      <div class="hero-pills">
+        <span class="hero-pill">₦ Naira native</span>
+        <span class="hero-pill">WhatsApp delivery</span>
+        <span class="hero-pill">FIRS · GRA · KRA compliant</span>
+        <span class="hero-pill">Free to start</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <a href="#mvp1" class="hero-mvp-card"><div class="num">01 / 06</div><div class="name">WhatsApp Invoice Sender</div><div class="price">Free → ₦2,500/mo</div></a>
+      <a href="#mvp2" class="hero-mvp-card"><div class="num">02 / 06</div><div class="name">Proposal Tracker</div><div class="price">Free → ₦4,000/mo</div></a>
+      <a href="#mvp3" class="hero-mvp-card"><div class="num">03 / 06</div><div class="name">Tax Calculator</div><div class="price">Always free</div></a>
+      <a href="#mvp4" class="hero-mvp-card"><div class="num">04 / 06</div><div class="name">Quote Builder</div><div class="price">Free → ₦1,500/mo</div></a>
+      <a href="#mvp5" class="hero-mvp-card"><div class="num">05 / 06</div><div class="name">Site Daily Report</div><div class="price">Free → ₦6,000/mo</div></a>
+      <a href="#mvp6" class="hero-mvp-card"><div class="num">06 / 06</div><div class="name">Business Health Score</div><div class="price">Always free</div></a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  MVP 1 — WHATSAPP INVOICE SENDER
+══════════════════════════════════════ -->
+<div id="mvp1">
+<div class="sp1-hero">
+  <div class="anim">
+    <div class="sp1-tag">01 of 06 · Invoice Sender</div>
+    <h1 class="sp1-h1">Your clients pay faster when the invoice <em>looks professional.</em></h1>
+    <p class="sp1-lead">Stop sending invoices as WhatsApp voice notes and screenshots. AfriQuote Invoice Sender generates a branded invoice with a Paystack or Flutterwave pay link in 30 seconds — and puts it directly in your client's WhatsApp.</p>
+    <div class="sp1-proof">
+      <div class="sp1-stat"><div class="n">30s</div><div class="l">From open to sent</div></div>
+      <div class="sp1-stat"><div class="n">5</div><div class="l">Payment providers</div></div>
+      <div class="sp1-stat"><div class="n">9</div><div class="l">African countries</div></div>
+    </div>
+    <a href="#" class="sp1-cta" onclick="return false">Start sending free →</a>
+    <div class="sp1-free">Free forever — 5 invoices/month. No credit card required.</div>
+  </div>
+  <div class="sp1-mockup anim d2">
+    <div class="sp1-mock-bar">
+      <div class="sp1-mock-dot" style="background:#ff5f57"></div>
+      <div class="sp1-mock-dot" style="background:#febc2e"></div>
+      <div class="sp1-mock-dot" style="background:#28c840"></div>
+    </div>
+    <div class="inv-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div style="font-family:var(--serif);font-size:14px;font-weight:700;color:#6FDBAF">AfriQuote</div>
+        <div style="text-align:right;font-size:10px;color:rgba(255,255,255,.3)">INV-0042 · Apr 11, 2026</div>
+      </div>
+      <div class="inv-row"><span class="lbl">Brand identity package</span><span class="val">₦200,000</span></div>
+      <div class="inv-row"><span class="lbl">Social media kit</span><span class="val">₦80,000</span></div>
+      <div class="inv-row"><span class="lbl">VAT (7.5%)</span><span class="val">₦21,000</span></div>
+      <div class="inv-total"><span class="lbl">Total due</span><span class="val">₦301,000</span></div>
+    </div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px;font-size:11px;text-align:center;color:rgba(255,255,255,.4);margin-bottom:8px">
+      Pay via Paystack → paystack.com/pay/inv-0042
+    </div>
+    <div class="wa-btn">💬 Send to BetaRide Lagos on WhatsApp</div>
+    <div style="margin-top:10px;font-size:10px;text-align:center;color:rgba(255,255,255,.2)">Sent with AfriQuote · afriquote.africa</div>
+  </div>
+</div>
+
+<div class="sp1-features">
+  <div class="sp1-features-inner">
+    <div class="section-label" style="color:rgba(255,255,255,.35)">What it does</div>
+    <h2 class="section-h" style="color:#fff">Everything a <em style="color:#6FDBAF;font-style:italic">professional invoice</em> needs.</h2>
+    <div class="feat-grid">
+      <div class="feat-cell"><div class="fc-icon">⚡</div><h3>30-second creation</h3><p>Client name, line items, done. VAT auto-calculated for your country. No accounting knowledge required.</p></div>
+      <div class="feat-cell"><div class="fc-icon">💬</div><h3>WhatsApp delivery</h3><p>One tap sends the invoice + payment link to any WhatsApp number. The client pays without needing a bank app.</p></div>
+      <div class="feat-cell"><div class="fc-icon">🏦</div><h3>5 payment providers</h3><p>Paystack, Flutterwave, M-Pesa, MTN MoMo, Airtel Money, and bank transfer — embedded directly in the invoice.</p></div>
+      <div class="feat-cell"><div class="fc-icon">🧮</div><h3>Correct VAT, every time</h3><p>7.5% Nigeria, 12.5% Ghana, 16% Kenya, 15% South Africa, 18% Rwanda. Automatically applied based on your country setting.</p></div>
+      <div class="feat-cell"><div class="fc-icon">📄</div><h3>PDF download</h3><p>Every invoice downloads as a branded PDF for your records and for clients who prefer email attachments.</p></div>
+      <div class="feat-cell"><div class="fc-icon">📊</div><h3>Invoice history</h3><p>See every invoice you've sent — paid, outstanding, overdue — with amounts and dates at a glance.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="sp1-price">
+  <div class="price-inner">
+    <div class="price-card free">
+      <div class="tier">Free plan</div>
+      <div class="amount">₦0</div>
+      <div class="per">forever · no credit card</div>
+      <ul class="price-list">
+        <li>5 invoices per month</li>
+        <li>All 5 payment providers</li>
+        <li>WhatsApp delivery</li>
+        <li>PDF download</li>
+        <li>VAT auto-calculation</li>
+        <li style="color:rgba(255,255,255,.25)">AfriQuote branding on invoices</li>
+        <li style="color:rgba(255,255,255,.25)">3 months invoice history</li>
+      </ul>
+    </div>
+    <div class="price-card pro">
+      <div class="tier">Pro plan</div>
+      <div class="amount">₦20,000</div>
+      <div class="per">per month · all 8 modules · cancel anytime</div>
+      <ul class="price-list">
+        <li>Unlimited invoices</li>
+        <li>Remove AfriQuote branding</li>
+        <li>Your business logo on every invoice</li>
+        <li>Full invoice history forever</li>
+        <li>Payment reminders (7, 14, 30 days)</li>
+        <li>Multi-currency invoicing</li>
+        <li>WHT deduction tracking</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div><!-- /mvp1 -->
+
+<!-- ══════════════════════════════════════
+  MVP 2 — PROPOSAL TRACKER
+══════════════════════════════════════ -->
+<div id="mvp2" style="background:#FAF8F3">
+<div class="sp2-hero">
+  <div class="anim">
+    <div class="sp2-eyebrow">02 of 06 · Proposal Tracker</div>
+    <h1 class="sp2-h1">Stop sending proposals and <em>praying.</em></h1>
+    <p class="sp2-lead">Most African consultants lose 40% of winnable deals because proposals go cold with no follow-up. AfriQuote's proposal pipeline tracks every prospect from first contact to signed contract — with win probability scoring and WhatsApp reminders.</p>
+    <div class="sp2-numbers">
+      <div class="sp2-num-card"><div class="n" style="color:#BA7517">40%</div><div class="l">of winnable deals lost to no follow-up</div></div>
+      <div class="sp2-num-card"><div class="n" style="color:#1D9E75">2×</div><div class="l">average win rate improvement with tracking</div></div>
+      <div class="sp2-num-card"><div class="n" style="color:#185FA5">₦0</div><div class="l">to start — full pipeline free</div></div>
+    </div>
+    <a href="#" class="sp2-cta" onclick="return false">Start tracking free →</a>
+    <div class="sp2-cta-sub">Free forever up to 3 active proposals. No card needed.</div>
+  </div>
+  <div class="pipeline-vis anim d2">
+    <div class="pipe-header">Your pipeline · April 2026</div>
+    <div class="pipe-stages">
+      <div class="pipe-stage ps-neg"><span class="ps-name">Digital transformation — BetaRide</span><span class="ps-val" style="color:#BA7517">₦2.4M</span><span class="ps-prob">75%</span></div>
+      <div class="pipe-stage ps-view"><span class="ps-name">Brand identity — TradaKo Ltd</span><span class="ps-val" style="color:#185FA5">₦580K</span><span class="ps-prob">35%</span></div>
+      <div class="pipe-stage ps-meet"><span class="ps-name">Agriculture platform — AgroConnect</span><span class="ps-val" style="color:#1D9E75">₦85K</span><span class="ps-prob">55%</span></div>
+      <div class="pipe-stage ps-won"><span class="ps-name">IT audit — NovaPay Kenya</span><span class="ps-val" style="color:#0F6E56">KES 220K</span><span class="ps-prob" style="background:#0F6E56;color:#fff">WON ✓</span></div>
+    </div>
+    <div class="pipe-total"><span class="lbl">Weighted pipeline value</span><span class="val">₦2.04M</span></div>
+  </div>
+</div>
+
+<div class="sp2-features">
+  <div class="sp2-features-inner">
+    <div class="sp2-sect-tag">How it works</div>
+    <h2 class="sp2-sect-h">From first contact to <em style="color:#6FDBAF;font-style:italic">signed contract</em></h2>
+    <div class="sp2-feat-row">
+      <div class="sp2-feat"><div class="icon">📋</div><h3>9-stage pipeline</h3><p>Draft → Sent → Viewed → Meeting Scheduled → Negotiating → Won. Move any proposal between stages in one click. Stage changes are logged automatically to the activity timeline.</p></div>
+      <div class="sp2-feat"><div class="icon">📊</div><h3>Win probability scoring</h3><p>AfriQuote auto-estimates probability from stage defaults and activity signals — meetings held, documents shared, follow-ups logged. Override manually at any time. Weighted pipeline value tells you what revenue is actually on the way.</p></div>
+      <div class="sp2-feat"><div class="icon">📅</div><h3>Follow-up alerts</h3><p>When a proposal has a follow-up date approaching, you get an alert. When it passes without action, it turns red. You will never let a deal go cold again because you forgot to call back.</p></div>
+      <div class="sp2-feat"><div class="icon">📝</div><h3>Activity timeline</h3><p>Log every call, meeting, email, and WhatsApp message against each proposal. The full history of every deal is at your fingertips — including what the client said and what you promised.</p></div>
+      <div class="sp2-feat"><div class="icon">🎉</div><h3>One-click to contract</h3><p>When a proposal is won, click "Convert to contract." AfriQuote creates a signed contract from your proposal details and sends the signing link to your client — no copying and pasting.</p></div>
+      <div class="sp2-feat"><div class="icon">📈</div><h3>Pipeline analytics</h3><p>See your win rate, average days to close, pipeline by type, and where you most commonly lose deals. Data that tells you exactly where to focus.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="sp2-price">
+  <div class="sp2-price-inner">
+    <h2>Simple pricing</h2>
+    <p>Start free. Upgrade when you're ready to unlock unlimited proposals and the full contract conversion flow.</p>
+    <div class="sp2-price-cards">
+      <div class="sp2-pc free">
+        <div class="t">Free</div>
+        <div class="a">₦0 <span style="font-size:14px;font-weight:400;color:#8C8070">/month</span></div>
+        <ul>
+          <li>3 active proposals</li>
+          <li>Kanban board view</li>
+          <li>Win probability scoring</li>
+          <li>Activity timeline</li>
+          <li>7-day follow-up window</li>
+        </ul>
+      </div>
+      <div class="sp2-pc pro">
+        <div class="t">Pro</div>
+        <div class="a">₦4,000 <span style="font-size:14px;font-weight:400;opacity:.6">/month</span></div>
+        <ul>
+          <li>Unlimited proposals</li>
+          <li>One-click convert to contract</li>
+          <li>Shareable client view link</li>
+          <li>Analytics dashboard</li>
+          <li>WhatsApp follow-up reminders</li>
+          <li>Win/loss analysis</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /mvp2 -->
+
+<!-- ══════════════════════════════════════
+  MVP 3 — TAX CALCULATOR
+══════════════════════════════════════ -->
+<div id="mvp3">
+<div class="sp3-hero">
+  <div class="anim">
+    <div class="sp3-flag-row">
+      <span class="sp3-flag">🇳🇬 Nigeria</span>
+      <span class="sp3-flag">🇬🇭 Ghana</span>
+      <span class="sp3-flag">🇰🇪 Kenya</span>
+      <span class="sp3-flag">🇿🇦 South Africa</span>
+      <span class="sp3-flag">🇷🇼 Rwanda</span>
+    </div>
+    <h1 class="sp3-h1">Know exactly what you <em>owe FIRS.</em><br>Before they ask.</h1>
+    <p class="sp3-lead">Most Nigerian freelancers have never correctly calculated their VAT or WHT. They either overpay, underpay, or miss deadlines entirely — and only find out when a corporate client deducts the wrong amount. This free calculator fixes that in 30 seconds.</p>
+    <div class="sp3-trust">
+      <div class="icon">✓</div>
+      <div class="t">Updated for NTAA 2025 · FIRS · GRA · KRA · SARS · RRA · All rates verified April 2026</div>
+    </div>
+    <div class="sp3-cta-row">
+      <a href="#" class="sp3-cta" onclick="return false">Calculate my tax free →</a>
+      <a href="#" class="sp3-cta2" onclick="return false">See all deadlines</a>
+    </div>
+  </div>
+  <div class="tax-mockup anim d2">
+    <div class="tax-mock-top">
+      <div class="t">Your VAT this quarter</div>
+      <div class="v">₦93,750</div>
+    </div>
+    <div class="tax-mock-body">
+      <div class="tax-row highlight"><span class="lbl">Monthly income</span><span class="val">₦500,000</span></div>
+      <div class="tax-row highlight"><span class="lbl">VAT at 7.5%</span><span class="val">₦37,500</span></div>
+      <div class="tax-row highlight"><span class="lbl">WHT on ₦320K invoice</span><span class="val amber">₦32,000</span></div>
+      <div class="tax-row highlight"><span class="lbl">Net receivable</span><span class="val green">₦288,000</span></div>
+      <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#4A5568;margin:14px 0 8px">Upcoming deadlines</div>
+      <div class="deadline-item"><span class="d">Q1 VAT return (FIRS)</span><span class="badge badge-danger">14 days</span></div>
+      <div class="deadline-item"><span class="d">Annual income tax (LIRS)</span><span class="badge badge-warn">80 days</span></div>
+      <div class="deadline-item"><span class="d">Q2 VAT return (FIRS)</span><span class="badge badge-ok">101 days</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="sp3-countries">
+  <div class="sp3-countries-inner">
+    <div class="section-label" style="color:rgba(255,255,255,.3)">Countries supported</div>
+    <h2 class="section-h" style="color:#fff">One calculator.<br><em style="color:#6FDBAF;font-style:italic">Nine African countries.</em></h2>
+    <div class="country-grid">
+      <div class="country-card"><div class="flag">🇳🇬</div><div class="name">Nigeria</div><div class="rate">VAT 7.5%</div><div class="auth">FIRS</div></div>
+      <div class="country-card"><div class="flag">🇬🇭</div><div class="name">Ghana</div><div class="rate">VAT 12.5%</div><div class="auth">GRA</div></div>
+      <div class="country-card"><div class="flag">🇰🇪</div><div class="name">Kenya</div><div class="rate">VAT 16%</div><div class="auth">KRA</div></div>
+      <div class="country-card"><div class="flag">🇿🇦</div><div class="name">South Africa</div><div class="rate">VAT 15%</div><div class="auth">SARS</div></div>
+      <div class="country-card"><div class="flag">🇷🇼</div><div class="name">Rwanda</div><div class="rate">VAT 18%</div><div class="auth">RRA</div></div>
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,.25);margin-top:16px;text-align:center">Plus Tanzania, Ethiopia, Senegal, Côte d'Ivoire, and Egypt</p>
+  </div>
+</div>
+
+<div class="sp3-ntaa">
+  <div class="sp3-ntaa-inner">
+    <div class="sp2-sect-tag" style="color:#0F6E56;letter-spacing:.15em">Nigeria NTAA 2025</div>
+    <h2>Are you WHT exempt?<br>Most freelancers don't know.</h2>
+    <p>The Nigeria Tax Administration Act 2025 introduced a WHT exemption for freelancers earning below ₦2 million per month who have a valid TIN. The calculator checks this automatically — and tells you exactly what to say to corporate clients who try to deduct WHT incorrectly.</p>
+    <div class="ntaa-rule"><div class="icon">✓</div><div class="txt"><strong>Exempt if:</strong> Monthly income below ₦2,000,000 AND you have a valid, active TIN registered with FIRS. Show your TIN certificate when a client attempts to deduct WHT.</div></div>
+    <div class="ntaa-rule"><div class="icon">✗</div><div class="txt"><strong>Not exempt if:</strong> You have no TIN, or your monthly income exceeds ₦2M. Corporate clients must deduct WHT at 10% for services. Always request a WHT credit note for your annual tax return.</div></div>
+  </div>
+</div>
+</div><!-- /mvp3 -->
+
+<!-- ══════════════════════════════════════
+  MVP 4 — QUOTE BUILDER
+══════════════════════════════════════ -->
+<div id="mvp4">
+<div class="sp4-hero">
+  <div class="anim">
+    <div class="sp4-timer-badge"><span class="pulse"></span>Live timer — beat your personal best</div>
+    <h1 class="sp4-h1">From opening<br>the app to your<br><em>client's WhatsApp:<br>90 seconds.</em></h1>
+    <p class="sp4-lead">Most Lagos designers still send quotes as voice notes or handwritten photos. AfriQuote Quote Builder generates a branded PDF quote with live VAT, payment terms, and an expiry date — then sends it to any WhatsApp number with one tap.</p>
+    <div class="sp4-demo-bar">
+      <div><div class="label">Time to send</div></div>
+      <div class="time">1:23</div>
+      <div class="status">Quote sent ✓</div>
+    </div>
+    <a href="#" class="sp4-cta" onclick="return false">Try the quote builder →</a>
+    <div class="sp4-cta-note">Free for your first 5 quotes every month. No account needed to try.</div>
+  </div>
+  <div class="quote-vis anim d2">
+    <div class="qv-top">
+      <div class="logo">Adaeze Design Studio</div>
+      <div class="num">QUO-0043</div>
+    </div>
+    <div class="qv-body">
+      <div class="qv-client"><div class="lbl">Quote prepared for</div><div class="name">BetaRide Lagos</div></div>
+      <div style="font-size:12.5px;font-weight:600;color:#1C1A14;margin-bottom:8px">Brand identity package</div>
+      <div class="qv-table-head"><span>Service</span><span>Qty</span><span>Total</span></div>
+      <div class="qv-line"><span class="desc">Logo design (3 concepts)</span><span class="qty">1</span><span class="total">₦120,000</span></div>
+      <div class="qv-line"><span class="desc">Brand guidelines deck</span><span class="qty">1</span><span class="total">₦80,000</span></div>
+      <div class="qv-line"><span class="desc">Social media kit</span><span class="qty">1</span><span class="total">₦55,000</span></div>
+      <div class="qv-total-row"><span class="l">Subtotal</span><span class="v">₦255,000</span></div>
+      <div class="qv-total-row"><span class="l">VAT (7.5%)</span><span class="v">₦19,125</span></div>
+      <div class="qv-grand"><span class="l">Total</span><span class="v">₦274,125</span></div>
+      <div class="qv-valid">Valid until May 11, 2026 · 50% upfront required</div>
+    </div>
+  </div>
+</div>
+
+<div class="sp4-steps">
+  <div class="sp4-steps-inner">
+    <div class="section-label" style="color:rgba(255,255,255,.3)">How it works</div>
+    <h2 class="section-h" style="color:#fff">Four steps. <em style="color:#EF9F27;font-style:italic">Under 90 seconds.</em></h2>
+    <div class="sp4-steps-grid">
+      <div class="sp4-step">
+        <div class="step-num">01</div>
+        <h3>Enter your services</h3>
+        <p>Add each line item with quantity and unit price. The quote totals update live as you type.</p>
+        <span class="arrow">→</span>
+      </div>
+      <div class="sp4-step">
+        <div class="step-num">02</div>
+        <h3>VAT auto-applies</h3>
+        <p>Select your country once — Nigeria, Ghana, Kenya, South Africa, or Rwanda — and VAT calculates automatically on every quote.</p>
+        <span class="arrow">→</span>
+      </div>
+      <div class="sp4-step">
+        <div class="step-num">03</div>
+        <h3>Preview in real time</h3>
+        <p>A branded quote preview updates live on the right of your screen. What you see is exactly what the client receives.</p>
+        <span class="arrow">→</span>
+      </div>
+      <div class="sp4-step">
+        <div class="step-num">04</div>
+        <h3>Send via WhatsApp</h3>
+        <p>One tap opens WhatsApp with the client's number pre-filled and a professional message ready to send.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /mvp4 -->
+
+<!-- ══════════════════════════════════════
+  MVP 5 — SITE DAILY REPORT
+══════════════════════════════════════ -->
+<div id="mvp5">
+<div class="sp5-hero">
+  <div class="anim">
+    <div class="sp5-badge">05 of 06 · Site Reports</div>
+    <h1 class="sp5-h1">Run your construction site<br>like a <em>professional operation.</em></h1>
+    <p class="sp5-lead">Nigerian and Ghanaian construction contractors manage multi-million naira projects via phone calls and WhatsApp voice notes. One professional daily report changes the client relationship permanently — and there is no other tool in Africa that does this specifically for construction.</p>
+    <div class="sp5-problem">
+      <div class="p-label">How most contractors manage sites today</div>
+      <div class="p-item">No written record of daily progress — disputes with clients about what was completed</div>
+      <div class="p-item">No GPS verification — clients don't know when workers are actually on site</div>
+      <div class="p-item">Budget overruns discovered too late — no real-time spend vs budget tracking</div>
+      <div class="p-item">Issues not flagged early — small problems become expensive disputes</div>
+    </div>
+    <a href="#" class="sp5-cta" onclick="return false">Try free — manage your first site →</a>
+    <div class="sp5-free">Free for 1 active site. Pro plan: ₦6,000/month, unlimited sites.</div>
+  </div>
+  <div class="site-mockup anim d2">
+    <div class="sm-topbar">
+      <div class="logo">AfriQuote Sites</div>
+      <div class="site-name">Lekki Phase 2 · Sat 11 Apr</div>
+    </div>
+    <div class="sm-body">
+      <div class="sm-checkin">
+        <div class="sm-ci-head"><span class="status">On site · checked in</span><span class="timer">04:22:11</span></div>
+        <div class="sm-ci-gps">GPS: 6.4281, 3.4219 · ±8m accuracy</div>
+      </div>
+      <div class="sm-section">
+        <div class="s-label">Today's progress</div>
+        <div class="sm-prog"><span class="pct">62%</span><div class="bar"><div class="fill"></div></div></div>
+        <div class="s-val">Foundation pour completed on Block D — 40m³ poured, all rebar in place. Curing started 14:30.</div>
+      </div>
+      <div class="sm-section">
+        <div class="s-label">Workers on site</div>
+        <div class="s-val">22 total · 12 artisans · 8 labourers · 2 supervisors</div>
+      </div>
+      <div class="sm-section">
+        <div class="s-label">Issue flagged</div>
+        <div class="s-val" style="color:#FBBF24">[Medium] Two workers without hard hats — reminded on site, documented.</div>
+      </div>
+      <div class="sm-wa">💬 Send daily report to BetaRide Lagos</div>
+    </div>
+  </div>
+</div>
+
+<div class="sp5-features">
+  <div class="sp5-features-inner">
+    <div class="section-label" style="color:rgba(255,255,255,.3)">Features</div>
+    <h2 class="section-h" style="color:#fff">Every tool a site manager <em style="color:#6FDBAF;font-style:italic">actually needs.</em></h2>
+    <div class="sp5-feat-grid">
+      <div class="sp5-feat"><div class="icon">📍</div><h3>GPS check-in / check-out</h3><p>Verify presence on site with GPS coordinates and accuracy radius. Full attendance history per site per day.</p></div>
+      <div class="sp5-feat"><div class="icon">📋</div><h3>Daily field log</h3><p>Six entry types: progress, issue, delivery, inspection, weather hold, visitor. Every entry is timestamped and searchable.</p></div>
+      <div class="sp5-feat"><div class="icon">📊</div><h3>Progress tracking</h3><p>Update overall project completion percentage daily. Track tasks by phase. See which milestones are upcoming, active, or overdue.</p></div>
+      <div class="sp5-feat"><div class="icon">💬</div><h3>One-tap client reports</h3><p>Compile the day's activity into a professional WhatsApp message and send it to the client in one tap. Daily reports in 20 seconds.</p></div>
+      <div class="sp5-feat"><div class="icon">⚠️</div><h3>Issue escalation</h3><p>Flag issues with severity (low, medium, high, critical). Issues are logged with dates and resolution status — full audit trail.</p></div>
+      <div class="sp5-feat"><div class="icon">💰</div><h3>Budget vs actual</h3><p>Track spend against budget per category — labour, cement, steel, equipment. See overruns before they become disputes.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="sp5-price">
+  <div class="sp5-price-inner">
+    <h2 style="font-family:var(--serif);font-size:36px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.02em">Priced per site</h2>
+    <p>Manage one site free forever. Scale as your business grows.</p>
+    <div class="sp5-price-box">
+      <div class="sp5-pb free">
+        <div class="tier">Free</div>
+        <div class="amt">₦0</div>
+        <ul>
+          <li>1 active site</li>
+          <li>GPS check-in / check-out</li>
+          <li>Daily field log (unlimited entries)</li>
+          <li>WhatsApp daily report</li>
+          <li>Progress tracking</li>
+        </ul>
+      </div>
+      <div class="sp5-pb pro">
+        <div class="tier">Pro</div>
+        <div class="amt">₦6,000 <span style="font-size:14px;opacity:.7">/mo</span></div>
+        <ul>
+          <li>Unlimited active sites</li>
+          <li>Task management per site</li>
+          <li>Milestone tracking</li>
+          <li>Budget vs actual tracker</li>
+          <li>Team member access per site</li>
+          <li>Full PDF reports</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.25)">Volume discount available for 3+ sites — contact us for pricing</p>
+  </div>
+</div>
+</div><!-- /mvp5 -->
+
+<!-- ══════════════════════════════════════
+  MVP 6 — HEALTH SCORE
+══════════════════════════════════════ -->
+<div id="mvp6">
+<div class="sp6-hero">
+  <div class="anim">
+    <h1 class="sp6-h1">How <em>healthy</em> is<br>your business?<br>Most professionals<br>have no idea.</h1>
+    <p class="sp6-lead">Answer 10 questions in 2 minutes and get a personalised business health score out of 100 — across invoicing speed, contract coverage, tax compliance, proposal process, cash flow, and more. Free. No signup required to take the quiz.</p>
+    <a href="#" class="sp6-cta" onclick="return false">Take the free quiz →</a>
+    <div class="sp6-cta-note">2 minutes · 10 questions · Free forever · No account needed</div>
+  </div>
+  <div class="anim d2">
+    <div class="sp6-question">
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7A9AC0">Proposal process · Question 4 of 10</div>
+      </div>
+      <div class="sp6-progress"><div class="sp6-progress-fill"></div></div>
+      <div class="sp6-prog-label"><span>40% complete</span><span>6 questions remaining</span></div>
+      <p>After sending a proposal, how do you follow up with the prospect?</p>
+      <div class="sp6-opt"><span>Structured: call at 3 days, email at 7, final at 14</span></div>
+      <div class="sp6-opt sel"><span>One follow-up, then I wait for them to respond</span></div>
+      <div class="sp6-opt"><span>I send the proposal and hope for the best</span></div>
+      <div class="sp6-opt"><span>I don't send formal proposals</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="sp6-score">
+  <div class="sp6-score-inner">
+    <div class="section-label" style="color:rgba(255,255,255,.3);text-align:center">What you get</div>
+    <h2 class="section-h" style="color:#fff;text-align:center">Your score. Your <em style="color:#6FDBAF;font-style:italic">roadmap.</em></h2>
+    <div class="score-display">
+      <div class="score-circle"><div class="num">64</div></div>
+      <div class="score-grade">Fair — you're leaving money on the table</div>
+      <div class="score-sub">3 areas holding your business back. Here's exactly what to fix.</div>
+      <div class="dim-grid">
+        <div class="dim-item"><div class="name">Invoicing</div><div class="score-n">9/10</div><div class="bar"><div class="fill" style="width:90%;background:#1D9E75"></div></div></div>
+        <div class="dim-item"><div class="name">Proposals</div><div class="score-n">5/10</div><div class="bar"><div class="fill" style="width:50%;background:#BA7517"></div></div></div>
+        <div class="dim-item"><div class="name">Contracts</div><div class="score-n">3/10</div><div class="bar"><div class="fill" style="width:30%;background:#E24B4A"></div></div></div>
+        <div class="dim-item"><div class="name">Tax</div><div class="score-n">7/10</div><div class="bar"><div class="fill" style="width:70%;background:#185FA5"></div></div></div>
+        <div class="dim-item"><div class="name">Cash flow</div><div class="score-n">8/10</div><div class="bar"><div class="fill" style="width:80%;background:#1D9E75"></div></div></div>
+        <div class="dim-item"><div class="name">Clients</div><div class="score-n">4/10</div><div class="bar"><div class="fill" style="width:40%;background:#BA7517"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sp6-what">
+  <div class="sp6-what-inner">
+    <div>
+      <div class="sp2-sect-tag" style="color:#185FA5">6 dimensions measured</div>
+      <h2>Six dimensions.<br>One honest score.</h2>
+      <p>The health score looks at every dimension of how you run your business — not just how much money you make. A freelancer billing ₦2M/month with no contracts and late invoices scores lower than one billing ₦800K with systems in place.</p>
+      <a href="#" class="sp6-cta" style="margin-top:8px;display:inline-flex" onclick="return false">Take the quiz free →</a>
+    </div>
+    <div class="sp6-dim-list">
+      <div class="sp6-dim"><div class="sp6-dim icon" style="background:#E1F5EE;font-size:15px">📋</div><div class="txt"><h4>Invoicing speed</h4><p>How quickly you bill after completing work</p></div></div>
+      <div class="sp6-dim"><div class="sp6-dim icon" style="background:#FAEEDA;font-size:15px">📝</div><div class="txt"><h4>Proposal process</h4><p>How structured your follow-up is after sending</p></div></div>
+      <div class="sp6-dim"><div class="sp6-dim icon" style="background:#EEEDFE;font-size:15px">📄</div><div class="txt"><h4>Contract coverage</h4><p>What percentage of your work has a signed agreement</p></div></div>
+      <div class="sp6-dim"><div class="sp6-dim icon" style="background:#E6F1FB;font-size:15px">🧾</div><div class="txt"><h4>Tax compliance</h4><p>How on top of your VAT and income tax obligations you are</p></div></div>
+      <div class="sp6-dim"><div class="sp6-dim icon" style="background:#E1F5EE;font-size:15px">💰</div><div class="txt"><h4>Cash flow visibility</h4><p>How clearly you can see your next 30 days of cash</p></div></div>
+      <div class="sp6-dim"><div class="sp6-dim icon" style="background:#FAEEDA;font-size:15px">👥</div><div class="txt"><h4>Client diversity</h4><p>How much risk from dependence on one client</p></div></div>
+    </div>
+  </div>
+</div>
+</div><!-- /mvp6 -->
+
+<!-- ══ FINAL CTA ══ -->
+<div class="final-cta">
+  <div class="fc-label">Start today</div>
+  <h2>All six tools.<br><em>Free to start.</em></h2>
+  <p>No credit card. No setup. No Western tool that doesn't understand Africa. Pick the tool that solves your biggest problem today — the rest are waiting when you're ready.</p>
+  <div class="final-cta-btns">
+    <a href="#mvp1" class="final-btn-g">Start with invoicing →</a>
+    <a href="#mvp3" class="final-btn-w">Try the tax calculator free</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">Afri<em>Quote</em></div>
+  <div class="footer-links">
+    <a href="#mvp1">Invoice Sender</a>
+    <a href="#mvp2">Proposal Tracker</a>
+    <a href="#mvp3">Tax Calculator</a>
+    <a href="#mvp4">Quote Builder</a>
+    <a href="#mvp5">Site Reports</a>
+    <a href="#mvp6">Health Score</a>
+  </div>
+  <div class="footer-right">© AfriQuote 2026 · Built for Africa</div>
+</footer>
+
+<script>
+// Active nav highlighting on scroll
+const sections = ['mvp1','mvp2','mvp3','mvp4','mvp5','mvp6'];
+const navItems = document.querySelectorAll('.gn-item[href^="#mvp"]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('on'));
+      const active = document.querySelector(`.gn-item[href="#${e.target.id}"]`);
+      if (active) active.classList.add('on');
+    }
+  });
+}, { threshold: 0.25 });
+sections.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+
+// Animate timer for MVP4 demo
+let t = 83;
+const timerEl = document.querySelector('.sp4-demo-bar .time');
+if (timerEl) {
+  setInterval(() => {
+    t = Math.max(0, t - 1);
+    const m = Math.floor(t / 60), s = t % 60;
+    timerEl.textContent = `${m}:${String(s).padStart(2,'0')}`;
+    if (t === 0) { timerEl.style.color = '#6FDBAF'; timerEl.textContent = '0:00 ✓'; }
+  }, 80);
+}
+
+// Animate progress bar on SP6
+let pct = 0;
+const pfill = document.querySelector('.sp6-progress-fill');
+if (pfill) {
+  setTimeout(() => {
+    const i = setInterval(() => {
+      pct = Math.min(40, pct + 1);
+      pfill.style.width = pct + '%';
+      if (pct >= 40) clearInterval(i);
+    }, 25);
+  }, 800);
+}
+
+// Smooth scroll with offset for sticky nav
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    const offset = el.getBoundingClientRect().top + window.scrollY - 60;
+    window.scrollTo({ top: offset, behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

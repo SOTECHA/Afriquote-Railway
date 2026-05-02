@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AfriQuote — The all-in-one business platform built for African professionals. Quote, invoice, manage sites, track time, stay tax-compliant.">
+<meta property="og:title" content="AfriQuote — Built for Africa's Professionals">
+<meta property="og:description" content="Quote, invoice, manage projects, track time, and stay tax-compliant — all in one platform built for African professionals.">
+<meta name="theme-color" content="#1D9E75">
+<title>AfriQuote — Built for Africa's Professionals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── DESIGN SYSTEM ─── */
+:root {
+  --g: #1D9E75;
+  --g2: #0F6E56;
+  --g3: #E1F5EE;
+  --g4: #f0faf6;
+  --ink: #0e1410;
+  --ink2: #3d4a3f;
+  --ink3: #7a8c7c;
+  --paper: #fafaf8;
+  --cream: #f4f2ec;
+  --white: #ffffff;
+  --amber: #c47f1a;
+  --amber-l: #fef3d8;
+  --red: #d94040;
+  --border: #e2e6df;
+  --r: 12px;
+  --r-lg: 20px;
+  --r-xl: 32px;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Cabinet Grotesk', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: var(--font-sans); }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--g); border-radius: 10px; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(250,250,248,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 5%;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 20px; font-weight: 800; color: var(--ink);
+}
+.nav-logo-mark {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--g);
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-mark svg { width: 18px; height: 18px; fill: white; }
+.nav-logo em { color: var(--g); font-style: normal; }
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 15px; font-weight: 500; color: var(--ink2);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--g); }
+.nav-cta {
+  display: flex; align-items: center; gap: 12px;
+}
+.btn-ghost {
+  padding: 9px 20px; border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  font-size: 14px; font-weight: 600;
+  color: var(--ink); background: transparent;
+  transition: all .2s;
+}
+.btn-ghost:hover { border-color: var(--g); color: var(--g); }
+.btn-primary {
+  padding: 10px 22px; border-radius: var(--r);
+  border: none;
+  background: var(--g); color: white;
+  font-size: 14px; font-weight: 700;
+  transition: all .2s; letter-spacing: .01em;
+}
+.btn-primary:hover { background: var(--g2); transform: translateY(-1px); }
+.btn-primary:active { transform: none; }
+.btn-xl {
+  padding: 16px 36px; border-radius: var(--r-lg);
+  font-size: 16px; font-weight: 800;
+  background: var(--g); color: white; border: none;
+  transition: all .25s; letter-spacing: .01em;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-xl:hover { background: var(--g2); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(29,158,117,.3); }
+.btn-xl-outline {
+  padding: 15px 36px; border-radius: var(--r-lg);
+  font-size: 16px; font-weight: 700;
+  background: transparent; color: var(--g);
+  border: 2px solid var(--g);
+  transition: all .25s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-xl-outline:hover { background: var(--g3); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  padding: 120px 5% 80px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  background: var(--paper);
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 30%, rgba(29,158,117,.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(29,158,117,.05) 0%, transparent 60%);
+}
+/* subtle grid pattern */
+.hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: .4;
+}
+.hero-inner {
+  position: relative; z-index: 1;
+  max-width: 860px; text-align: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--g3); color: var(--g2);
+  font-size: 13px; font-weight: 700;
+  border: 1px solid rgba(29,158,117,.25);
+  margin-bottom: 28px;
+  animation: fadeUp .6s ease both;
+}
+.hero-badge-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--g); animation: pulse 2s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.hero-h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(42px, 6vw, 82px);
+  line-height: 1.07;
+  color: var(--ink);
+  margin-bottom: 24px;
+  animation: fadeUp .7s .1s ease both;
+  letter-spacing: -.02em;
+}
+.hero-h1 em { color: var(--g); font-style: italic; }
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--ink2); max-width: 600px; margin: 0 auto 40px;
+  line-height: 1.65;
+  animation: fadeUp .7s .2s ease both;
+}
+.hero-actions {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 56px;
+  animation: fadeUp .7s .3s ease both;
+}
+.hero-trust {
+  display: flex; align-items: center; gap: 16px; justify-content: center;
+  flex-wrap: wrap;
+  font-size: 13px; color: var(--ink3);
+  animation: fadeUp .7s .4s ease both;
+}
+.hero-trust-item {
+  display: flex; align-items: center; gap: 6px;
+}
+.hero-trust-item svg { width: 14px; height: 14px; color: var(--g); }
+.trust-sep { color: var(--border); }
+
+/* ─── HERO DASHBOARD PREVIEW ─── */
+.hero-preview {
+  position: relative; z-index: 1;
+  margin-top: 64px; width: 100%; max-width: 1000px;
+  animation: fadeUp .8s .5s ease both;
+}
+.preview-frame {
+  background: white;
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: 0 32px 80px rgba(14,20,16,.12), 0 8px 24px rgba(14,20,16,.06);
+  overflow: hidden;
+}
+.preview-bar {
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.preview-dot { width: 11px; height: 11px; border-radius: 50%; }
+.preview-url {
+  flex: 1; background: white; border-radius: 6px;
+  padding: 4px 12px; font-size: 11.5px; color: var(--ink3);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+  max-width: 280px; margin: 0 auto;
+}
+.preview-url svg { width: 11px; height: 11px; color: var(--g); }
+.preview-body { display: flex; height: 420px; }
+.preview-sidebar {
+  width: 160px; border-right: 1px solid var(--border);
+  padding: 16px 0; flex-shrink: 0;
+}
+.ps-logo {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 14px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px;
+}
+.ps-lm { width: 22px; height: 22px; border-radius: 6px; background: var(--g); display: flex; align-items: center; justify-content: center; }
+.ps-lm svg { width: 11px; height: 11px; fill: white; }
+.ps-lt { font-size: 12px; font-weight: 800; color: var(--ink); }
+.ps-lt em { color: var(--g); font-style: normal; }
+.ps-nav { padding: 4px 0; }
+.ps-item {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 14px; font-size: 11px; color: var(--ink3);
+  border-left: 2px solid transparent;
+}
+.ps-item.on { background: var(--g4); color: var(--g2); border-left-color: var(--g); font-weight: 600; }
+.ps-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .6; }
+.preview-main { flex: 1; padding: 16px; overflow: hidden; }
+.pm-title { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 12px; font-family: var(--font-serif); }
+.pm-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 12px; }
+.pm-stat {
+  background: #f5f6f4; border-radius: 8px; padding: 9px 10px;
+}
+.pm-sl { font-size: 9px; color: var(--ink3); margin-bottom: 3px; font-weight: 600; }
+.pm-sv { font-size: 16px; font-weight: 800; color: var(--ink); font-family: var(--font-serif); }
+.pm-ss { font-size: 9px; color: var(--g); margin-top: 1px; }
+.pm-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pm-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 10px; }
+.pm-ct { font-size: 10px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.pm-qr { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
+.pm-qr:last-child { border-bottom: none; }
+.pm-qa { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; flex-shrink: 0; }
+.pm-qi { flex: 1; }
+.pm-qn { font-size: 10px; font-weight: 600; color: var(--ink); }
+.pm-qd { font-size: 9px; color: var(--ink3); }
+.pm-qv { font-size: 10px; font-weight: 700; color: var(--ink); }
+.pm-badge { font-size: 8px; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+
+/* ─── SECTION COMMONS ─── */
+section { padding: 100px 5%; }
+.section-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 20px;
+  background: var(--g3); color: var(--g2);
+  font-size: 12px; font-weight: 700;
+  border: 1px solid rgba(29,158,117,.2);
+  margin-bottom: 20px; letter-spacing: .04em; text-transform: uppercase;
+}
+.section-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 4vw, 54px);
+  line-height: 1.1; color: var(--ink);
+  letter-spacing: -.02em;
+  margin-bottom: 16px;
+}
+.section-h2 em { color: var(--g); font-style: italic; }
+.section-p {
+  font-size: clamp(15px, 1.5vw, 18px);
+  color: var(--ink2); max-width: 560px; line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+/* ─── LOGO TICKER ─── */
+.ticker-section {
+  padding: 40px 0;
+  background: var(--cream);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.ticker-label {
+  text-align: center;
+  font-size: 12px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink3);
+  margin-bottom: 24px;
+}
+.ticker-track { display: flex; gap: 60px; animation: ticker 20s linear infinite; width: max-content; }
+.ticker-track:hover { animation-play-state: paused; }
+.ticker-item {
+  font-size: 15px; font-weight: 700; color: var(--ink3);
+  white-space: nowrap; display: flex; align-items: center; gap: 8px;
+}
+.ticker-item span { width: 8px; height: 8px; border-radius: 50%; background: var(--g); opacity: .5; }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── PAIN POINTS / PROBLEMS ─── */
+.problems-section { background: var(--ink); }
+.problems-section .section-h2 { color: white; }
+.problems-section .section-p { color: rgba(255,255,255,.6); }
+.problems-section .section-tag { background: rgba(29,158,117,.2); color: #5de0b0; border-color: rgba(29,158,117,.3); }
+.problems-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
+  border-radius: var(--r-lg); overflow: hidden;
+  border: 1px solid rgba(255,255,255,.08);
+}
+.problem-card {
+  background: rgba(255,255,255,.04);
+  padding: 32px 28px;
+  border-right: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  transition: background .25s;
+}
+.problem-card:hover { background: rgba(29,158,117,.1); }
+.problem-num {
+  font-family: var(--font-serif);
+  font-size: 40px; color: rgba(29,158,117,.3);
+  margin-bottom: 12px; line-height: 1; font-weight: normal;
+}
+.problem-title { font-size: 17px; font-weight: 800; color: white; margin-bottom: 10px; }
+.problem-desc { font-size: 14px; color: rgba(255,255,255,.5); line-height: 1.65; }
+.problem-arrow {
+  display: inline-block; margin-top: 16px;
+  font-size: 13px; font-weight: 700; color: var(--g);
+}
+
+/* ─── FEATURES ─── */
+.features-section { background: var(--paper); }
+.features-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 48px;
+}
+.feat-tab {
+  padding: 9px 20px; border-radius: 20px;
+  font-size: 13.5px; font-weight: 700;
+  border: 1.5px solid var(--border);
+  color: var(--ink2); background: white;
+  cursor: pointer; transition: all .2s;
+}
+.feat-tab:hover { border-color: var(--g); color: var(--g); }
+.feat-tab.on { background: var(--g); color: white; border-color: var(--g); }
+.feat-panels { }
+.feat-panel { display: none; }
+.feat-panel.on { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.feat-panel-visual {
+  border-radius: var(--r-xl);
+  background: var(--cream);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  aspect-ratio: 4/3;
+  display: flex; flex-direction: column;
+}
+.feat-visual-header {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+}
+.feat-visual-dot { width: 8px; height: 8px; border-radius: 50%; }
+.feat-visual-body { padding: 16px; flex: 1; overflow: hidden; }
+.feat-list {
+  list-style: none; display: flex; flex-direction: column; gap: 14px;
+  margin-bottom: 32px;
+}
+.feat-list li {
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.feat-list-icon {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--g3); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.feat-list-icon svg { width: 12px; height: 12px; color: var(--g2); }
+.feat-list-text strong { display: block; font-size: 15px; font-weight: 700; color: var(--ink); }
+.feat-list-text span { font-size: 13.5px; color: var(--ink2); }
+
+/* ─── MINI DASHBOARD ILLUSTRATIONS ─── */
+.mini-row { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.mini-row:last-child { border-bottom: none; }
+.mini-av { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; flex-shrink: 0; }
+.mini-info { flex: 1; }
+.mini-title { font-size: 11px; font-weight: 600; color: var(--ink); }
+.mini-sub { font-size: 9px; color: var(--ink3); }
+.mini-val { font-size: 11px; font-weight: 700; color: var(--ink); }
+.mini-badge { font-size: 9px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+.mini-prog-track { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; margin: 4px 0; }
+.mini-prog-fill { height: 100%; border-radius: 2px; }
+.mini-stat { background: #f5f6f4; border-radius: 6px; padding: 8px 10px; }
+.mini-stat-l { font-size: 9px; color: var(--ink3); margin-bottom: 2px; }
+.mini-stat-v { font-size: 15px; font-weight: 800; color: var(--ink); font-family: var(--font-serif); }
+.mini-stat-s { font-size: 9px; color: var(--g); }
+.mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.mini-alert { border-radius: 6px; padding: 8px 10px; font-size: 10px; border-left: 3px solid; margin-bottom: 6px; }
+.mini-alert.red { background: #fef2f2; border-color: #e24b4a; color: #a32d2d; }
+.mini-alert.amber { background: #fef9ed; border-color: #ba7517; color: #854f0b; }
+.mini-alert.green { background: #f0faf6; border-color: #1d9e75; color: #0f6e56; }
+.mini-timer { font-family: var(--font-serif); font-size: 28px; font-weight: normal; color: var(--ink); text-align: center; padding: 12px 0; letter-spacing: 2px; }
+.mini-hbar { display: flex; align-items: center; gap: 7px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.mini-hbar:last-child { border-bottom: none; }
+.mini-hbar-l { font-size: 10px; color: var(--ink3); width: 70px; }
+.mini-hbar-t { flex: 1; height: 5px; border-radius: 3px; background: var(--border); overflow: hidden; }
+.mini-hbar-f { height: 100%; border-radius: 3px; }
+.mini-hbar-v { font-size: 10px; font-weight: 700; width: 30px; text-align: right; }
+
+/* ─── COUNTRIES ─── */
+.countries-section { background: var(--g4); }
+.countries-grid {
+  display: grid; grid-template-columns: repeat(5,1fr); gap: 12px;
+}
+.country-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 24px 16px;
+  text-align: center; transition: all .25s;
+}
+.country-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(14,20,16,.08); border-color: var(--g); }
+.country-flag { font-size: 36px; margin-bottom: 10px; }
+.country-name { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.country-detail { font-size: 12px; color: var(--ink3); }
+.country-features {
+  margin-top: 10px; display: flex; flex-direction: column; gap: 3px;
+}
+.country-feat { font-size: 11px; color: var(--ink3); display: flex; align-items: center; gap: 5px; }
+.country-feat::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--g); opacity: .6; flex-shrink: 0; }
+
+/* ─── TESTIMONIALS ─── */
+.testimonials-section { background: var(--paper); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.testimonial-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 28px;
+  transition: box-shadow .25s;
+}
+.testimonial-card:hover { box-shadow: 0 8px 32px rgba(14,20,16,.08); }
+.testimonial-stars { color: #f59e0b; font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+.testimonial-text {
+  font-family: var(--font-serif);
+  font-size: 17px; line-height: 1.65; color: var(--ink);
+  margin-bottom: 20px; font-style: italic;
+}
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.testimonial-av {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+}
+.testimonial-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.testimonial-role { font-size: 12px; color: var(--ink3); }
+
+/* ─── PRICING ─── */
+.pricing-section { background: var(--cream); }
+.pricing-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; max-width: 1160px; margin: 0 auto; }
+.pricing-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-xl); padding: 32px 28px;
+  position: relative; transition: all .25s;
+}
+.pricing-card:hover { box-shadow: 0 16px 48px rgba(14,20,16,.1); }
+.pricing-card.featured {
+  border: 2px solid var(--g);
+  box-shadow: 0 8px 32px rgba(29,158,117,.15);
+}
+.pricing-popular {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--g); color: white;
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 14px; border-radius: 20px;
+}
+.pricing-tier { font-size: 13px; font-weight: 700; color: var(--ink3); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; }
+.pricing-price {
+  font-family: var(--font-serif);
+  font-size: 44px; color: var(--ink); line-height: 1; margin-bottom: 4px;
+}
+.pricing-price sup { font-size: 20px; vertical-align: super; }
+.pricing-period { font-size: 13px; color: var(--ink3); margin-bottom: 24px; }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
+.pricing-features li {
+  font-size: 14px; color: var(--ink2);
+  display: flex; align-items: center; gap: 10px;
+}
+.pricing-features li::before {
+  content: ''; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--g3); flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%230F6E56' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center; background-size: 10px;
+}
+.pricing-features li.no { opacity: .4; }
+.pricing-features li.no::before { background-color: #f0f0f0; background-image: none; }
+.pricing-btn {
+  width: 100%; padding: 13px;
+  border-radius: var(--r); font-size: 15px; font-weight: 700;
+  transition: all .2s; border: 2px solid var(--g); color: var(--g);
+  background: transparent;
+}
+.pricing-btn:hover { background: var(--g3); }
+.pricing-btn.primary { background: var(--g); color: white; }
+.pricing-btn.primary:hover { background: var(--g2); }
+
+/* ─── HOW IT WORKS ─── */
+.how-section { background: var(--paper); }
+.how-steps {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 0;
+  position: relative;
+}
+.how-steps::before {
+  content: '';
+  position: absolute; top: 32px; left: 12.5%; right: 12.5%;
+  height: 1px; background: var(--border); z-index: 0;
+}
+.how-step {
+  text-align: center; padding: 0 20px;
+  position: relative; z-index: 1;
+}
+.how-step-num {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: white; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-family: var(--font-serif); font-size: 24px; color: var(--g);
+  transition: all .3s;
+}
+.how-step:hover .how-step-num { background: var(--g); color: white; border-color: var(--g); }
+.how-step-title { font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+.how-step-desc { font-size: 13.5px; color: var(--ink2); line-height: 1.6; }
+
+/* ─── CTA SECTION ─── */
+.cta-section {
+  background: var(--ink);
+  padding: 120px 5%; text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 60% at 50% 100%, rgba(29,158,117,.2) 0%, transparent 70%);
+}
+.cta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+.cta-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 5vw, 64px);
+  color: white; margin-bottom: 20px; line-height: 1.1; letter-spacing: -.02em;
+}
+.cta-h2 em { color: #5de0b0; font-style: italic; }
+.cta-sub { font-size: 18px; color: rgba(255,255,255,.6); margin-bottom: 40px; line-height: 1.6; }
+.cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-cta {
+  padding: 16px 36px; border-radius: var(--r-lg);
+  font-size: 16px; font-weight: 800;
+  background: var(--g); color: white; border: none;
+  transition: all .25s; letter-spacing: .01em;
+}
+.btn-cta:hover { background: #22b585; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(29,158,117,.4); }
+.btn-cta-ghost {
+  padding: 15px 36px; border-radius: var(--r-lg);
+  font-size: 16px; font-weight: 700;
+  background: transparent; color: rgba(255,255,255,.8);
+  border: 2px solid rgba(255,255,255,.2);
+  transition: all .25s;
+}
+.btn-cta-ghost:hover { border-color: rgba(255,255,255,.5); color: white; }
+.cta-note { font-size: 13px; color: rgba(255,255,255,.3); margin-top: 20px; }
+
+/* ─── STATS ─── */
+.stats-section { background: var(--g); padding: 60px 5%; }
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; max-width: 900px; margin: 0 auto; }
+.stat-item { text-align: center; border-right: 1px solid rgba(255,255,255,.2); }
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 4vw, 52px);
+  color: white; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 14px; color: rgba(255,255,255,.7); font-weight: 600; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink); color: rgba(255,255,255,.6);
+  padding: 64px 5% 32px;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand .nav-logo { margin-bottom: 14px; }
+.footer-brand .nav-logo-text { color: white; }
+.footer-desc { font-size: 14px; line-height: 1.7; max-width: 260px; margin-bottom: 20px; }
+.footer-social { display: flex; gap: 10px; }
+.footer-social a {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.footer-social a:hover { background: rgba(255,255,255,.15); }
+.footer-social svg { width: 16px; height: 16px; fill: rgba(255,255,255,.7); }
+.footer-col-title { font-size: 13px; font-weight: 800; color: white; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 16px; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links a { font-size: 14px; color: rgba(255,255,255,.5); transition: color .2s; }
+.footer-links a:hover { color: var(--g); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 14px;
+  font-size: 13px;
+}
+.footer-bottom-links { display: flex; gap: 20px; }
+.footer-bottom-links a { color: rgba(255,255,255,.4); transition: color .2s; }
+.footer-bottom-links a:hover { color: rgba(255,255,255,.7); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+
+/* ─── MOBILE NAV ─── */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column; gap: 4px; cursor: pointer;
+  padding: 4px;
+}
+.mobile-menu-btn span {
+  width: 22px; height: 2px; background: var(--ink);
+  border-radius: 2px; transition: all .3s;
+}
+.mobile-nav {
+  display: none;
+  position: fixed; inset: 0; background: var(--paper); z-index: 200;
+  padding: 80px 5%; flex-direction: column; gap: 8px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav-link {
+  font-size: 24px; font-weight: 800; color: var(--ink);
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  display: block;
+}
+.mobile-nav-close {
+  position: absolute; top: 18px; right: 5%;
+  font-size: 28px; color: var(--ink3); cursor: pointer;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .countries-grid { grid-template-columns: repeat(3,1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0 4%; }
+  .nav-links, .nav-cta .btn-ghost { display: none; }
+  .mobile-menu-btn { display: flex; }
+  section { padding: 72px 4%; }
+  .hero { padding: 100px 4% 60px; }
+  .problems-grid { grid-template-columns: 1fr; }
+  .feat-panel.on { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: repeat(2,1fr); gap: 32px; }
+  .how-steps::before { display: none; }
+  .stats-grid { grid-template-columns: repeat(2,1fr); gap: 24px; }
+  .stat-item { border-right: none; }
+  .countries-grid { grid-template-columns: repeat(2,1fr); }
+  .footer-grid { grid-template-columns: 1fr; }
+  .preview-body { height: 300px; }
+  .preview-sidebar { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-h1 { font-size: 36px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .countries-grid { grid-template-columns: repeat(2,1fr); }
+  .hero-actions { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <div class="nav-logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+    <span>Afri<em>Quote</em></span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#countries">Countries</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-ghost">Sign in</button>
+    <button class="btn-primary">Get started free</button>
+  </div>
+  <div class="mobile-menu-btn" onclick="openMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <span class="mobile-nav-close" onclick="closeMobileNav()">✕</span>
+  <a class="mobile-nav-link" href="#features" onclick="closeMobileNav()">Features</a>
+  <a class="mobile-nav-link" href="#how" onclick="closeMobileNav()">How it works</a>
+  <a class="mobile-nav-link" href="#countries" onclick="closeMobileNav()">Countries</a>
+  <a class="mobile-nav-link" href="#pricing" onclick="closeMobileNav()">Pricing</a>
+  <a class="mobile-nav-link" href="#testimonials" onclick="closeMobileNav()">Reviews</a>
+  <div style="margin-top:24px;display:flex;flex-direction:column;gap:12px">
+    <button class="btn-ghost" style="width:100%;padding:14px;font-size:16px">Sign in</button>
+    <button class="btn-primary" style="width:100%;padding:14px;font-size:16px;border-radius:12px">Get started free</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Built for Africa's 50 million+ professionals
+    </div>
+    <h1 class="hero-h1">
+      Run your business.<br>
+      <em>The African way.</em>
+    </h1>
+    <p class="hero-sub">
+      Quote, send proposals, win clients, manage projects, track time, monitor sites, and stay tax-compliant — all in one platform built for Naira, Cedis, M-Pesa, and the real challenges of doing business across Africa.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-xl" onclick="window.location='#pricing'">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        Start for free
+      </button>
+      <button class="btn-xl-outline" onclick="window.location='#features'">
+        See all features
+      </button>
+    </div>
+    <div class="hero-trust">
+      <div class="hero-trust-item">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L1.2 5.2l4-.6z" fill="#1D9E75"/></svg>
+        Free forever plan
+      </div>
+      <span class="trust-sep">·</span>
+      <div class="hero-trust-item">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L1.2 5.2l4-.6z" fill="#1D9E75"/></svg>
+        No credit card required
+      </div>
+      <span class="trust-sep">·</span>
+      <div class="hero-trust-item">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L1.2 5.2l4-.6z" fill="#1D9E75"/></svg>
+        Works offline
+      </div>
+      <span class="trust-sep">·</span>
+      <div class="hero-trust-item">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L1.2 5.2l4-.6z" fill="#1D9E75"/></svg>
+        WhatsApp delivery
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard preview -->
+  <div class="hero-preview">
+    <div class="preview-frame">
+      <div class="preview-bar">
+        <div class="preview-dot" style="background:#ff5f57"></div>
+        <div class="preview-dot" style="background:#febc2e"></div>
+        <div class="preview-dot" style="background:#28c840"></div>
+        <div class="preview-url">
+          <svg viewBox="0 0 12 12" fill="none"><path d="M6 1a5 5 0 100 10A5 5 0 006 1zM1 6h10" stroke="currentColor" stroke-width="1.2"/></svg>
+          app.afriquote.africa
+        </div>
+      </div>
+      <div class="preview-body">
+        <div class="preview-sidebar">
+          <div class="ps-logo">
+            <div class="ps-lm"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+            <div class="ps-lt">Afri<em>Quote</em></div>
+          </div>
+          <div class="ps-nav">
+            <div class="ps-item on"><div class="ps-dot"></div>Dashboard</div>
+            <div class="ps-item"><div class="ps-dot"></div>Quotes</div>
+            <div class="ps-item"><div class="ps-dot"></div>Invoices</div>
+            <div class="ps-item"><div class="ps-dot"></div>Sites</div>
+            <div class="ps-item"><div class="ps-dot"></div>Contracts</div>
+            <div class="ps-item"><div class="ps-dot"></div>Time</div>
+            <div class="ps-item"><div class="ps-dot"></div>Tax</div>
+            <div class="ps-item"><div class="ps-dot"></div>Cash flow</div>
+          </div>
+        </div>
+        <div class="preview-main">
+          <div class="pm-title">Good morning, Adaeze ✦</div>
+          <div class="pm-grid">
+            <div class="pm-stat"><div class="pm-sl">Revenue</div><div class="pm-sv">₦1.24M</div><div class="pm-ss">↑18% vs last month</div></div>
+            <div class="pm-stat"><div class="pm-sl">Active quotes</div><div class="pm-sv">7</div><div class="pm-ss">3 awaiting reply</div></div>
+            <div class="pm-stat"><div class="pm-sl">Outstanding</div><div class="pm-sv" style="color:#e24b4a">₦380K</div><div class="pm-ss" style="color:#e24b4a">2 overdue</div></div>
+            <div class="pm-stat"><div class="pm-sl">Health score</div><div class="pm-sv" style="color:#1D9E75">78</div><div class="pm-ss" style="color:#1D9E75">Healthy</div></div>
+          </div>
+          <div class="pm-row2">
+            <div class="pm-card">
+              <div class="pm-ct">Recent quotes</div>
+              <div class="pm-qr"><div class="pm-qa" style="background:#e1f5ee;color:#0f6e56">BR</div><div class="pm-qi"><div class="pm-qn">Brand identity</div><div class="pm-qd">BetaRide Lagos</div></div><span class="pm-badge" style="background:#e1f5ee;color:#0f6e56">Accepted</span></div>
+              <div class="pm-qr"><div class="pm-qa" style="background:#faeeda;color:#854f0b">TK</div><div class="pm-qi"><div class="pm-qn">Website redesign</div><div class="pm-qd">TradaKo Ltd</div></div><span class="pm-badge" style="background:#e6f1fb;color:#185fa5">Sent</span></div>
+              <div class="pm-qr"><div class="pm-qa" style="background:#fcebeb;color:#a32d2d">NP</div><div class="pm-qi"><div class="pm-qn">IT audit</div><div class="pm-qd">NovaPay Kenya</div></div><span class="pm-badge" style="background:#fcebeb;color:#a32d2d">Overdue</span></div>
+            </div>
+            <div class="pm-card">
+              <div class="pm-ct">Site alerts</div>
+              <div style="font-size:9px;background:#fcebeb;border-left:2px solid #e24b4a;padding:5px 7px;border-radius:3px;color:#a32d2d;margin-bottom:5px"><strong>Permit expired</strong> — Kigali Tower. Work paused.</div>
+              <div style="font-size:9px;background:#fef9ed;border-left:2px solid #ba7517;padding:5px 7px;border-radius:3px;color:#854f0b;margin-bottom:5px"><strong>Material delay</strong> — Accra Hub. Apr 12.</div>
+              <div style="font-size:9px;background:#f0faf6;border-left:2px solid #1d9e75;padding:5px 7px;border-radius:3px;color:#0f6e56"><strong>VAT due Apr 15</strong> — ₦93,750 payable.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-section">
+  <div class="ticker-label">Trusted by professionals across Africa</div>
+  <div style="overflow:hidden">
+    <div class="ticker-track">
+      <div class="ticker-item"><span></span>Architects</div>
+      <div class="ticker-item"><span></span>Designers</div>
+      <div class="ticker-item"><span></span>Engineers</div>
+      <div class="ticker-item"><span></span>Consultants</div>
+      <div class="ticker-item"><span></span>Contractors</div>
+      <div class="ticker-item"><span></span>Developers</div>
+      <div class="ticker-item"><span></span>Marketing Agencies</div>
+      <div class="ticker-item"><span></span>IT Professionals</div>
+      <div class="ticker-item"><span></span>Project Managers</div>
+      <div class="ticker-item"><span></span>Freelancers</div>
+      <div class="ticker-item"><span></span>Construction Firms</div>
+      <div class="ticker-item"><span></span>Digital Agencies</div>
+      <!-- duplicate for seamless loop -->
+      <div class="ticker-item"><span></span>Architects</div>
+      <div class="ticker-item"><span></span>Designers</div>
+      <div class="ticker-item"><span></span>Engineers</div>
+      <div class="ticker-item"><span></span>Consultants</div>
+      <div class="ticker-item"><span></span>Contractors</div>
+      <div class="ticker-item"><span></span>Developers</div>
+      <div class="ticker-item"><span></span>Marketing Agencies</div>
+      <div class="ticker-item"><span></span>IT Professionals</div>
+      <div class="ticker-item"><span></span>Project Managers</div>
+      <div class="ticker-item"><span></span>Freelancers</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEMS -->
+<section class="problems-section">
+  <div style="text-align:center;margin-bottom:56px">
+    <div class="section-tag reveal">The real pain points</div>
+    <h2 class="section-h2 reveal reveal-delay-1">We built this because<br>we <em>felt</em> these problems</h2>
+    <p class="section-p reveal reveal-delay-2" style="margin:0 auto 0">Every feature in AfriQuote exists because African professionals were losing time, money, and clients to problems that generic tools never solved.</p>
+  </div>
+  <div class="problems-grid reveal">
+    <div class="problem-card">
+      <div class="problem-num">01</div>
+      <div class="problem-title">Payment delays killing cash flow</div>
+      <div class="problem-desc">Over 77% of Nigerian freelancers report payment delays due to informal invoicing. AfriQuote's auto-chasers and mobile money integration get you paid 3× faster.</div>
+      <div class="problem-arrow">→ Payment chaser + Paystack/Flutterwave</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">02</div>
+      <div class="problem-title">Scope creep eating your profits</div>
+      <div class="problem-desc">"Just one more thing" from clients costs African professionals an average of 20% of project revenue. Our scope tracker flags every out-of-scope request in real time.</div>
+      <div class="problem-arrow">→ Scope tracker + change orders</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">03</div>
+      <div class="problem-title">Tax compliance confusion</div>
+      <div class="problem-desc">VAT rates differ across Nigeria, Ghana, Kenya, and South Africa. Withholding tax surprises. Filing deadlines missed. AfriQuote handles all of it automatically.</div>
+      <div class="problem-arrow">→ Multi-country tax dashboard</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">04</div>
+      <div class="problem-title">No visibility on remote sites</div>
+      <div class="problem-desc">Managing projects in Lagos while a site stalls in Kigali. Permits lapsing without notice. Weather halting work with no documentation. Solved with live site monitoring.</div>
+      <div class="problem-arrow">→ Site monitor + field log</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">05</div>
+      <div class="problem-title">Undercharging for your work</div>
+      <div class="problem-desc">Without time tracking, African professionals lose track of hours and undercharge by up to 30%. Our live timer and billable rate calculator show exactly what you're worth.</div>
+      <div class="problem-arrow">→ Time tracker + rate calculator</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">06</div>
+      <div class="problem-title">Proposals going cold with no follow-up</div>
+      <div class="problem-desc">Sending a proposal and waiting passively costs African professionals 30-40% of winnable deals. AfriQuote's proposal pipeline tracks every prospect from first contact to signed contract.</div>
+      <div class="problem-arrow">→ Proposal pipeline + follow-up alerts</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">07</div>
+      <div class="problem-title">Western tools that don't fit</div>
+      <div class="problem-desc">QuickBooks integrates with US banks. Xero doesn't know about WHT. Stripe doesn't work in Nigeria. AfriQuote is built from the ground up for African financial infrastructure.</div>
+      <div class="problem-arrow">→ Local payments + local compliance</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <div class="stat-num">9</div>
+      <div class="stat-label">African countries supported</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Modules in one platform</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-num">3×</div>
+      <div class="stat-label">Faster client payments</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-num">₦0</div>
+      <div class="stat-label">Monthly fees to start</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div style="text-align:center;margin-bottom:64px">
+    <div class="section-tag reveal">Simple from day one</div>
+    <h2 class="section-h2 reveal reveal-delay-1">From signup to<br><em>first invoice</em> in minutes</h2>
+  </div>
+  <div class="how-steps">
+    <div class="how-step reveal">
+      <div class="how-step-num">1</div>
+      <div class="how-step-title">Set up your profile</div>
+      <div class="how-step-desc">Add your business name, country, and preferred currency. AfriQuote auto-loads the right VAT rate and payment methods for your region.</div>
+    </div>
+    <div class="how-step reveal reveal-delay-1">
+      <div class="how-step-num">2</div>
+      <div class="how-step-title">Send proposals &amp; quotes</div>
+        <div class="how-step-desc">Build a tracked proposal for new prospects, or a detailed quote for existing clients. Send via WhatsApp or email. Track views and win probability in real time.</div>
+    </div>
+    <div class="how-step reveal reveal-delay-2">
+      <div class="how-step-num">3</div>
+      <div class="how-step-title">Get paid faster</div>
+      <div class="how-step-desc">Clients pay via Paystack, Flutterwave, M-Pesa, or bank transfer. Funds settle to your local account. Overdue invoices get chased automatically.</div>
+    </div>
+    <div class="how-step reveal reveal-delay-3">
+      <div class="how-step-num">4</div>
+      <div class="how-step-title">Grow with confidence</div>
+      <div class="how-step-desc">Track time, manage sites, monitor cash flow, stay tax-compliant, and use your business health score to make smarter decisions every month.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div style="text-align:center;margin-bottom:48px">
+    <div class="section-tag reveal">Everything you need</div>
+    <h2 class="section-h2 reveal reveal-delay-1">Eight modules.<br><em>One subscription.</em></h2>
+    <p class="section-p reveal reveal-delay-2" style="margin:0 auto">No juggling five different apps. AfriQuote puts your proposals, quotes, sites, contracts, time, tax, cash flow, and business health all under one roof — built from the ground up for the African context.</p>
+  </div>
+  <div class="features-tabs reveal">
+    <div class="feat-tab on" onclick="switchFeat('finance',this)">Finance</div>
+    <div class="feat-tab" onclick="switchFeat('sites',this)">Site monitoring</div>
+    <div class="feat-tab" onclick="switchFeat('contracts',this)">Contracts</div>
+    <div class="feat-tab" onclick="switchFeat('time',this)">Time tracking</div>
+    <div class="feat-tab" onclick="switchFeat('tax',this)">Tax compliance</div>
+    <div class="feat-tab" onclick="switchFeat('cashflow',this)">Cash flow</div>
+    <div class="feat-tab" onclick="switchFeat('health',this)">Business health</div>
+    <div class="feat-tab" onclick="switchFeat('proposals',this)">Proposals</div>
+  </div>
+
+  <!-- Finance -->
+  <div class="feat-panel on" id="feat-finance">
+    <div>
+      <div class="section-tag">Finance</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">Quote, invoice, and<br>get paid in <em>any</em> currency</h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">Build detailed quotes with line items, auto-VAT, and branded proposals. Send via email or WhatsApp. Convert accepted quotes to invoices in one click.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Multi-currency quoting</strong><span>NGN, GHS, KES, ZAR, USD, GBP and more</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Auto-VAT calculation</strong><span>Nigeria 7.5%, Ghana 12.5%, Kenya 16%, SA 15%</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>WhatsApp delivery</strong><span>90%+ open rate vs. 20% for email</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Paystack, Flutterwave, M-Pesa, MTN MoMo</strong><span>Accept payments how your clients actually pay</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Quotes</span></div>
+      <div class="feat-visual-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+          <div class="mini-stat"><div class="mini-stat-l">Revenue (Apr)</div><div class="mini-stat-v">₦1.24M</div><div class="mini-stat-s">↑18% vs last month</div></div>
+          <div class="mini-stat"><div class="mini-stat-l">Outstanding</div><div class="mini-stat-v" style="color:var(--red)">₦380K</div><div class="mini-stat-s" style="color:var(--red)">2 overdue</div></div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px">Recent quotes</div>
+          <div class="mini-row"><div class="mini-av" style="background:#e1f5ee;color:#0f6e56;width:22px;height:22px">BR</div><div class="mini-info"><div class="mini-title">Brand identity</div><div class="mini-sub">BetaRide Lagos</div></div><span class="mini-badge" style="background:#e1f5ee;color:#0f6e56">Accepted</span></div>
+          <div class="mini-row"><div class="mini-av" style="background:#faeeda;color:#854f0b;width:22px;height:22px">TK</div><div class="mini-info"><div class="mini-title">Website redesign</div><div class="mini-sub">TradaKo Ltd · ₦850,000</div></div><span class="mini-badge" style="background:#e6f1fb;color:#185fa5">Sent</span></div>
+          <div class="mini-row"><div class="mini-av" style="background:#fcebeb;color:#a32d2d;width:22px;height:22px">NP</div><div class="mini-info"><div class="mini-title">IT audit report</div><div class="mini-sub">NovaPay Kenya</div></div><span class="mini-badge" style="background:#fcebeb;color:#a32d2d">Overdue</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sites -->
+  <div class="feat-panel" id="feat-sites">
+    <div>
+      <div class="section-tag">Site monitoring</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">Know what's happening<br>on <em>every site</em>, everywhere</h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">Monitor multiple sites across Africa from one dashboard. Track progress, weather, permits, team check-ins, and daily field logs — even when you're offsite.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>GPS check-in with timestamp</strong><span>Audit trail for every site visit</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Real-time weather per site</strong><span>Work/pause/at-risk status updated daily</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Digital field log</strong><span>Replaces paper site diaries — timestamped, attributed</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Milestone & permit alerts</strong><span>Never miss a permit expiry or blocked milestone</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Site overview</span></div>
+      <div class="feat-visual-body">
+        <div class="mini-alert red"><strong>Permit expired — Kigali Tower</strong>. KGL-2024-0312 lapsed. Work must pause.</div>
+        <div class="mini-alert amber"><strong>Material delay — Accra Hub</strong>. Conduit delivery pushed to Apr 12.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px;margin-top:6px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px">Active sites</div>
+          <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span style="font-weight:600;color:var(--ink)">Lekki Phase 2 Housing</span><span class="mini-badge" style="background:#e1f5ee;color:#0f6e56">On track</span></div><div class="mini-prog-track"><div class="mini-prog-fill" style="width:62%;background:#1d9e75"></div></div><div style="font-size:9px;color:var(--ink3)">Phase 3/5 · 62% · 4 on site</div></div>
+          <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span style="font-weight:600;color:var(--ink)">Accra Tech Hub</span><span class="mini-badge" style="background:#faeeda;color:#854f0b">Delayed</span></div><div class="mini-prog-track"><div class="mini-prog-fill" style="width:41%;background:#ba7517"></div></div><div style="font-size:9px;color:var(--ink3)">Phase 2/4 · 41% · 0 on site (rain)</div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span style="font-weight:600;color:var(--ink)">Kigali Mixed-Use Tower</span><span class="mini-badge" style="background:#fcebeb;color:#a32d2d">At risk</span></div><div class="mini-prog-track"><div class="mini-prog-fill" style="width:12%;background:#e24b4a"></div></div><div style="font-size:9px;color:var(--ink3)">Phase 1/7 · 12% · Permit blocked</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contracts -->
+  <div class="feat-panel" id="feat-contracts">
+    <div>
+      <div class="section-tag">Contracts</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">Stop working for<br><em>free.</em> Protect your scope.</h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">Professionally drafted contracts with e-signatures, automated scope creep detection, change order workflows, and a client portal — all in one place.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>4 contract templates</strong><span>Freelance SOW, construction, retainer, NDA</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Live scope creep tracker</strong><span>Flags out-of-scope requests as they arrive</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>One-click change orders</strong><span>Raise, price, and send change orders in seconds</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Client portal</strong><span>Clients see milestones without seeing your finances</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Scope tracker</span></div>
+      <div class="feat-visual-body">
+        <div class="mini-alert red" style="margin-bottom:8px"><strong>2 scope alerts</strong> — review before next client meeting.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px">TradaKo Ltd — Website redesign</div>
+          <div class="mini-row"><div style="width:7px;height:7px;border-radius:50%;background:#e24b4a;flex-shrink:0"></div><div class="mini-info"><div class="mini-title">"Can you add a blog &amp; newsletter?"</div><div class="mini-sub">Apr 5 · Not in SOW · Est. 12hrs</div></div><span class="mini-badge" style="background:#e6f1fb;color:#185fa5">Raise CO</span></div>
+          <div class="mini-row"><div style="width:7px;height:7px;border-radius:50%;background:#ba7517;flex-shrink:0"></div><div class="mini-info"><div class="mini-title">"3 more homepage concepts?"</div><div class="mini-sub">Apr 6 · Revision 2/2 used</div></div><span class="mini-badge" style="background:#faeeda;color:#854f0b">Round 3</span></div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px;margin-top:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:6px">Contract templates</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="font-size:10px;padding:3px 8px;border-radius:12px;background:var(--g3);color:var(--g2);font-weight:600">Freelance SOW</span>
+            <span style="font-size:10px;padding:3px 8px;border-radius:12px;background:var(--g3);color:var(--g2);font-weight:600">Construction</span>
+            <span style="font-size:10px;padding:3px 8px;border-radius:12px;background:var(--g3);color:var(--g2);font-weight:600">Retainer</span>
+            <span style="font-size:10px;padding:3px 8px;border-radius:12px;background:var(--g3);color:var(--g2);font-weight:600">NDA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time -->
+  <div class="feat-panel" id="feat-time">
+    <div>
+      <div class="section-tag">Time tracking</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">Every hour tracked.<br><em>Every naira</em> billed.</h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">African professionals lose up to 30% of revenue by not tracking time accurately. AfriQuote's live timer and log ensure nothing goes unbilled.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>One-click timer</strong><span>Start, stop, reset — log sessions to any project</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Unbilled hours alert</strong><span>Never end the week with forgotten billable time</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Utilisation report</strong><span>Know your billable % — target 80%+</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Export to invoice</strong><span>Turn a week's time log into a client invoice in one click</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Time tracker</span></div>
+      <div class="feat-visual-body">
+        <div class="mini-grid" style="margin-bottom:10px">
+          <div class="mini-stat"><div class="mini-stat-l">Today</div><div class="mini-stat-v">4h 22m</div><div class="mini-stat-s">2 projects</div></div>
+          <div class="mini-stat"><div class="mini-stat-l">Billable</div><div class="mini-stat-v" style="color:var(--g)">₦281K</div><div class="mini-stat-s" style="color:var(--g)">Today</div></div>
+        </div>
+        <div class="mini-timer" id="previewTimer">00:23:14</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px;margin-top:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:6px">Hours by project</div>
+          <div class="mini-hbar"><span class="mini-hbar-l">TradaKo</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:72%;background:#1d9e75"></div></div><span class="mini-hbar-v" style="color:#1d9e75">28h</span></div>
+          <div class="mini-hbar"><span class="mini-hbar-l">BetaRide</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:46%;background:#185fa5"></div></div><span class="mini-hbar-v" style="color:#185fa5">18h</span></div>
+          <div class="mini-hbar"><span class="mini-hbar-l">AgroConnect</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:28%;background:#ba7517"></div></div><span class="mini-hbar-v" style="color:#ba7517">11h</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tax -->
+  <div class="feat-panel" id="feat-tax">
+    <div>
+      <div class="section-tag">Tax compliance</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">Stay compliant across<br><em>every</em> African market</h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">VAT rates, withholding tax, and filing deadlines are different across every African country. AfriQuote tracks all of them automatically so you never face surprise penalties.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Multi-country VAT</strong><span>Auto-rates for NG, GH, KE, ZA, RW and more</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Withholding tax tracker</strong><span>Logs WHT deductions clients make on your invoices</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Deadline calendar</strong><span>Days-remaining counters for every filing date</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>2025 Nigeria NTAA ready</strong><span>Updated for the latest tax reforms</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Tax dashboard</span></div>
+      <div class="feat-visual-body">
+        <div class="mini-alert red"><strong>VAT return due in 8 days</strong> — ₦93,750 payable to FIRS. Apr 15.</div>
+        <div class="mini-grid" style="margin:8px 0">
+          <div class="mini-stat"><div class="mini-stat-l">VAT collected</div><div class="mini-stat-v">₦187,500</div><div class="mini-stat-s">At 7.5%</div></div>
+          <div class="mini-stat"><div class="mini-stat-l">WHT credits</div><div class="mini-stat-v" style="color:var(--g)">₦62,500</div><div class="mini-stat-s" style="color:var(--g)">Deductible</div></div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:7px">Upcoming deadlines</div>
+          <div class="mini-row"><div style="width:7px;height:7px;border-radius:50%;background:#e24b4a;flex-shrink:0"></div><div class="mini-info"><div class="mini-title">Nigeria VAT — Q1</div><div class="mini-sub">FIRS · ₦93,750</div></div><span style="font-size:10px;font-weight:700;color:#e24b4a">8 days</span></div>
+          <div class="mini-row"><div style="width:7px;height:7px;border-radius:50%;background:#ba7517;flex-shrink:0"></div><div class="mini-info"><div class="mini-title">Income tax — Nigeria</div><div class="mini-sub">LIRS · Annual filing</div></div><span style="font-size:10px;font-weight:700;color:#ba7517">84 days</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cash flow -->
+  <div class="feat-panel" id="feat-cashflow">
+    <div>
+      <div class="section-tag">Cash flow</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">Always know what's<br>coming <em>in and out</em></h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">Cash flow gaps kill good businesses. AfriQuote gives you a weekly forecast based on real signed contracts, auto-chases overdue invoices, and tracks every expense.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Weekly cash flow forecast</strong><span>Based on signed contracts and payment terms</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Automated payment chaser</strong><span>Polite reminders via email or WhatsApp</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Expense tracking</strong><span>Log costs with tax-deductible flagging</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>6-month trend chart</strong><span>Spot patterns in your income and spending</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Cash flow</span></div>
+      <div class="feat-visual-body">
+        <div class="mini-grid" style="margin-bottom:10px">
+          <div class="mini-stat"><div class="mini-stat-l">Cash in (Apr)</div><div class="mini-stat-v" style="color:var(--g)">₦1.24M</div><div class="mini-stat-s" style="color:var(--g)">↑18%</div></div>
+          <div class="mini-stat"><div class="mini-stat-l">Net month</div><div class="mini-stat-v">₦928K</div><div class="mini-stat-s" style="color:var(--g)">Strong</div></div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:6px">Payment chaser</div>
+          <div class="mini-row"><div class="mini-info"><div class="mini-title">NovaPay Kenya — KES 47,500</div><div class="mini-sub">7 days overdue · Invoice #40</div></div><span class="mini-badge" style="background:#fcebeb;color:#a32d2d">Chase</span></div>
+          <div class="mini-row"><div class="mini-info"><div class="mini-title">TradaKo Ltd — ₦425,000</div><div class="mini-sub">Due Apr 20 · Not overdue</div></div><span class="mini-badge" style="background:#faeeda;color:#854f0b">Remind</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Health -->
+  <div class="feat-panel" id="feat-health">
+    <div>
+      <div class="section-tag">Business health</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">One score that tells you<br><em>how your business</em> is doing</h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">AfriQuote's health score synthesises your cash flow, invoicing speed, contract coverage, tax compliance, client diversity, and scope protection into a single actionable number.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Live rate calculator</strong><span>Works backwards from income goal to min. hourly rate</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>African market benchmarks</strong><span>Compare your rate to Lagos, Nairobi, Accra, SA peers</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Retainer stability tracker</strong><span>Measure % of income from predictable retainers</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Actionable improvement tips</strong><span>Specific actions to raise your score each week</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Business health</span></div>
+      <div class="feat-visual-body">
+        <div style="text-align:center;padding:10px 0 8px"><div style="font-size:48px;font-weight:800;color:var(--g);font-family:var(--font-serif)">78</div><div style="font-size:11px;color:var(--ink3)">Overall health · Healthy</div></div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px">
+          <div class="mini-hbar"><span class="mini-hbar-l">Cash flow</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:88%;background:#1d9e75"></div></div><span class="mini-hbar-v" style="color:#1d9e75">88</span></div>
+          <div class="mini-hbar"><span class="mini-hbar-l">Invoicing</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:82%;background:#1d9e75"></div></div><span class="mini-hbar-v" style="color:#1d9e75">82</span></div>
+          <div class="mini-hbar"><span class="mini-hbar-l">Contracts</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:75%;background:#185fa5"></div></div><span class="mini-hbar-v" style="color:#185fa5">75</span></div>
+          <div class="mini-hbar"><span class="mini-hbar-l">Tax</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:65%;background:#ba7517"></div></div><span class="mini-hbar-v" style="color:#ba7517">65</span></div>
+          <div class="mini-hbar"><span class="mini-hbar-l">Scope</span><div class="mini-hbar-t"><div class="mini-hbar-f" style="width:60%;background:#ba7517"></div></div><span class="mini-hbar-v" style="color:#ba7517">60</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Proposals -->
+  <div class="feat-panel" id="feat-proposals">
+    <div>
+      <div class="section-tag">Proposals</div>
+      <h3 style="font-family:var(--font-serif);font-size:clamp(28px,3vw,40px);line-height:1.15;margin-bottom:16px;letter-spacing:-.02em">Win more clients with a<br><em>structured pipeline</em></h3>
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:28px;line-height:1.7">Track every proposal from first contact to signed contract — with win probability scoring, follow-up reminders, activity timelines, and a one-click convert-to-contract flow.</p>
+      <ul class="feat-list">
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Kanban pipeline board</strong><span>Draft → Sent → Viewed → Meeting → Negotiating → Won</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Win probability scoring</strong><span>Auto-estimated from stage + activity signals, overrideable</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>Activity timeline</strong><span>Log calls, meetings, emails — full audit trail per proposal</span></div></li>
+        <li><div class="feat-list-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feat-list-text"><strong>One-click convert to contract</strong><span>Won proposal becomes a signed contract in seconds</span></div></li>
+      </ul>
+    </div>
+    <div class="feat-panel-visual">
+      <div class="feat-visual-header"><div class="feat-visual-dot" style="background:#ff5f57"></div><div class="feat-visual-dot" style="background:#febc2e"></div><div class="feat-visual-dot" style="background:#28c840"></div><span style="font-size:11px;color:var(--ink3);margin-left:6px">Proposal pipeline</span></div>
+      <div class="feat-visual-body">
+        <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
+          <div style="min-width:130px;flex-shrink:0">
+            <div style="font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Negotiating</div>
+            <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:9px;border-left:2px solid #1d9e75">
+              <div style="font-size:10px;font-weight:600;color:var(--ink)">Digital transformation</div>
+              <div style="font-size:9px;color:var(--ink3);margin:2px 0 5px">BetaRide Lagos</div>
+              <div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:4px">₦2.4M</div>
+              <div style="height:3px;border-radius:2px;background:#eee;overflow:hidden;margin-bottom:4px"><div style="width:75%;height:100%;background:#1d9e75;border-radius:2px"></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;color:#1d9e75;background:#e1f5ee;padding:1px 5px;border-radius:3px">75%</span><span style="font-size:9px;color:#ba7517">↺ in 3d</span></div>
+            </div>
+          </div>
+          <div style="min-width:130px;flex-shrink:0">
+            <div style="font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Viewed</div>
+            <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:9px">
+              <div style="font-size:10px;font-weight:600;color:var(--ink)">Brand identity</div>
+              <div style="font-size:9px;color:var(--ink3);margin:2px 0 5px">TradaKo Ltd</div>
+              <div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:4px">₦580K</div>
+              <div style="height:3px;border-radius:2px;background:#eee;overflow:hidden;margin-bottom:4px"><div style="width:35%;height:100%;background:#185fa5;border-radius:2px"></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;font-weight:600;color:#185fa5;background:#e6f1fb;padding:1px 5px;border-radius:3px">35%</span><span style="font-size:9px;color:#ba7517">↺ Tomorrow</span></div>
+            </div>
+          </div>
+          <div style="min-width:130px;flex-shrink:0">
+            <div style="font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Won ✓</div>
+            <div style="background:white;border:1px solid #9fe1cb;border-radius:8px;padding:9px;border-left:2px solid #1d9e75">
+              <div style="font-size:10px;font-weight:600;color:var(--ink)">IT audit — NovaPay</div>
+              <div style="font-size:9px;color:var(--ink3);margin:2px 0 5px">NovaPay Kenya</div>
+              <div style="font-size:11px;font-weight:700;color:#1d9e75;margin-bottom:4px">KES 220K</div>
+              <div style="background:#e1f5ee;border-radius:5px;padding:5px;font-size:9px;color:#0f6e56;font-weight:600;margin-top:6px">🎉 Convert to contract →</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:10px;margin-top:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:6px">Pipeline stats</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div style="background:#f5f6f4;border-radius:6px;padding:7px"><div style="font-size:9px;color:#888;margin-bottom:2px">Win rate</div><div style="font-size:14px;font-weight:700;color:#1d9e75">50%</div></div>
+            <div style="background:#f5f6f4;border-radius:6px;padding:7px"><div style="font-size:9px;color:#888;margin-bottom:2px">Pipeline</div><div style="font-size:13px;font-weight:700">₦3.28M</div></div>
+            <div style="background:#f5f6f4;border-radius:6px;padding:7px"><div style="font-size:9px;color:#888;margin-bottom:2px">Weighted</div><div style="font-size:13px;font-weight:700;color:#185fa5">₦2.04M</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- COUNTRIES -->
+<section class="countries-section" id="countries">
+  <div style="text-align:center;margin-bottom:48px">
+    <div class="section-tag reveal">Across the continent</div>
+    <h2 class="section-h2 reveal reveal-delay-1">Built for <em>every corner</em><br>of Africa</h2>
+    <p class="section-p reveal reveal-delay-2" style="margin:0 auto">Local currencies, local payment providers, local tax rates, and local compliance — because Africa isn't one market, it's fifty.</p>
+  </div>
+  <div class="countries-grid reveal">
+    <div class="country-card"><div class="country-flag">🇳🇬</div><div class="country-name">Nigeria</div><div class="country-detail">Naira (₦)</div><div class="country-features"><div class="country-feat">7.5% VAT (FIRS)</div><div class="country-feat">Paystack + Flutterwave</div><div class="country-feat">WHT tracking</div><div class="country-feat">2025 NTAA ready</div></div></div>
+    <div class="country-card"><div class="country-flag">🇬🇭</div><div class="country-name">Ghana</div><div class="country-detail">Cedi (GH₵)</div><div class="country-features"><div class="country-feat">12.5% VAT (GRA)</div><div class="country-feat">Paystack + MTN MoMo</div><div class="country-feat">GHS invoicing</div></div></div>
+    <div class="country-card"><div class="country-flag">🇰🇪</div><div class="country-name">Kenya</div><div class="country-detail">Shilling (KES)</div><div class="country-features"><div class="country-feat">16% VAT (KRA)</div><div class="country-feat">M-Pesa integration</div><div class="country-feat">iTax compliance</div></div></div>
+    <div class="country-card"><div class="country-flag">🇿🇦</div><div class="country-name">South Africa</div><div class="country-detail">Rand (R)</div><div class="country-features"><div class="country-feat">15% VAT (SARS)</div><div class="country-feat">Yoco + PayFast</div><div class="country-feat">POPIA compliant</div></div></div>
+    <div class="country-card"><div class="country-flag">🇷🇼</div><div class="country-name">Rwanda</div><div class="country-detail">RWF</div><div class="country-features"><div class="country-feat">18% VAT (RRA)</div><div class="country-feat">Bank transfer</div><div class="country-feat">Permit tracking</div></div></div>
+  </div>
+  <p style="text-align:center;font-size:14px;color:var(--ink3);margin-top:24px;font-style:italic" class="reveal">Also available for Tanzania, Senegal, Côte d'Ivoire, Egypt — with more countries added monthly.</p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div style="text-align:center;margin-bottom:48px">
+    <div class="section-tag reveal">What professionals say</div>
+    <h2 class="section-h2 reveal reveal-delay-1">Trusted by professionals<br>across <em>the continent</em></h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Before AfriQuote, I was losing money every month to scope creep and late payments. The change order feature alone saved me more than my entire subscription in the first week."</p>
+      <div class="testimonial-author"><div class="testimonial-av" style="background:#e1f5ee;color:#0f6e56">AO</div><div><div class="testimonial-name">Adaeze Okafor</div><div class="testimonial-role">Brand designer · Lagos, Nigeria</div></div></div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"I manage construction sites in Lagos and Nairobi at the same time. Having GPS check-ins, field logs, and site weather all in one place has completely changed how I run my projects."</p>
+      <div class="testimonial-author"><div class="testimonial-av" style="background:#faeeda;color:#854f0b">KA</div><div><div class="testimonial-name">Kwame Asante</div><div class="testimonial-role">Civil engineer · Accra, Ghana</div></div></div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"The tax module is the feature I didn't know I desperately needed. Filing VAT in Nigeria and Kenya simultaneously was a nightmare. AfriQuote made it straightforward."</p>
+      <div class="testimonial-author"><div class="testimonial-av" style="background:#e6f1fb;color:#185fa5">NW</div><div><div class="testimonial-name">Njoki Wambui</div><div class="testimonial-role">IT consultant · Nairobi, Kenya</div></div></div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"The proposal pipeline transformed how I follow up with prospects. I used to send a proposal and forget. Now I can see exactly who has viewed it, when, and what the next step should be."</p>
+      <div class="testimonial-author"><div class="testimonial-av" style="background:#faeeda;color:#854f0b">TO</div><div><div class="testimonial-name">Tunde Ogundimu</div><div class="testimonial-role">Management consultant · Abuja, Nigeria</div>
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="testimonial-text">"I have installed solar systems at over 340 locations across Lagos, Ogun, and Abuja. Managing site logs, GPS check-ins, and client invoicing for that many installations manually was impossible. AfriQuote's Sites module cut my admin time by 70%. I now see every project's progress from one dashboard and get paid faster."</p>
+      <div class="testimonial-author"><div class="testimonial-av" style="background:#fef9c3;color:#713f12">BO</div><div><div class="testimonial-name">Biodun Olatunde</div><div class="testimonial-role">Solar installation contractor &middot; 340+ sites &middot; Lagos, Nigeria</div></div></div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="testimonial-text">"Smart home integration is high-ticket, multi-room work across many locations. Clients expect professional documentation at every stage. AfriQuote gives me branded quotes, e-sign contracts with scope protection, and a payment link in one seamless flow. I closed three projects above &#8358;4M last quarter with zero scope disputes."</p>
+      <div class="testimonial-author"><div class="testimonial-av" style="background:#ede9fe;color:#5b21b6">TA</div><div><div class="testimonial-name">Temitayo Adeyinka</div><div class="testimonial-role">Smart home &amp; automation installer &middot; 60+ locations &middot; Abuja &amp; Lagos</div></div></div>
+    </div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div style="text-align:center;margin-bottom:56px">
+    <div class="section-tag reveal">Pricing</div>
+    <h2 class="section-h2 reveal reveal-delay-1">Simple pricing.<br><em>No surprises.</em></h2>
+    <p class="section-p reveal reveal-delay-2" style="margin:0 auto">Start free. Upgrade when you're ready. No hidden fees, no setup costs, no contracts. Cancel anytime.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <div class="pricing-tier">Free</div>
+      <div class="pricing-price"><sup></sup>₦0</div>
+      <div class="pricing-period">Forever free · No credit card</div>
+      <ul class="pricing-features">
+        <li>5 quotes per month</li>
+        <li>3 active clients</li>
+        <li>Basic invoicing</li>
+        <li>1 active site</li>
+        <li>WhatsApp support</li>
+        <li class="no">Contracts module</li>
+        <li class="no">Time tracking</li>
+        <li class="no">Tax dashboard</li>
+        <li class="no">Sites module</li>
+      </ul>
+      <button class="pricing-btn">Get started free</button>
+    </div>
+    <div class="pricing-card reveal reveal-delay-1">
+      <div class="pricing-tier">Lite</div>
+      <div class="pricing-price"><sup>₦</sup>10,000</div>
+      <div class="pricing-period">per month · or ₦100,000/year (save 17%)</div>
+      <ul class="pricing-features">
+        <li>Unlimited quotes &amp; invoices</li>
+        <li>Unlimited clients</li>
+        <li>Up to 3 active sites</li>
+        <li>Basic contracts (2 templates)</li>
+        <li>VAT &amp; WHT calculator</li>
+        <li>Time tracking</li>
+        <li>WhatsApp invoice delivery</li>
+        <li class="no">Proposal pipeline board</li>
+        <li class="no">API access</li>
+      </ul>
+      <button class="pricing-btn">Start Lite free for 14 days</button>
+    </div>
+    <div class="pricing-card featured reveal reveal-delay-2">
+      <div class="pricing-popular">Most popular</div>
+      <div class="pricing-tier">Pro</div>
+      <div class="pricing-price"><sup>₦</sup>20,000</div>
+      <div class="pricing-period">per month · or ₦200,000/year (save 17%)</div>
+      <ul class="pricing-features">
+        <li>Everything in Lite</li>
+        <li>Unlimited active sites</li>
+        <li>All 8 modules</li>
+        <li>Full contracts + e-sign</li>
+        <li>Proposal pipeline (board view)</li>
+        <li>Full tax compliance dashboard</li>
+        <li>Cash flow forecasting</li>
+        <li>Business health score</li>
+        <li>Priority WhatsApp support</li>
+      </ul>
+      <button class="pricing-btn primary">Start Pro free for 14 days</button>
+    </div>
+    <div class="pricing-card reveal reveal-delay-3">
+      <div class="pricing-tier">Team</div>
+      <div class="pricing-price"><sup>₦</sup>50,000</div>
+      <div class="pricing-period">per month · up to 10 team members</div>
+      <ul class="pricing-features">
+        <li>Everything in Pro</li>
+        <li>10 team members</li>
+        <li>Role-based access control</li>
+        <li>Team GPS attendance tracking</li>
+        <li>Shared client &amp; site database</li>
+        <li>API access</li>
+        <li>Dedicated account manager</li>
+        <li>Custom contract templates</li>
+        <li>White-label options available</li>
+      </ul>
+      <button class="pricing-btn">Contact sales</button>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:13px;color:var(--ink3);margin-top:28px" class="reveal">All prices shown in NGN. Equivalent plans available in GHS, KES, ZAR, RWF, and USD at local rates. Annual billing saves 17% on all paid plans.</p>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <h2 class="cta-h2">Your business deserves<br>a platform built <em>for Africa</em></h2>
+    <p class="cta-sub">Join professionals across Nigeria, Ghana, Kenya, South Africa, and Rwanda who are already winning more proposals, quoting faster, getting paid sooner, and running tighter businesses with AfriQuote.</p>
+    <div class="cta-actions">
+      <button class="btn-cta">Start for free — no card needed</button>
+      <button class="btn-cta-ghost">Book a demo</button>
+    </div>
+    <p class="cta-note">Free forever plan · Works offline · WhatsApp support included</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:14px">
+        <div class="nav-logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+        <span class="nav-logo-text" style="color:white;font-family:var(--font-sans);font-weight:800;font-size:18px">Afri<em style="color:var(--g);font-style:normal">Quote</em></span>
+      </div>
+      <p class="footer-desc">The all-in-one business platform built for African professionals. Quote, invoice, manage sites, track time, and stay tax-compliant.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Twitter/X"><svg viewBox="0 0 16 16"><path d="M12.6 2h2.4l-5.2 5.9L16 14h-4.8l-3.7-4.9L2.8 14H.4l5.6-6.3L0 2h4.9l3.4 4.4L12.6 2z"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 16 16"><path d="M0 1.8C0 .8.8 0 1.8 0h12.4C15.2 0 16 .8 16 1.8v12.4c0 1-.8 1.8-1.8 1.8H1.8C.8 16 0 15.2 0 14.2V1.8zm4.8 1.7a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8zm-1.2 1.4v8h2.4v-8H3.6zm4 0v8H10V9.8c0-1 .2-2 1.4-2 1.1 0 1.1 1.1 1.1 2V13h2.4V9.3c0-2.2-.5-3.9-3-3.9-1.2 0-2 .7-2.4 1.3v-1.1H7.6z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="4" r="1" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Product</div>
+      <ul class="footer-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">API docs</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Countries</div>
+      <ul class="footer-links">
+        <li><a href="#">Nigeria</a></li>
+        <li><a href="#">Ghana</a></li>
+        <li><a href="#">Kenya</a></li>
+        <li><a href="#">South Africa</a></li>
+        <li><a href="#">Rwanda</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About us</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Press kit</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 AfriQuote. Built with ♥ for Africa's professionals.</div>
+    <div class="footer-bottom-links">
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms of service</a>
+      <a href="#">Cookie policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAVBAR SCROLL ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 20) {
+    navbar.style.boxShadow = '0 2px 20px rgba(14,20,16,.08)';
+  } else {
+    navbar.style.boxShadow = 'none';
+  }
+});
+
+// ── MOBILE NAV ──
+function openMobileNav() { document.getElementById('mobileNav').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); document.body.style.overflow = ''; }
+
+// ── SCROLL REVEAL ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// ── FEATURE TABS ──
+function switchFeat(id, el) {
+  document.querySelectorAll('.feat-tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.feat-panel').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('feat-' + id).classList.add('on');
+}
+
+// ── ANIMATED PREVIEW TIMER ──
+let previewSecs = 23 * 60 + 14;
+function tickPreviewTimer() {
+  previewSecs++;
+  const h = Math.floor(previewSecs / 3600);
+  const m = Math.floor((previewSecs % 3600) / 60);
+  const s = previewSecs % 60;
+  const el = document.getElementById('previewTimer');
+  if (el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+setInterval(tickPreviewTimer, 1000);
+</script>
+</body>
+</html>

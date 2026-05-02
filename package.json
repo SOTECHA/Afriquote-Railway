@@ -1,0 +1,21 @@
+{
+  "name": "afriquote",
+  "version": "1.0.0",
+  "description": "AfriQuote — Africa's all-in-one business platform for contractors and consultants",
+  "main": "server.js",
+  "scripts": {
+    "start":    "node server.js",
+    "dev":      "node --watch server.js",
+    "seed":     "node scripts/seed.js",
+    "migrate":  "node scripts/migrate.js",
+    "test":     "node tests/test_runner.js",
+    "secret":   "node scripts/generate_secret.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "keywords": ["africa","nigeria","ghana","kenya","invoicing","construction","tax","paystack"],
+  "author": "AfriQuote",
+  "license": "MIT"
+}

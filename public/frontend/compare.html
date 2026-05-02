@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfriQuote vs The World — Full Competitive Analysis 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #0D2818; --forest2: #173821; --forest3: #1E3D27;
+  --green: #1D9E75; --green2: #0F6E56; --mint: #6FDBAF; --mint2: #A8ECD1;
+  --parch: #F7F3EB; --parch2: #EDE8DC; --parch3: #E0D9CC;
+  --gold: #C49A2E; --gold2: #A07A1C; --gold-light: #F5E6B4;
+  --ink: #0E1A12; --ink2: #2A3D2F; --ink3: #5C7060; --ink4: #8FA894;
+  --red: #E24B4A; --amber: #EF9F27;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--parch); color: var(--ink); line-height: 1.6; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--forest);
+  padding: 52px 80px 48px;
+  position: relative; overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(111,219,175,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111,219,175,.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+.page-header::after {
+  content: '';
+  position: absolute; top: -120px; right: -80px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(29,158,117,.14), transparent 65%);
+}
+.ph-inner { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; }
+.ph-eyebrow {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 16px;
+}
+.ph-inner h1 {
+  font-family: var(--serif); font-size: 52px; font-weight: 700;
+  color: #fff; line-height: 1.0; letter-spacing: -1px; margin-bottom: 14px;
+}
+.ph-inner h1 em { color: var(--mint); font-style: italic; }
+.ph-inner p {
+  font-size: 16px; color: rgba(255,255,255,.5);
+  max-width: 680px; line-height: 1.75; margin-bottom: 28px;
+}
+.ph-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.ph-tag {
+  font-size: 11px; font-weight: 500;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.5);
+  padding: 5px 12px; border-radius: 5px;
+}
+.ph-tag.green { background: rgba(29,158,117,.2); border-color: rgba(29,158,117,.4); color: var(--mint); }
+
+/* ── SECTION WRAPPER ── */
+.section { padding: 64px 80px; max-width: 1160px; margin: 0 auto; }
+.section-sm { padding: 48px 80px; max-width: 1160px; margin: 0 auto; }
+.divider-full { height: 1px; background: var(--parch3); }
+.divider-dark { height: 1px; background: rgba(255,255,255,.07); }
+.tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--green2); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.tag::before {
+  content: ''; display: block; width: 16px; height: 1.5px;
+  background: var(--green); border-radius: 1px;
+}
+.tag.light { color: rgba(255,255,255,.35); }
+.tag.light::before { background: rgba(255,255,255,.25); }
+.section-h {
+  font-family: var(--serif); font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700; color: var(--forest); line-height: 1.05;
+  letter-spacing: -.02em; margin-bottom: 10px;
+}
+.section-h em { color: var(--green); font-style: italic; }
+.section-h.light { color: #fff; }
+.section-lead { font-size: 15px; color: var(--ink3); line-height: 1.8; max-width: 680px; }
+.section-lead.light { color: rgba(255,255,255,.45); }
+
+/* ── OVERVIEW CARDS ── */
+.overview-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 12px; margin-top: 36px;
+}
+.ov-card {
+  border-radius: 14px; padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.ov-card.af {
+  background: var(--forest); border: 1px solid rgba(29,158,117,.4);
+  grid-row: span 1;
+}
+.ov-card.comp {
+  background: #fff; border: 1px solid var(--parch3);
+}
+.ov-card .ov-num {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+  color: var(--ink4); text-transform: uppercase;
+}
+.ov-card.af .ov-num { color: rgba(255,255,255,.3); }
+.ov-card .ov-name {
+  font-family: var(--serif); font-size: 20px; font-weight: 700;
+  letter-spacing: -.01em; line-height: 1;
+}
+.ov-card.af .ov-name { color: var(--mint); }
+.ov-card.comp .ov-name { color: var(--forest); }
+.ov-card .ov-tagline { font-size: 11.5px; line-height: 1.5; }
+.ov-card.af .ov-tagline { color: rgba(255,255,255,.45); }
+.ov-card.comp .ov-tagline { color: var(--ink3); }
+.ov-card .ov-price {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 5px; display: inline-block;
+  width: fit-content; margin-top: auto;
+}
+.ov-card.af .ov-price {
+  background: rgba(29,158,117,.2); color: var(--mint);
+}
+.ov-card.comp .ov-price {
+  background: var(--parch2); color: var(--ink3);
+}
+.ov-card .ov-market {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.ov-card.af .ov-market { color: var(--mint); }
+.ov-card.comp .ov-market { color: var(--ink4); }
+.ov-card .ov-verdict {
+  font-size: 10px; padding: 3px 9px; border-radius: 4px;
+  font-weight: 600; letter-spacing: .04em; display: inline-block;
+}
+.v-none { background: #E1F5EE; color: #0F6E56; }
+.v-partial { background: #FAEEDA; color: #854F0B; }
+.v-closest { background: #FCEBEB; color: #A32D2D; }
+
+/* ── FEATURE TABLE ── */
+.ftable-wrap {
+  overflow-x: auto; margin-top: 36px;
+  border: 1px solid var(--parch3); border-radius: 16px;
+  overflow: hidden;
+}
+.ftable { width: 100%; border-collapse: collapse; }
+.ftable th {
+  padding: 12px 14px; font-size: 11px; font-weight: 600;
+  letter-spacing: .07em; text-transform: uppercase;
+  border-bottom: 1px solid var(--parch3); text-align: center;
+  white-space: nowrap;
+}
+.ftable th:first-child { text-align: left; min-width: 220px; }
+.ftable th.af-col { background: var(--forest); color: var(--mint); }
+.ftable th.plain { background: var(--parch2); color: var(--ink3); }
+.ftable th.feat-col { background: var(--parch); color: var(--ink3); }
+.ftable td {
+  padding: 11px 14px; font-size: 13px;
+  border-bottom: .5px solid var(--parch2);
+  text-align: center; vertical-align: middle;
+}
+.ftable td:first-child {
+  text-align: left; color: var(--ink2); font-size: 12.5px;
+  background: var(--parch);
+}
+.ftable tr:last-child td { border-bottom: none; }
+.ftable .af-col { background: rgba(29,158,117,.04); }
+.ftable .cat-row td {
+  background: var(--parch2); color: var(--ink3);
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; padding: 8px 14px;
+  border-bottom: 1px solid var(--parch3);
+}
+.ftable .cat-row td:first-child { background: var(--parch2); }
+.ck { color: var(--green); font-size: 16px; font-weight: 700; }
+.cx { color: var(--red); font-size: 15px; }
+.cm { color: var(--amber); font-size: 13px; font-weight: 600; }
+.price-cell { font-family: var(--mono); font-size: 11px; color: var(--ink3); }
+.price-cell.af { color: var(--green2); font-weight: 500; }
+
+/* ── PROFILE DEEP-DIVES ── */
+.profiles-section { background: var(--forest); padding: 64px 80px; }
+.profiles-inner { max-width: 1160px; margin: 0 auto; }
+.profiles-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px; margin-top: 36px;
+}
+.profile-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px; padding: 24px 22px;
+}
+.profile-card.af-card {
+  background: rgba(29,158,117,.12);
+  border: 1.5px solid rgba(29,158,117,.5);
+  grid-column: span 3;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 28px;
+}
+.pc-badge {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 4px;
+  display: inline-block; margin-bottom: 12px;
+}
+.pc-badge.none { background: rgba(29,158,117,.2); color: var(--mint); }
+.pc-badge.partial { background: rgba(196,154,46,.2); color: #EF9F27; }
+.pc-badge.closest { background: rgba(226,75,74,.2); color: #F09595; }
+.pc-badge.winner { background: var(--green); color: #fff; }
+.profile-card h3 {
+  font-family: var(--serif); font-size: 22px; font-weight: 700;
+  margin-bottom: 4px; line-height: 1;
+}
+.profile-card.af-card h3 { color: var(--mint); }
+.profile-card:not(.af-card) h3 { color: #fff; }
+.profile-card .pc-sub {
+  font-size: 11px; color: rgba(255,255,255,.3); margin-bottom: 14px;
+  line-height: 1.4;
+}
+.profile-card .pc-body {
+  font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.7;
+  margin-bottom: 14px;
+}
+.pc-divider { height: 1px; background: rgba(255,255,255,.08); margin: 14px 0; }
+.pc-who { font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,.7); margin-bottom: 4px; }
+.pc-audience { font-size: 12px; color: rgba(255,255,255,.4); line-height: 1.6; }
+.pc-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; }
+.pc-pill {
+  font-size: 10px; padding: 3px 9px; border-radius: 4px;
+  background: rgba(255,255,255,.07); color: rgba(255,255,255,.45);
+  font-weight: 500;
+}
+.pc-pill.green { background: rgba(29,158,117,.2); color: var(--mint); }
+.pc-pill.amber { background: rgba(196,154,46,.15); color: #EF9F27; }
+.pc-pill.red { background: rgba(226,75,74,.15); color: #F09595; }
+
+/* ── VERDICT SECTION ── */
+.verdict-section { background: var(--parch2); padding: 64px 80px; }
+.verdict-inner { max-width: 1160px; margin: 0 auto; }
+.verdict-grid { display: flex; flex-direction: column; gap: 2px; margin-top: 36px; }
+.vd-row {
+  background: var(--parch);
+  border: 1px solid var(--parch3);
+  border-radius: 0; padding: 22px 24px;
+  display: grid; grid-template-columns: 140px 1fr auto;
+  gap: 20px; align-items: start;
+}
+.vd-row:first-child { border-radius: 12px 12px 0 0; }
+.vd-row:last-child { border-radius: 0 0 12px 12px; border-bottom: 1px solid var(--parch3); }
+.vd-name {
+  font-family: var(--serif); font-size: 18px; font-weight: 700;
+  color: var(--forest); line-height: 1.1;
+}
+.vd-sub { font-size: 10px; color: var(--ink4); font-family: var(--mono); margin-top: 4px; }
+.vd-text { font-size: 13.5px; color: var(--ink2); line-height: 1.75; }
+.vd-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; padding: 4px 11px; border-radius: 5px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.badge-none { background: #E1F5EE; color: #0F6E56; border: 1px solid #9FE1CB; }
+.badge-partial { background: #FAEEDA; color: #854F0B; border: 1px solid #FAC775; }
+.badge-closest { background: #FAEEDA; color: #854F0B; border: 1px solid #FAC775; }
+
+/* ── FINAL CTA ── */
+.final { background: var(--forest); padding: 72px 80px; text-align: center; position: relative; overflow: hidden; }
+.final::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(111,219,175,.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.final-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+.final h2 {
+  font-family: var(--serif); font-size: 46px; font-weight: 700;
+  color: #fff; letter-spacing: -1px; line-height: 1.05; margin-bottom: 14px;
+}
+.final h2 em { color: var(--mint); font-style: italic; }
+.final p { font-size: 16px; color: rgba(255,255,255,.45); line-height: 1.8; margin-bottom: 32px; }
+.final-url {
+  font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--mint);
+}
+.final-note { font-size: 12px; color: rgba(255,255,255,.2); margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-inner">
+    <div class="ph-eyebrow">Competitive Analysis · April 2026 · Research-backed</div>
+    <h1>AfriQuote vs<br><em>the world.</em></h1>
+    <p>A research-backed comparison of AfriQuote against five tools that appear on competitor lists. The findings are decisive: not one of them competes for the same customer.</p>
+    <div class="ph-tags">
+      <span class="ph-tag green">AfriQuote — Africa's only all-in-one platform</span>
+      <span class="ph-tag">WeQuote — UK AV/IT hardware quoting</span>
+      <span class="ph-tag">QuoteWerks — US/EU CPQ for IT resellers</span>
+      <span class="ph-tag">Jobber — North American home services</span>
+      <span class="ph-tag">Xero — Global cloud accounting</span>
+      <span class="ph-tag">AutoQuotes — North American foodservice</span>
+    </div>
+  </div>
+</div>
+
+<!-- OVERVIEW CARDS -->
+<div class="section">
+  <div class="tag">Six platforms, six markets</div>
+  <h2 class="section-h">Who each tool was<br><em>actually built for.</em></h2>
+  <p class="section-lead">The comparison starts and ends here: every competitor on this list was built for a completely different continent, industry, and customer profile than AfriQuote.</p>
+
+  <div class="overview-grid">
+    <div class="ov-card af">
+      <div class="ov-num">Our platform</div>
+      <div class="ov-name">AfriQuote</div>
+      <div class="ov-tagline">8-module all-in-one for African freelancers, consultants & contractors. Paystack, M-Pesa, WHT, FIRS, WhatsApp — all built in.</div>
+      <div class="ov-market">Nigeria · Ghana · Kenya · SA · Rwanda</div>
+      <div class="ov-price">₦0–₦45,000 / mo</div>
+      <div><span class="ov-verdict v-none">Zero direct competition</span></div>
+    </div>
+    <div class="ov-card comp">
+      <div class="ov-num">Competitor 01</div>
+      <div class="ov-name">WeQuote</div>
+      <div class="ov-tagline">Cloud quoting for AV/IT integrators. Live pricing from 200+ UK distributors and 2,500,000+ products.</div>
+      <div class="ov-market">UK · EU · AV/IT industry only</div>
+      <div class="ov-price">£free trial → paid plans</div>
+      <div><span class="ov-verdict v-none">No overlap</span></div>
+    </div>
+    <div class="ov-card comp">
+      <div class="ov-num">Competitor 02</div>
+      <div class="ov-name">QuoteWerks</div>
+      <div class="ov-tagline">CPQ with 115+ integrations for IT resellers & MSPs. 88,000 users across 101 countries.</div>
+      <div class="ov-market">US · EU · IT resellers / MSPs</div>
+      <div class="ov-price">$15–$102 / user / mo</div>
+      <div><span class="ov-verdict v-none">No overlap</span></div>
+    </div>
+    <div class="ov-card comp">
+      <div class="ov-num">Competitor 03</div>
+      <div class="ov-name">Jobber</div>
+      <div class="ov-tagline">Field service management for landscaping, HVAC, cleaning, plumbing. Strong iOS/Android apps.</div>
+      <div class="ov-market">USA · Canada · Home services</div>
+      <div class="ov-price">$39–$599 / mo USD</div>
+      <div><span class="ov-verdict v-partial">Partial — Sites module</span></div>
+    </div>
+    <div class="ov-card comp">
+      <div class="ov-num">Competitor 04</div>
+      <div class="ov-name">Xero</div>
+      <div class="ov-tagline">Global cloud accounting with 3.95M subscribers. Strongest in AU, NZ, UK. South Africa presence but no African payments.</div>
+      <div class="ov-market">Global — Strongest UK/AU/NZ</div>
+      <div class="ov-price">$25–$78 / mo USD</div>
+      <div><span class="ov-verdict v-closest">Closest rival</span></div>
+    </div>
+    <div class="ov-card comp">
+      <div class="ov-num">Competitor 05</div>
+      <div class="ov-name">AutoQuotes</div>
+      <div class="ov-tagline">Foodservice equipment CPQ for the FES industry. 35 years old. 1M+ product database. $700+/year.</div>
+      <div class="ov-market">North America · UK · Foodservice</div>
+      <div class="ov-price">$700+ / year</div>
+      <div><span class="ov-verdict v-none">No overlap</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider-full"></div>
+
+<!-- FEATURE TABLE -->
+<div class="section">
+  <div class="tag">Feature-by-feature</div>
+  <h2 class="section-h">The features that matter<br><em>most to African professionals.</em></h2>
+  <p class="section-lead">Every row that matters for an African professional's business — tax, payments, delivery channel, and platform modules. AfriQuote is the only column that answers yes to all of them.</p>
+
+  <div class="ftable-wrap">
+    <table class="ftable">
+      <thead>
+        <tr>
+          <th class="feat-col">Feature</th>
+          <th class="af-col">AfriQuote</th>
+          <th class="plain">WeQuote</th>
+          <th class="plain">QuoteWerks</th>
+          <th class="plain">Jobber</th>
+          <th class="plain">Xero</th>
+          <th class="plain">AutoQuotes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="7">Africa-specific features — the deciding factors</td></tr>
+        <tr>
+          <td>Paystack payment links on invoices</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>M-Pesa / MTN MoMo integration</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Nigeria VAT at correct 7.5% (FIRS)</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td>
+          <td><span class="cm">± manual config</span></td>
+          <td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Withholding Tax (WHT) calculator</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>NTAA 2025 WHT exemption logic</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>FIRS / GRA / KRA filing deadline alerts</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>WhatsApp delivery for invoices & quotes</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>NGN / GHS / KES / ZAR native currencies</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td>
+          <td><span class="cm">± USD/EUR only</span></td>
+          <td><span class="cx">✕</span></td>
+          <td><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td>
+        </tr>
+
+        <tr class="cat-row"><td colspan="7">Core business management tools</td></tr>
+        <tr>
+          <td>Quotes & branded invoices</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="ck">✓</span></td><td><span class="ck">✓</span></td>
+          <td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td>
+        </tr>
+        <tr>
+          <td>Proposal pipeline with win-rate tracking</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td>
+          <td><span class="cm">± basic tracking</span></td>
+          <td><span class="cm">± basic CRM</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>E-signature contracts with scope guard</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="ck">✓</span></td><td><span class="ck">✓</span></td>
+          <td><span class="cm">± quote approval only</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Time tracking with billable rate</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="ck">✓</span></td>
+          <td><span class="cm">± projects add-on</span></td>
+          <td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Construction site GPS + daily logs</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cm">± general field jobs</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Cash flow forecast + runway calculator</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td>
+          <td><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Business health score (score /100)</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Bank reconciliation / accounting ledger</td>
+          <td class="af-col"><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td><td><span class="cx">✕</span></td>
+          <td><span class="cx">✕</span></td>
+          <td><span class="ck">✓ Xero's core</span></td>
+          <td><span class="cx">✕</span></td>
+        </tr>
+
+        <tr class="cat-row"><td colspan="7">Access & pricing</td></tr>
+        <tr>
+          <td>Free plan (not trial — permanently free)</td>
+          <td class="af-col"><span class="ck">✓</span></td>
+          <td><span class="cx">✕ trial only</span></td>
+          <td><span class="cm">± trial only</span></td>
+          <td><span class="cm">± trial only</span></td>
+          <td><span class="cm">± 30-day trial</span></td>
+          <td><span class="cx">✕</span></td>
+        </tr>
+        <tr>
+          <td>Starting price (Pro / paid)</td>
+          <td class="af-col price-cell af">₦15,000/mo (~$10 USD)</td>
+          <td class="price-cell">£free–£99+/mo</td>
+          <td class="price-cell">$15–$102/user/mo</td>
+          <td class="price-cell">$39–$599/mo</td>
+          <td class="price-cell">$25–$78/mo</td>
+          <td class="price-cell">$700+/year</td>
+        </tr>
+        <tr>
+          <td>Available to Nigerian/Ghanaian users</td>
+          <td class="af-col"><span class="ck">✓ Built for this</span></td>
+          <td><span class="cx">✕ UK only</span></td>
+          <td><span class="cm">± technically yes, but no local relevance</span></td>
+          <td><span class="cx">✕ North America only</span></td>
+          <td><span class="cm">± South Africa only</span></td>
+          <td><span class="cx">✕ North America only</span></td>
+        </tr>
+        <tr>
+          <td>Industry served</td>
+          <td class="af-col" style="font-size:11.5px;color:var(--green2);font-weight:500">All African professionals</td>
+          <td style="font-size:11px;color:var(--ink3)">AV/IT hardware</td>
+          <td style="font-size:11px;color:var(--ink3)">IT resellers / MSPs</td>
+          <td style="font-size:11px;color:var(--ink3)">Home services</td>
+          <td style="font-size:11px;color:var(--ink3)">SME accounting</td>
+          <td style="font-size:11px;color:var(--ink3)">Foodservice equip.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:11px;color:var(--ink4);margin-top:10px">✓ Full support &nbsp;·&nbsp; ± Partial / workaround required &nbsp;·&nbsp; ✕ Not supported</p>
+</div>
+
+<div class="divider-full"></div>
+
+<!-- DEEP DIVE PROFILES -->
+<div class="profiles-section">
+  <div class="profiles-inner">
+    <div class="tag light">Competitor profiles</div>
+    <h2 class="section-h light">What each tool <em>actually is.</em></h2>
+    <p class="section-lead light">Five tools that share surface-level category labels (quoting, invoicing, proposals) but serve entirely different markets, industries, and geographies.</p>
+
+    <div class="profiles-grid">
+      <!-- WeQuote -->
+      <div class="profile-card">
+        <span class="pc-badge none">No overlap with AfriQuote</span>
+        <h3>WeQuote</h3>
+        <div class="pc-sub">UK · AV/IT integrators · Cloud CPQ · ~2018</div>
+        <div class="pc-body">WeQuote is purpose-built for audio-visual and IT system integrators, offering live pricing connections to 200+ distributors and 2.5 million products from 2,000+ brands. It is the premier solution for UK professionals who install CCTV, home automation, smart home audio, and commercial AV systems — allowing them to build hardware-heavy quotes in minutes by pulling live supplier pricing directly into the platform. It integrates natively with Xero and QuickBooks.</div>
+        <div class="pc-divider"></div>
+        <div class="pc-who">Who buys it</div>
+        <div class="pc-audience">UK and EU AV/IT installation companies quoting hardware-intensive projects. A Lagos freelancer invoicing a client in Naira for a branding project, a Lagos contractor logging site progress, or a Kenyan consultant tracking WHT — none of these people exist in WeQuote's universe.</div>
+        <div class="pc-pills">
+          <span class="pc-pill">UK hardware dealers</span>
+          <span class="pc-pill">AV/IT only</span>
+          <span class="pc-pill red">No Africa</span>
+          <span class="pc-pill red">No tax tools</span>
+        </div>
+      </div>
+
+      <!-- QuoteWerks -->
+      <div class="profile-card">
+        <span class="pc-badge none">No overlap with AfriQuote</span>
+        <h3>QuoteWerks</h3>
+        <div class="pc-sub">USA · IT resellers & MSPs · CPQ · 30+ years old</div>
+        <div class="pc-body">QuoteWerks is a market-leading CPQ platform trusted by over 35,000 users in 101 countries, built for IT resellers, MSPs, and product-focused sales teams needing deep CRM and distributor integration. With 115+ connectors to HubSpot, Salesforce, ConnectWise, Autotask, Ingram Micro, TD Synnex, and QuickBooks, it automates the quote-to-invoice flow for structured product-based sales. Reviewers consistently praise the integrations but flag the user interface as dated and note it can be difficult to train new reps.</div>
+        <div class="pc-divider"></div>
+        <div class="pc-who">Who buys it</div>
+        <div class="pc-audience">US and European IT resellers, VARs, and MSPs who need to pull live product pricing from Ingram Micro or Dell and push it into Salesforce. The entire platform assumes USD or EUR pricing, US/EU tax structures, and Stripe or PayPal payments — none of which helps an African professional.</div>
+        <div class="pc-pills">
+          <span class="pc-pill">US/EU IT sector</span>
+          <span class="pc-pill">115 CRM integrations</span>
+          <span class="pc-pill amber">Dated UI</span>
+          <span class="pc-pill red">No Africa</span>
+        </div>
+      </div>
+
+      <!-- Jobber -->
+      <div class="profile-card">
+        <span class="pc-badge partial">Partial overlap — Sites module</span>
+        <h3>Jobber</h3>
+        <div class="pc-sub">Canada · North American home services · Field management · 2011</div>
+        <div class="pc-body">Jobber is the leading field service management platform for North American home service businesses — landscaping, HVAC, plumbing, cleaning, pest control, carpentry. It handles the full cycle from quote to job to invoice with strong iOS/Android mobile apps (4.8/4.7 star ratings), GPS fleet tracking, and automated customer communication. In 2025 they launched an AI Receptionist, offline mode, and Tap to Pay. Pricing starts at $39/month and scales to $599/month for large teams. The most common complaint is unreliable QuickBooks sync (users report ~2% of line items dropping).</div>
+        <div class="pc-divider"></div>
+        <div class="pc-who">Who buys it</div>
+        <div class="pc-audience">North American residential and commercial service contractors with field crews. AfriQuote's Sites module does what Jobber does and adds 7 more modules for a fraction of the local-currency cost. Jobber has no concept of Nigerian contractors, Naira invoicing, FIRS tax obligations, or WhatsApp delivery.</div>
+        <div class="pc-pills">
+          <span class="pc-pill">North America only</span>
+          <span class="pc-pill">Home services</span>
+          <span class="pc-pill amber">$39–$599/mo USD</span>
+          <span class="pc-pill red">No African context</span>
+        </div>
+      </div>
+
+      <!-- Xero -->
+      <div class="profile-card">
+        <span class="pc-badge closest">Closest rival — accounting only</span>
+        <h3>Xero</h3>
+        <div class="pc-sub">New Zealand · Global SME accounting · 3.95M subscribers · 2006</div>
+        <div class="pc-body">Xero is a global small business accounting platform with 3.95 million subscribers, strongest in Australia, New Zealand, and the UK. In August 2025, Xero launched new South African features including integrated SARS tax submissions, provisional tax tools, and enhanced mobile capabilities — and in 2026 announced a partnership with Anthropic to add AI to their platform. However, South African Xero users explicitly complain in reviews that Xero has no integration with local payment gateways — PayFast, Ozow, or PayJustNow — for transaction reconciliation. There is no Nigerian, Ghanaian, or Kenyan Xero presence, no Paystack or M-Pesa integration, no WHT calculation, and no FIRS deadline tracking.</div>
+        <div class="pc-divider"></div>
+        <div class="pc-who">Who buys it</div>
+        <div class="pc-audience">The most serious global incumbent to watch. But Xero is a pure accounting platform — it does not do proposals, contracts, construction site monitoring, or business health scoring. AfriQuote covers the 7 critical things Xero doesn't while connecting to the African payment ecosystem Xero ignores.</div>
+        <div class="pc-pills">
+          <span class="pc-pill green">Closest rival</span>
+          <span class="pc-pill">Pure accounting</span>
+          <span class="pc-pill amber">No Paystack/M-Pesa</span>
+          <span class="pc-pill red">No WHT/FIRS</span>
+        </div>
+      </div>
+
+      <!-- AutoQuotes -->
+      <div class="profile-card">
+        <span class="pc-badge none">No overlap with AfriQuote</span>
+        <h3>AutoQuotes (AQ)</h3>
+        <div class="pc-sub">USA · Foodservice equipment & supplies · CPQ · 35 years old</div>
+        <div class="pc-body">AutoQuotes is the dominant CPQ platform for the North American foodservice equipment and supplies (FES) industry, trusted by 20,000+ professionals including kitchen equipment dealers, manufacturers, reps, and consultants. Now part of Revalize, it offers 2D/3D kitchen design tools, AR/VR space planning, and the world's largest database of commercial kitchen equipment — 1 million+ products. Pricing starts at $700/year. The platform has recently drawn criticism for abandoning Apple device support for its mobile app, forcing Mac users to pay for Parallels just to access the software.</div>
+        <div class="pc-divider"></div>
+        <div class="pc-who">Who buys it</div>
+        <div class="pc-audience">US and European restaurant equipment dealers and commercial kitchen consultants. It has been called a monopoly tool — useful only because there's no competition, not because it's great. Completely irrelevant to any AfriQuote user on any continent.</div>
+        <div class="pc-pills">
+          <span class="pc-pill">North America / UK</span>
+          <span class="pc-pill">Foodservice only</span>
+          <span class="pc-pill amber">$700+/year</span>
+          <span class="pc-pill red">Different industry entirely</span>
+        </div>
+      </div>
+
+      <!-- AfriQuote deep dive -->
+      <div class="profile-card af-card">
+        <div>
+          <span class="pc-badge winner">The African platform</span>
+          <h3>AfriQuote</h3>
+          <div class="pc-sub">Nigeria · Ghana · Kenya · South Africa · Rwanda · 2026</div>
+          <div class="pc-body">Eight modules — Finance, Proposals, Contracts, Sites, Time, Tax, Cash flow, and Health score — built from the ground up with Paystack, Flutterwave, M-Pesa, and MTN MoMo as first-class payment options, Nigerian VAT at 7.5%, WHT at 10%, NTAA 2025 exemption logic, FIRS quarterly deadline countdown, and WhatsApp as the primary delivery channel. Not one of these features exists in any of the five tools above.</div>
+        </div>
+        <div>
+          <div class="pc-divider"></div>
+          <div class="pc-who">Why there's no real competition</div>
+          <div class="pc-audience">The entire global software industry built for the US, EU, and AU/NZ markets. AfriQuote addresses the 3.2 million professional freelancers and consultants across five African countries who have been systematically ignored. The market is large, the CAGR is 23.8%, WhatsApp penetration is 93%, and not one competitor has Paystack, WHT, or FIRS built in.</div>
+          <div class="pc-pills">
+            <span class="pc-pill green">All 5 African markets</span>
+            <span class="pc-pill green">Paystack · Flutterwave · M-Pesa · MTN MoMo</span>
+            <span class="pc-pill green">NTAA 2025 compliant</span>
+            <span class="pc-pill green">WhatsApp-first</span>
+          </div>
+        </div>
+        <div>
+          <div class="pc-divider"></div>
+          <div class="pc-who">The moat</div>
+          <div class="pc-audience">For any global competitor to replicate AfriQuote's Africa-specific advantage, they would need to: integrate Paystack, Flutterwave, M-Pesa, and MTN MoMo; implement WHT logic for five different countries; build FIRS/GRA/KRA/SARS/RRA deadline tracking; rebuild WhatsApp delivery; and redesign their onboarding for Naira-first users. That is not a feature request — it is a full product rebuild for a market they currently have zero presence in.</div>
+          <div class="pc-pills">
+            <span class="pc-pill green">₦0 free start</span>
+            <span class="pc-pill green">₦15,000/mo Pro</span>
+            <span class="pc-pill green">₦45,000/mo Team</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div class="verdict-section">
+  <div class="verdict-inner">
+    <div class="tag">The verdict</div>
+    <h2 class="section-h">One platform<br><em>zero real competitors.</em></h2>
+    <p class="section-lead">The conclusion from every comparison angle: AfriQuote is operating in a market that no global player has entered and none are positioned to enter quickly.</p>
+
+    <div class="verdict-grid">
+      <div class="vd-row">
+        <div><div class="vd-name">WeQuote</div><div class="vd-sub">UK · AV/IT hardware</div></div>
+        <div class="vd-text">WeQuote solves a completely different problem — live hardware pricing for UK AV installers quoting HDMI cables and amplifiers. A Lagos brand designer invoicing a client in Naira, a Nairobi consultant tracking WHT, or an Abuja contractor logging site progress never appears in WeQuote's target market. The two products could not be more different. <strong>Not competitors.</strong></div>
+        <div><span class="vd-badge badge-none">No overlap</span></div>
+      </div>
+      <div class="vd-row">
+        <div><div class="vd-name">QuoteWerks</div><div class="vd-sub">USA · IT resellers</div></div>
+        <div class="vd-text">A 30-year-old CPQ tool for US IT resellers pulling Ingram Micro pricing into Salesforce quotes. The integration depth is impressive but the entire platform assumes USD pricing, US tax structures, and Stripe/PayPal payments. No African tax knowledge, no Paystack or M-Pesa, no WHT, no FIRS. Reviewers note the UI is dated and difficult to train new reps on. <strong>Not competitors.</strong></div>
+        <div><span class="vd-badge badge-none">No overlap</span></div>
+      </div>
+      <div class="vd-row">
+        <div><div class="vd-name">Jobber</div><div class="vd-sub">Canada · Home services</div></div>
+        <div class="vd-text">The closest functional comparison — Jobber's scheduling and field job management overlaps loosely with AfriQuote's Sites module. But Jobber is built entirely for North American home service contractors at $39–$599/month USD. No Naira support, no WhatsApp delivery, no African tax compliance. AfriQuote's Sites module covers what Jobber covers, plus 7 more modules, at a fraction of the cost in local currency. <strong>Partial overlap on one module only.</strong></div>
+        <div><span class="vd-badge badge-partial">One module overlap</span></div>
+      </div>
+      <div class="vd-row">
+        <div><div class="vd-name">Xero</div><div class="vd-sub">NZ/Global · Accounting</div></div>
+        <div class="vd-text">Xero is the most serious global tool to watch — 3.95 million subscribers, expanding in South Africa, and partnering with Anthropic for AI. But Xero is a pure accounting platform with no proposals, no contracts, no construction site monitoring, and no business health scoring. South African Xero users specifically complain that it has zero integration with local payment gateways. AfriQuote covers the 7 critical things Xero doesn't while connecting to the African payment ecosystem Xero has not built. If anything, AfriQuote complements Xero rather than competing with it. <strong>Closest rival, but different category.</strong></div>
+        <div><span class="vd-badge badge-closest">Closest rival</span></div>
+      </div>
+      <div class="vd-row">
+        <div><div class="vd-name">AutoQuotes</div><div class="vd-sub">USA · Foodservice</div></div>
+        <div class="vd-text">A 35-year-old industry monopoly for US commercial kitchen equipment dealers. Starts at $700/year. Has been criticised for abandoning Apple device support and forcing users to pay for additional software just to run the app. Its entire product database is North American foodservice equipment. The same person who needs AfriQuote does not know what AutoQuotes is, and the same person who uses AutoQuotes has never heard of FIRS. <strong>Not competitors — different industry, different continent, different century of user experience design.</strong></div>
+        <div><span class="vd-badge badge-none">No overlap</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="final">
+  <div class="final-inner">
+    <h2>AfriQuote has<br><em>no direct competition.</em></h2>
+    <p>Not one of the five tools on this list supports Paystack, understands WHT, knows what FIRS is, or delivers via WhatsApp. AfriQuote is not a better version of any of these tools — it is a different product for a 3.2-million-person market the entire global software industry has ignored.</p>
+    <div class="final-url">afriquote.africa</div>
+    <div class="final-note">Nigeria · Ghana · Kenya · South Africa · Rwanda · Free to start · No credit card required</div>
+  </div>
+</div>
+
+</body>
+</html>

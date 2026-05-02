@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfriQuote — Instant Quote Builder</title>
+<style>
+:root{--g:#1D9E75;--g2:#0F6E56;--gl:#E1F5EE;--gx:#f0faf6;--amber:#BA7517;--al:#FAEEDA;--ink:#0e1410;--ink2:#3d4a3f;--ink3:#7a8c7c;--bg:#f7f8f6;--s:#fff;--s2:#f4f5f3;--b:#e2e6df;--b2:#cdd1c9;--r:10px;--rl2:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
+.topbar{height:52px;background:var(--s);border-bottom:1px solid var(--b);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:10}
+.logo{font-weight:700;font-size:15px;color:var(--ink);display:flex;align-items:center;gap:7px}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:var(--g);display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:12px;height:12px;fill:#fff}
+.logo em{color:var(--g);font-style:normal}
+.badge{background:var(--gl);color:var(--g2);font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px}
+.speed-bar{background:var(--g);color:#fff;text-align:center;padding:7px;font-size:12.5px;font-weight:500}
+.speed-bar span{opacity:.8}
+.main{display:flex;gap:0;min-height:calc(100vh - 52px - 36px)}
+.form-panel{padding:22px;flex:1;overflow-y:auto}
+.preview-panel{width:420px;flex:none;border-left:1px solid var(--b);background:var(--s2);padding:20px;overflow-y:auto}
+@media(max-width:840px){.preview-panel{display:none}}
+.panel-h{font-size:15px;font-weight:600;margin-bottom:3px}
+.panel-sub{font-size:12px;color:var(--ink3);margin-bottom:18px}
+.card{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:16px 18px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.fg{margin-bottom:10px}
+.fl{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:5px;display:block}
+.fc{width:100%;padding:8px 10px;border:1px solid var(--b2);border-radius:var(--r);font-size:13px;background:var(--s);color:var(--ink);font-family:inherit;transition:border .15s}
+.fc:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+select.fc{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a8c7c'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.li-grid{display:grid;grid-template-columns:1fr 64px 96px 32px;gap:7px;align-items:center;padding:6px 0;border-bottom:1px solid var(--b)}
+.li-grid:last-child{border-bottom:none}
+.li-head{display:grid;grid-template-columns:1fr 64px 96px 32px;gap:7px;padding:3px 0 7px;border-bottom:1px solid var(--b2)}
+.li-head span{font-size:10px;font-weight:600;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase}
+.li-in{width:100%;padding:5px 7px;border:1px solid var(--b2);border-radius:6px;font-size:12px;background:var(--s);color:var(--ink);font-family:inherit}
+.li-in:focus{outline:none;border-color:var(--g)}
+.del-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--b2);background:var(--s);color:var(--ink3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.del-btn:hover{background:#FCEBEB;border-color:#E24B4A;color:#E24B4A}
+.add-btn{width:100%;padding:7px;border:1px dashed var(--b2);border-radius:var(--r);background:none;color:var(--ink3);font-size:12px;cursor:pointer;margin-top:8px;font-family:inherit;transition:all .15s}
+.add-btn:hover{border-color:var(--g);color:var(--g);background:var(--gx)}
+.totals-section{border-top:2px solid var(--b);padding-top:10px;margin-top:4px}
+.tr{display:flex;justify-content:space-between;padding:3px 0;font-size:13px;color:var(--ink2)}
+.tr.grand{font-weight:600;font-size:15px;color:var(--ink);border-top:1px solid var(--b);margin-top:4px;padding-top:7px}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{padding:9px 15px;border-radius:var(--r);border:1px solid var(--b2);font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:500;background:var(--s);color:var(--ink);display:inline-flex;align-items:center;gap:6px;transition:all .12s;flex:1;min-width:110px;justify-content:center}
+.btn:hover{background:var(--s2)}
+.btn-g{background:var(--g);color:#fff;border-color:var(--g)}.btn-g:hover{background:var(--g2)}
+.btn-wa{background:#25D366;color:#fff;border-color:#25D366}.btn-wa:hover{background:#1da851}
+.timer{text-align:center;padding:12px;background:var(--gx);border-radius:var(--r);margin-bottom:14px;font-size:13px;color:var(--g2);font-weight:500}
+.timer-num{font-size:32px;font-weight:700;color:var(--g);display:block;line-height:1}
+/* Quote preview */
+.qp{background:var(--s);border-radius:14px;padding:26px;font-size:12px;line-height:1.5}
+.qp-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--b)}
+.qp-logo{font-size:17px;font-weight:700;color:var(--g)}
+.qp-meta{text-align:right;font-size:11px;color:var(--ink3)}
+.qp-meta strong{font-size:13px;color:var(--ink);display:block}
+.qp-client{background:var(--s2);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12px}
+.qp-client .lbl{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;margin-bottom:3px}
+.qp-client .name{font-weight:600;font-size:13px}
+.qp-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:12px}
+.qp-table th{padding:6px 8px;background:var(--s2);font-size:10px;font-weight:600;color:var(--ink3);text-align:left;letter-spacing:.04em}
+.qp-table th:last-child,.qp-table td:last-child{text-align:right}
+.qp-table td{padding:6px 8px;border-bottom:1px solid var(--b)}
+.qp-totals{width:200px;margin-left:auto;font-size:11.5px}
+.qp-tr{display:flex;justify-content:space-between;padding:3px 0}
+.qp-tr.grand{font-weight:600;font-size:13px;color:var(--g);border-top:1px solid var(--b);margin-top:4px;padding-top:6px}
+.validity-box{background:var(--al);border-radius:7px;padding:8px 10px;font-size:11px;color:var(--amber);margin-top:10px;text-align:center;font-weight:500}
+.terms-box{margin-top:10px;padding-top:10px;border-top:1px solid var(--b);font-size:10.5px;color:var(--ink3);line-height:1.6}
+.qp-footer{margin-top:12px;padding-top:10px;border-top:1px solid var(--b);font-size:10px;color:var(--ink3);text-align:center}
+.track-notice{background:var(--bl, #E6F1FB);border-radius:var(--r);padding:9px 12px;font-size:12px;color:#185FA5;margin-top:12px;text-align:center}
+.free-notice{background:var(--al);border-radius:var(--r);padding:9px 12px;font-size:12px;color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+    Afri<em>Quote</em>
+  </div>
+  <span class="badge">Quote Builder</span>
+</div>
+<div class="speed-bar">
+  <span>Send a professional quote in </span><strong> under 90 seconds </strong><span> · Every quote is branded, VAT-calculated, and WhatsApp-ready</span>
+</div>
+<div class="main">
+<div class="form-panel">
+  <div class="timer">
+    <span class="timer-num" id="timerDisplay">0:00</span>
+    Time to send
+  </div>
+
+  <div class="free-notice">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5L10 10"/></svg>
+    Free plan — 5 quotes/month (4 remaining) <a href="#" style="color:var(--amber);font-weight:600;margin-left:4px">Upgrade ₦1,500/mo →</a>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Your details</div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Your name / business</label><input class="fc" id="bizName" placeholder="e.g. Adaeze Design Studio" oninput="updatePreview()" value="Adaeze Design Studio"></div>
+      <div class="fg"><label class="fl">Your email / phone</label><input class="fc" id="bizContact" placeholder="email or phone" oninput="updatePreview()" value="adaeze@design.ng"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Client</div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Client name</label><input class="fc" id="clientName" placeholder="e.g. BetaRide Lagos" oninput="updatePreview()"></div>
+      <div class="fg"><label class="fl">Client WhatsApp</label><input class="fc" id="clientWA" placeholder="+234 801 000 0000"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Quote details</div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Quote title</label><input class="fc" id="quoteTitle" placeholder="e.g. Brand identity package" oninput="updatePreview()"></div>
+      <div class="fg"><label class="fl">Currency</label>
+        <select class="fc" id="currency" onchange="updatePreview()">
+          <option value="NGN">NGN — ₦</option>
+          <option value="GHS">GHS — GH₵</option>
+          <option value="KES">KES — KES</option>
+          <option value="ZAR">ZAR — R</option>
+          <option value="RWF">RWF — RF</option>
+          <option value="USD">USD — $</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">VAT country</label>
+        <select class="fc" id="vatCountry" onchange="updatePreview()">
+          <option value="NG">Nigeria 7.5%</option>
+          <option value="GH">Ghana 12.5%</option>
+          <option value="KE">Kenya 16%</option>
+          <option value="ZA">South Africa 15%</option>
+          <option value="RW">Rwanda 18%</option>
+          <option value="NONE">No VAT</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Valid for (days)</label>
+        <select class="fc" id="validDays" onchange="updatePreview()">
+          <option value="7">7 days</option>
+          <option value="14" selected>14 days</option>
+          <option value="30">30 days</option>
+          <option value="60">60 days</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Payment terms</label>
+      <select class="fc" id="payTerms" onchange="updatePreview();toggleCustomTerms()">
+        <option value="50/50">50% upfront, 50% on delivery</option>
+        <option value="30/70">30% upfront, 70% on delivery</option>
+        <option value="100upfront">100% upfront before work begins</option>
+        <option value="on_delivery">100% on delivery / completion</option>
+        <option value="net7">Full payment within 7 days of invoice</option>
+        <option value="net14">Full payment within 14 days of invoice</option>
+        <option value="net30">Full payment within 30 days of invoice</option>
+        <option value="net60">Full payment within 60 days of invoice</option>
+        <option value="milestone">Milestone-based payments (as agreed)</option>
+        <option value="retainer">Monthly retainer</option>
+        <option value="custom">Custom terms (type below)</option>
+      </select>
+      <div id="customTermsBox" style="display:none;margin-top:8px">
+        <textarea class="fc" id="customTermsText" rows="2" placeholder="e.g. 40% on signing, 30% at midpoint, 30% on final delivery. Late payments incur 2% per month." oninput="updatePreview()" style="resize:vertical;font-size:13px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Services / line items</div>
+    <div class="li-head"><span>Service / deliverable</span><span>Qty</span><span>Unit price</span><span></span></div>
+    <div id="lineItems"></div>
+    <button class="add-btn" onclick="addLine()">+ Add service / deliverable</button>
+    <div class="totals-section" id="totals"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Notes (optional)</div>
+    <textarea class="fc" id="notes" rows="2" placeholder="Revision rounds, delivery timeline, exclusions..." oninput="updatePreview()"></textarea>
+  </div>
+
+
+  <div class="card">
+    <div class="card-title">Your payment details <span style="font-weight:400;color:var(--ink3);font-size:12px">— shown in quote footer</span></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Preferred payment method</label>
+        <select class="fc" id="supplierPayMethod" onchange="updatePreview()">
+          <option value="">— Not specified —</option>
+          <option value="paystack">Paystack</option>
+          <option value="flutterwave">Flutterwave</option>
+          <option value="bank">Bank transfer</option>
+          <option value="mpesa">M-Pesa (Kenya)</option>
+          <option value="momo">MTN MoMo</option>
+          <option value="eft">EFT (South Africa)</option>
+          <option value="ozow">Ozow / SnapScan (SA)</option>
+          <option value="payfast">PayFast (SA)</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Account / Reference number</label>
+        <input class="fc" id="supplierAccNum" type="text" placeholder="e.g. 0123456789 or till 123456" oninput="updatePreview()">
+      </div>
+    </div>
+    <div class="g2" style="margin-top:8px">
+      <div class="fg"><label class="fl">Bank / Institution name</label>
+        <input class="fc" id="supplierBankName" type="text" placeholder="e.g. GTBank, Equity, Nedbank" oninput="updatePreview()">
+      </div>
+      <div class="fg"><label class="fl">Account name</label>
+        <input class="fc" id="supplierAccName" type="text" placeholder="Name on the account" oninput="updatePreview()">
+      </div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-g" onclick="sendQuote()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M14 2L2 7l5 2 2 5 5-12z"/></svg>
+      Send quote
+    </button>
+    <button class="btn btn-wa" onclick="sendWhatsApp()">
+      💬 WhatsApp
+    </button>
+    <button class="btn" onclick="copyLink()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M6 10L10 6M7 4l1-1a3 3 0 014 4l-1 1M9 12l-1 1a3 3 0 01-4-4l1-1"/></svg>
+      Copy link
+    </button>
+  </div>
+</div>
+
+<div class="preview-panel">
+  <div class="panel-h">Live quote preview</div>
+  <div class="panel-sub">Updates as you type</div>
+  <div class="qp" id="qPreview"></div>
+  <div class="track-notice">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5L10 10"/></svg>
+    <strong>Pro:</strong> See when client opens this quote — upgrade to enable view tracking
+  </div>
+</div>
+</div>
+
+<script>
+const VAT={NG:7.5,GH:12.5,KE:16,ZA:15,RW:18,NONE:0};
+const SYM={NGN:'₦',GHS:'GH₵',KES:'KES ',ZAR:'R',RWF:'RF ',USD:'$'};
+const QNO='QUO-0043';
+let lines=[{desc:'Brand identity design',qty:1,price:200000},{desc:'Logo suite + brand guidelines',qty:1,price:80000},{desc:'Social media kit (8 templates)',qty:1,price:45000}];
+let startTime=Date.now(),timerInterval;
+
+timerInterval=setInterval(()=>{
+  const s=Math.floor((Date.now()-startTime)/1000);
+  document.getElementById('timerDisplay').textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+},1000);
+
+function fmt(n){const sym=SYM[document.getElementById('currency')?.value||'NGN'];return sym+Math.round(n).toLocaleString();}
+
+function renderLines(){
+  document.getElementById('lineItems').innerHTML=lines.map((l,i)=>`
+  <div class="li-grid">
+    <input class="li-in" value="${l.desc}" placeholder="Description" oninput="lines[${i}].desc=this.value;updatePreview()">
+    <input class="li-in" type="number" value="${l.qty}" min="1" oninput="lines[${i}].qty=+this.value;updatePreview()">
+    <input class="li-in" type="number" value="${l.price}" min="0" oninput="lines[${i}].price=+this.value;updatePreview()">
+    <button class="del-btn" onclick="removeLine(${i})">×</button>
+  </div>`).join('');
+  calcTotals();
+}
+
+function addLine(){lines.push({desc:'',qty:1,price:0});renderLines();}
+function removeLine(i){if(lines.length>1)lines.splice(i,1);renderLines();}
+
+function calcTotals(){
+  const sub=lines.reduce((s,l)=>s+(l.qty*l.price),0);
+  const vr=VAT[document.getElementById('vatCountry')?.value||'NG']||0;
+  const va=sub*vr/100;
+  const tot=sub+va;
+  document.getElementById('totals').innerHTML=`
+    <div class="tr"><span>Subtotal</span><span>${fmt(sub)}</span></div>
+    ${vr>0?`<div class="tr"><span>VAT (${vr}%)</span><span>${fmt(va)}</span></div>`:''}
+    <div class="tr grand"><span>Total</span><span>${fmt(tot)}</span></div>`;
+  return{sub,va,tot,vr};
+}
+
+function toggleCustomTerms(){
+  const v=document.getElementById('payTerms').value;
+  document.getElementById('customTermsBox').style.display = v==='custom' ? '' : 'none';
+}
+function updatePreview(){
+  calcTotals();
+  const t=calcTotals();
+  const biz=document.getElementById('bizName')?.value||'Your Business';
+  const bc=document.getElementById('bizContact')?.value||'';
+  const cl=document.getElementById('clientName')?.value||'Client Name';
+  const title=document.getElementById('quoteTitle')?.value||'Professional services quote';
+  const terms=document.getElementById('payTerms')?.value||'50/50';
+  const termsText={
+    '50/50':'50% upfront before work begins, 50% on delivery.','30/70':'30% upfront before work begins, 70% on delivery.','100upfront':'100% payment required before work begins.','on_delivery':'Full payment due on delivery / completion.','net7':'Full payment due within 7 days of invoice date.','net14':'Full payment due within 14 days of invoice date.','net30':'Full payment due within 30 days of invoice date.','net60':'Full payment due within 60 days of invoice date.','milestone':'Payments tied to agreed project milestones — as detailed in project schedule.','retainer':'Monthly retainer payable in advance on the 1st of each month.','custom':document.getElementById('customTermsText')?.value||'As agreed.'
+  }[terms]||terms;
+  const validDays=document.getElementById('validDays')?.value||14;
+  const expiry=new Date(Date.now()+validDays*86400000).toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'});
+  const notes=document.getElementById('notes')?.value||'';
+  const today=new Date().toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'});
+
+  document.getElementById('qPreview').innerHTML=`
+  <div class="qp-header">
+    <div><div class="qp-logo">${biz}</div><div style="font-size:10px;color:var(--ink3);margin-top:3px">${bc}</div></div>
+    <div class="qp-meta"><strong>QUOTATION</strong>${QNO}<br>${today}</div>
+  </div>
+  <div class="qp-client"><div class="lbl">Quote prepared for</div><div class="name">${cl}</div></div>
+  <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">${title}</div>
+  <table class="qp-table"><thead><tr><th>Service / deliverable</th><th>Qty</th><th style="text-align:right">Unit</th><th>Total</th></tr></thead>
+  <tbody>${lines.map(l=>`<tr><td>${l.desc||'—'}</td><td style="text-align:center">${l.qty}</td><td style="text-align:right">${fmt(l.price)}</td><td style="text-align:right">${fmt(l.qty*l.price)}</td></tr>`).join('')}</tbody></table>
+  <div class="qp-totals">
+    ${t.vr>0?`<div class="qp-tr"><span>VAT ${t.vr}%</span><span>${fmt(t.va)}</span></div>`:''}
+    <div class="qp-tr grand"><span>Total</span><span>${fmt(t.tot)}</span></div>
+  </div>
+  const suppMethod=document.getElementById('supplierPayMethod')?.value;
+  const suppAccNum=document.getElementById('supplierAccNum')?.value;
+  const suppBankName=document.getElementById('supplierBankName')?.value;
+  const suppAccName=document.getElementById('supplierAccName')?.value;
+  const paymentFooter = suppMethod && suppAccNum
+    ? `<br><strong>Payment to:</strong> ${suppAccName?suppAccName+' · ':''}${suppBankName?suppBankName+' · ':''}${suppAccNum}`
+    : '';
+  const termsHtml = `<div class="terms-box"><strong>Payment terms:</strong> ${termsText}${paymentFooter}${notes?`<br><br>${notes}`:''}</div>`;
+  doc.getElementById('preview').innerHTML += termsHtml; // injected
+  </div>
+  <div class="validity-box">This quote is valid until ${expiry}</div>
+  <div class="qp-footer">Made with AfriQuote · afriquote.africa · Try free today</div>`;
+}
+
+function sendQuote(){
+  const cl=document.getElementById('clientName')?.value;
+  if(!cl){document.getElementById('clientName').focus();return;}
+  clearInterval(timerInterval);
+  const s=Math.floor((Date.now()-startTime)/1000);
+  alert(`Quote ${QNO} sent to ${cl}!\n\nTime taken: ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}\n\nIn production:\n• PDF generated and emailed to client\n• View tracking enabled (Pro feature)\n• Quote saved to your history\n\nUpgrade to Pro (₦1,500/mo) for unlimited quotes + view tracking`);
+}
+
+function sendWhatsApp(){
+  const cl=document.getElementById('clientName')?.value||'there';
+  const wa=document.getElementById('clientWA')?.value;
+  if(!wa){alert('Add client WhatsApp number first.');return;}
+  const t=calcTotals();
+  const title=document.getElementById('quoteTitle')?.value||'services';
+  const validDays=document.getElementById('validDays')?.value||14;
+  const expiry=new Date(Date.now()+validDays*86400000).toLocaleDateString('en-NG',{day:'numeric',month:'short'});
+  const msg=`Hello ${cl},\n\nPlease find my quote for ${title} — ${SYM[document.getElementById('currency').value]}${Math.round(t.tot).toLocaleString()}.\n\nQuote ${QNO} · Valid until ${expiry}\n\nView full quote: https://afriquote.africa/q/${QNO}\n\nKind regards\n${document.getElementById('bizName')?.value||'Us'}\n\n_Made with AfriQuote · afriquote.africa_`;
+  const phone=wa.replace(/[^0-9]/g,'');
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function copyLink(){
+  navigator.clipboard?.writeText(`https://afriquote.africa/q/${QNO}`).then(()=>{
+    alert('Quote link copied! Share it anywhere.\n\nNote: View tracking (see when client opens the link) is an AfriQuote Pro feature.');
+  });
+}
+
+renderLines();
+updatePreview();
+</script>
+</body>
+</html>

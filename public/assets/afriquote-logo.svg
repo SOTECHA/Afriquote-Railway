@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 160" width="720" height="160">
+  
+  <rect x="40" y="32" width="96" height="96" rx="26" fill="#1D9E75"/>
+  <path d="M88 38 L52 62 L52 98 L88 122 L124 98 L124 62 Z" fill="#FFFFFF"/>
+  <text x="164" y="112"
+    font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
+    font-weight="800" font-size="88"
+    fill="#0e1410">Afri<tspan fill="#1D9E75">Quote</tspan></text>
+</svg>

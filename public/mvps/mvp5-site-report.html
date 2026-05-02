@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfriQuote — Site Daily Report</title>
+<style>
+:root{--g:#1D9E75;--g2:#0F6E56;--gl:#E1F5EE;--gx:#f0faf6;--red:#E24B4A;--rl:#FCEBEB;--amber:#BA7517;--al:#FAEEDA;--blue:#185FA5;--bl:#E6F1FB;--ink:#0e1410;--ink2:#3d4a3f;--ink3:#7a8c7c;--bg:#f7f8f6;--s:#fff;--s2:#f4f5f3;--b:#e2e6df;--b2:#cdd1c9;--r:10px;--rl2:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;max-width:520px;margin:0 auto}
+.topbar{height:52px;background:var(--g);display:flex;align-items:center;padding:0 16px;gap:10px;color:#fff;position:sticky;top:0;z-index:10}
+.logo{font-weight:700;font-size:15px;display:flex;align-items:center;gap:7px}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:12px;height:12px;fill:#fff}
+.top-date{margin-left:auto;font-size:12px;opacity:.8}
+.content{padding:16px}
+.site-selector{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:14px 16px;margin-bottom:14px}
+.site-selector select{width:100%;padding:8px 10px;border:1px solid var(--b2);border-radius:var(--r);font-size:14px;background:var(--s);color:var(--ink);font-family:inherit}
+.site-selector select:focus{outline:none;border-color:var(--g)}
+.site-selector .site-name{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.site-selector .site-meta{font-size:12px;color:var(--ink3)}
+.checkin-card{border-radius:var(--rl2);padding:16px;margin-bottom:14px;border:1px solid}
+.checkin-card.idle{background:var(--s2);border-color:var(--b)}
+.checkin-card.active{background:var(--gl);border-color:rgba(29,158,117,.3)}
+.ci-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ci-title{font-size:13px;font-weight:600;color:var(--ink)}
+.ci-timer{font-size:22px;font-weight:700;color:var(--g);font-variant-numeric:tabular-nums}
+.ci-location{font-size:11.5px;color:var(--ink3);margin-top:4px}
+.ci-btn{width:100%;padding:11px;border-radius:var(--r);border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.ci-btn.in{background:var(--g);color:#fff}.ci-btn.in:hover{background:var(--g2)}
+.ci-btn.out{background:#fff;border:2px solid var(--red);color:var(--red)}.ci-btn.out:hover{background:var(--rl)}
+.card{background:var(--s);border:1px solid var(--b);border-radius:var(--rl2);padding:14px 16px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);margin-bottom:12px}
+.progress-wrap{margin-bottom:12px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.progress-bar{height:10px;background:var(--b);border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;border-radius:5px;background:var(--g);transition:width .3s}
+.fg{margin-bottom:11px}
+.fl{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:4px;display:block}
+.fc{width:100%;padding:8px 10px;border:1px solid var(--b2);border-radius:var(--r);font-size:13px;background:var(--s);color:var(--ink);font-family:inherit}
+.fc:focus{outline:none;border-color:var(--g)}
+select.fc{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a8c7c'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+textarea.fc{min-height:80px;resize:vertical}
+.issue-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.issue-row input{flex:1}
+.issue-type{width:90px;flex-shrink:0}
+.del-btn{padding:7px 10px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s);color:var(--ink3);cursor:pointer;font-size:13px;flex-shrink:0}
+.del-btn:hover{background:var(--rl);color:var(--red);border-color:var(--red)}
+.add-btn{width:100%;padding:7px;border:1px dashed var(--b2);border-radius:var(--r);background:none;color:var(--ink3);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.add-btn:hover{border-color:var(--g);color:var(--g);background:var(--gx)}
+.workers-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.worker-num{background:var(--s2);border-radius:8px;padding:10px;text-align:center}
+.worker-num input{width:100%;border:none;background:none;text-align:center;font-size:24px;font-weight:700;color:var(--ink);font-family:inherit}
+.worker-num input:focus{outline:none}
+.worker-num .wl{font-size:11px;color:var(--ink3);margin-top:2px}
+.action-btns{display:flex;gap:8px;margin-top:16px}
+.btn{padding:11px;border-radius:var(--r);border:1px solid var(--b2);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;background:var(--s);color:var(--ink);flex:1;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .12s}
+.btn:hover{background:var(--s2)}
+.btn-g{background:var(--g);color:#fff;border-color:var(--g)}.btn-g:hover{background:var(--g2)}
+.btn-wa{background:#25D366;color:#fff;border-color:#25D366}
+.preview-report{background:var(--s2);border-radius:var(--rl2);padding:14px;margin-top:14px;font-size:12px;line-height:1.6;display:none}
+.preview-report.show{display:block}
+.pr-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.pr-section{margin-bottom:10px}
+.pr-section strong{display:block;font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.log-item{padding:8px 0;border-bottom:1px solid var(--b);display:flex;align-items:flex-start;gap:10px}
+.log-item:last-child{border-bottom:none}
+.log-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.log-content{flex:1;font-size:12px;color:var(--ink2);line-height:1.5}
+.log-meta{font-size:11px;color:var(--ink3)}
+.severity{font-size:10px;padding:1px 6px;border-radius:6px;font-weight:600;margin-left:6px}
+.s-high{background:var(--rl);color:var(--red)}
+.s-med{background:var(--al);color:var(--amber)}
+.s-low{background:var(--gl);color:var(--g2)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+    AfriQuote Sites
+  </div>
+  <div class="top-date" id="topDate"></div>
+</div>
+<div class="content">
+  <div class="site-selector">
+    <div class="site-name" id="siteName">Lekki Phase 2 Housing</div>
+    <div class="site-meta" id="siteMeta">Lagos · Phase 3 of 5 · Budget: ₦380M</div>
+    <select style="margin-top:8px" onchange="changeSite(this.value)">
+      <option value="lekki">Lekki Phase 2 Housing — Lagos</option>
+      <option value="accra">Accra Tech Hub — East Legon</option>
+      <option value="nairobi">Nairobi Office Block — Westlands</option>
+    </select>
+  </div>
+
+  <div class="checkin-card idle" id="checkinCard">
+    <div class="ci-header">
+      <div>
+        <div class="ci-title" id="ciTitle">Not checked in</div>
+        <div class="ci-location" id="ciLocation">Tap to check in and start your day</div>
+      </div>
+      <div class="ci-timer" id="ciTimer" style="display:none">00:00:00</div>
+    </div>
+    <button class="ci-btn in" id="ciBtn" onclick="toggleCheckin()">Check in — start day</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Today's progress</div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Overall completion</span><span id="progressPct">62%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:62%"></div></div>
+    </div>
+    <div class="fg">
+      <label class="fl">Update progress (%)</label>
+      <input class="fc" type="range" min="0" max="100" value="62" id="progressSlider" oninput="updateProgress(this.value)">
+    </div>
+    <div class="fg">
+      <label class="fl">Work completed today</label>
+      <textarea class="fc" id="workDone" placeholder="e.g. Completed foundation pour for Block D — 40m³ poured, all rebar in place. Curing started at 14:30."></textarea>
+    </div>
+    <div class="fg">
+      <label class="fl">Materials used</label>
+      <textarea class="fc" id="materials" style="min-height:60px" placeholder="e.g. 40 bags Dangote cement, 2 tons rebar (12mm), 8m³ sand"></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Workers on site today</div>
+    <div class="workers-grid">
+      <div class="worker-num"><input type="number" id="wArtisan" value="12" min="0"><div class="wl">Artisans</div></div>
+      <div class="worker-num"><input type="number" id="wLabour" value="8" min="0"><div class="wl">Labourers</div></div>
+      <div class="worker-num"><input type="number" id="wSuper" value="2" min="0"><div class="wl">Supervisors</div></div>
+      <div class="worker-num"><input type="number" id="wOther" value="0" min="0"><div class="wl">Others</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Issues & flags</div>
+    <div id="issuesList">
+      <div class="issue-row">
+        <input class="fc issue-type" placeholder="Type" value="Safety" style="width:90px;flex-shrink:0">
+        <input class="fc" placeholder="Description" value="Two workers without hard hats — reminded on site">
+        <select class="fc" style="width:80px;flex-shrink:0">
+          <option>Low</option><option selected>Medium</option><option>High</option>
+        </select>
+        <button class="del-btn" onclick="removeIssue(this)">×</button>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addIssue()">+ Flag an issue</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Weather</div>
+    <div style="display:flex;gap:8px">
+      <select class="fc" id="weather">
+        <option>Clear — work continued normally</option>
+        <option>Partly cloudy — no impact</option>
+        <option>Heavy rain — work stopped 2hrs</option>
+        <option>Extreme heat — reduced hours</option>
+        <option>Rain — work stopped all day</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Visitors / site access</div>
+    <textarea class="fc" id="visitors" style="min-height:55px" placeholder="e.g. Client visited site 10am–11am. Inspector from LASG visited Block C."></textarea>
+  </div>
+
+  <div class="action-btns">
+    <button class="btn btn-g" onclick="generateReport()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M3 2h7l3 3v9H3z"/><path d="M10 2v3h3"/></svg>
+      Preview report
+    </button>
+    <button class="btn btn-wa" id="waBtn" onclick="sendReportWA()">
+      💬 Send to client
+    </button>
+  </div>
+
+  <div class="preview-report" id="reportPreview"></div>
+</div>
+
+<script>
+const sites={
+  lekki:{name:'Lekki Phase 2 Housing',meta:'Lagos · Phase 3 of 5 · Budget: ₦380M',client:'BetaRide Lagos',clientWA:'+2348011000001'},
+  accra:{name:'Accra Tech Hub',meta:'East Legon, Accra · Phase 2 of 4 · Budget: GH₵1.8M',client:'AgroConnect GH',clientWA:'+233244300003'},
+  nairobi:{name:'Nairobi Office Block',meta:'Westlands, Nairobi · Phase 1 of 6 · Budget: KES 95M',client:'NovaPay Kenya',clientWA:'+254722400004'},
+};
+let currentSite='lekki';
+let checkedIn=false;
+let checkInTime=null;
+let timerInt=null;
+
+document.getElementById('topDate').textContent=new Date().toLocaleDateString('en-NG',{weekday:'short',day:'numeric',month:'short'});
+
+function changeSite(id){
+  currentSite=id;
+  const s=sites[id];
+  document.getElementById('siteName').textContent=s.name;
+  document.getElementById('siteMeta').textContent=s.meta;
+}
+
+function toggleCheckin(){
+  if(!checkedIn){
+    checkedIn=true;
+    checkInTime=Date.now();
+    navigator.geolocation?.getCurrentPosition(pos=>{
+      document.getElementById('ciLocation').textContent=`GPS: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)} · Accuracy: ${Math.round(pos.coords.accuracy)}m`;
+    },()=>{document.getElementById('ciLocation').textContent='GPS unavailable — location not recorded';});
+    document.getElementById('ciTitle').textContent='On site';
+    document.getElementById('checkinCard').className='checkin-card active';
+    document.getElementById('ciTimer').style.display='block';
+    document.getElementById('ciBtn').textContent='Check out — end day';
+    document.getElementById('ciBtn').className='ci-btn out';
+    timerInt=setInterval(()=>{
+      const s=Math.floor((Date.now()-checkInTime)/1000);
+      const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+      document.getElementById('ciTimer').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    },1000);
+  } else {
+    clearInterval(timerInt);
+    checkedIn=false;
+    const totalSecs=Math.floor((Date.now()-checkInTime)/1000);
+    const h=Math.floor(totalSecs/3600),m=Math.floor((totalSecs%3600)/60);
+    document.getElementById('ciTitle').textContent=`Checked out · ${h}h ${m}m on site`;
+    document.getElementById('checkinCard').className='checkin-card idle';
+    document.getElementById('ciBtn').textContent='Check in again';
+    document.getElementById('ciBtn').className='ci-btn in';
+  }
+}
+
+function updateProgress(v){
+  document.getElementById('progressPct').textContent=v+'%';
+  document.getElementById('progressFill').style.width=v+'%';
+}
+
+function addIssue(){
+  const div=document.createElement('div');
+  div.className='issue-row';
+  div.innerHTML=`<input class="fc issue-type" placeholder="Type" value="Delay" style="width:90px;flex-shrink:0"><input class="fc" placeholder="Describe the issue"><select class="fc" style="width:80px;flex-shrink:0"><option>Low</option><option>Medium</option><option>High</option></select><button class="del-btn" onclick="removeIssue(this)">×</button>`;
+  document.getElementById('issuesList').appendChild(div);
+}
+
+function removeIssue(btn){btn.closest('.issue-row').remove();}
+
+function buildReportText(){
+  const s=sites[currentSite];
+  const date=new Date().toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const progress=document.getElementById('progressSlider').value;
+  const work=document.getElementById('workDone').value||'No update provided';
+  const mats=document.getElementById('materials').value||'None logged';
+  const weather=document.getElementById('weather').value;
+  const visitors=document.getElementById('visitors').value;
+  const wa=+document.getElementById('wArtisan').value||0;
+  const wl=+document.getElementById('wLabour').value||0;
+  const ws=+document.getElementById('wSuper').value||0;
+  const total=wa+wl+ws;
+  const issues=Array.from(document.querySelectorAll('#issuesList .issue-row')).map(r=>{
+    const inputs=r.querySelectorAll('input,select');
+    return`  [${inputs[2]?.value||'Low'}] ${inputs[0]?.value||'Issue'}: ${inputs[1]?.value||''}`;
+  }).join('\n');
+  return{s,date,progress,work,mats,weather,visitors,total,wa,wl,ws,issues};
+}
+
+function generateReport(){
+  const r=buildReportText();
+  const html=`<div class="pr-title">Site Daily Report — ${r.date}</div>
+  <div class="pr-section"><strong>Site</strong>${r.s.name} · ${r.s.meta}</div>
+  <div class="pr-section"><strong>Progress</strong>${r.progress}% overall completion</div>
+  <div class="pr-section"><strong>Work completed</strong>${r.work}</div>
+  <div class="pr-section"><strong>Materials used</strong>${r.mats}</div>
+  <div class="pr-section"><strong>Workers on site</strong>${r.total} total — ${r.wa} artisans, ${r.wl} labourers, ${r.ws} supervisors</div>
+  <div class="pr-section"><strong>Weather</strong>${r.weather}</div>
+  ${r.visitors?`<div class="pr-section"><strong>Visitors</strong>${r.visitors}</div>`:''}
+  ${r.issues?`<div class="pr-section"><strong>Issues flagged</strong><pre style="font-size:11px;color:var(--amber);line-height:1.6;white-space:pre-wrap">${r.issues}</pre></div>`:''}
+  <div class="pr-section" style="margin-top:10px;font-size:11px;color:var(--ink3)">Sent with AfriQuote Site Manager · afriquote.africa</div>`;
+  const el=document.getElementById('reportPreview');
+  el.innerHTML=html;el.className='preview-report show';
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function sendReportWA(){
+  const r=buildReportText();
+  const msg=`*SITE DAILY REPORT*\n${r.date}\n\n*Site:* ${r.s.name}\n*Progress:* ${r.progress}% complete\n\n*Work completed:*\n${r.work}\n\n*Materials used:*\n${r.mats}\n\n*Workers on site:* ${r.total} (${r.wa} artisans, ${r.wl} labourers, ${r.ws} supervisors)\n\n*Weather:* ${r.weather}\n${r.visitors?`\n*Visitors:* ${r.visitors}`:''}${r.issues?`\n\n*Issues:*\n${r.issues}`:''}\n\n_Sent via AfriQuote Site Manager · afriquote.africa_`;
+  const wa=r.s.clientWA.replace(/[^0-9]/g,'');
+  window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+</script>
+</body>
+</html>

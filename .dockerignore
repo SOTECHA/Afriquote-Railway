@@ -1,0 +1,7 @@
+data/
+uploads/
+*.log
+.env
+.git
+node_modules
+tests/

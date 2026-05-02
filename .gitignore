@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment secrets — NEVER commit this
+.env
+
+# Data files — stored separately on Railway volume
+data/
+data/*.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build artifacts
+dist/
+.cache/

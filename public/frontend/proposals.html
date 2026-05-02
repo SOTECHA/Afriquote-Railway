@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AfriQuote — Proposal Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#1D9E75;--g2:#0F6E56;--gl:#E1F5EE;--gx:#f0faf6;
+  --amber:#BA7517;--al:#FAEEDA;
+  --red:#E24B4a;--rl:#FCEBEB;
+  --blue:#185FA5;--bl:#E6F1FB;
+  --purple:#534AB7;--pl:#EEEDFE;
+  --ink:#0e1410;--ink2:#3d4a3f;--ink3:#7a8c7c;
+  --bg:#f7f8f6;--surface:#fff;--surface2:#f4f5f3;
+  --border:#e2e6df;--border2:#cdd1c9;
+  --r:10px;--rl2:16px;--rx:24px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 20px rgba(0,0,0,.08);
+  --font-head:'Syne',sans-serif;--font:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+
+/* ── LAYOUT ── */
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--ink)}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--g);display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:13px;height:13px;fill:#fff}
+.logo em{color:var(--g);font-style:normal}
+.topbar-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;background:var(--gl);color:var(--g2);border:1px solid rgba(29,158,117,.2)}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.av{width:28px;height:28px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;cursor:pointer}
+
+/* ── VIEW SWITCHER ── */
+.view-tabs{display:flex;gap:2px;background:var(--surface2);border-radius:var(--r);padding:3px}
+.vtab{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:var(--ink2);transition:all .15s;border:none;background:none;font-family:var(--font)}
+.vtab:hover{color:var(--ink)}
+.vtab.on{background:var(--surface);color:var(--ink);box-shadow:var(--sh)}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;overflow-y:auto}
+.sb-section{margin-bottom:4px}
+.sb-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:8px 16px 5px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:12.5px;color:var(--ink2);cursor:pointer;border-left:2px solid transparent;transition:all .12s}
+.sb-item:hover{background:var(--surface2);color:var(--ink)}
+.sb-item.on{background:var(--gx);color:var(--g2);border-left-color:var(--g);font-weight:500}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5;flex-shrink:0}
+.sb-count{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:10px;background:var(--red);color:#fff;font-weight:600}
+.sb-count.amber{background:var(--amber)}
+.sb-count.gray{background:var(--border2);color:var(--ink2)}
+
+.main{flex:1;overflow-y:auto;padding:20px}
+
+/* ── PAGE / VIEW ── */
+.view{display:none}.view.on{display:block}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:10px;flex-wrap:wrap}
+.pt{font-family:var(--font-head);font-size:17px;font-weight:600;color:var(--ink)}
+.psub{font-size:12px;color:var(--ink3);margin-top:1px}
+
+/* ── BUTTONS ── */
+.btn{padding:7px 13px;border-radius:var(--r);border:1px solid var(--border2);font-size:12.5px;cursor:pointer;font-family:var(--font);background:var(--surface);color:var(--ink);font-weight:500;transition:all .12s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{background:var(--surface2)}
+.btn-p{background:var(--g);color:#fff;border-color:var(--g)}.btn-p:hover{background:var(--g2)}
+.btn-sm{padding:5px 10px;font-size:11.5px}
+.btn-red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-amber{background:var(--amber);color:#fff;border-color:var(--amber)}
+.btn-wa{background:#25D366;color:#fff;border:none;width:100%;justify-content:center;padding:9px;font-weight:600}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl2);padding:15px;margin-bottom:14px;box-shadow:var(--sh)}
+.card-title{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:12px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.sc{background:var(--surface2);border-radius:var(--r);padding:12px 14px}
+.sc .lbl{font-size:11px;color:var(--ink3);margin-bottom:4px;font-weight:500}
+.sc .val{font-size:21px;font-weight:600;color:var(--ink);font-family:var(--font-head)}
+.sc .sub{font-size:11px;margin-top:3px}
+.green{color:var(--g)}.amber{color:var(--amber)}.red{color:var(--red)}.blue{color:var(--blue)}
+
+/* ── BADGES ── */
+.bdg{display:inline-flex;align-items:center;font-size:10.5px;padding:2px 7px;border-radius:5px;font-weight:500;white-space:nowrap}
+.b-ok{background:var(--gl);color:var(--g2)}
+.b-warn{background:var(--al);color:var(--amber)}
+.b-red{background:var(--rl);color:#A32D2D}
+.b-blue{background:var(--bl);color:var(--blue)}
+.b-purple{background:var(--pl);color:var(--purple)}
+.b-gray{background:var(--surface2);color:var(--ink2);border:1px solid var(--border)}
+
+/* ── ROW ── */
+.row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.ri{flex:1}
+.rt{font-size:13px;font-weight:500;color:var(--ink)}
+.rd{font-size:11.5px;color:var(--ink3);margin-top:1px}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:12px 0}
+
+/* ── FORM ── */
+.fg{margin-bottom:11px}
+.fl{font-size:11.5px;font-weight:500;color:var(--ink2);margin-bottom:5px;display:block}
+.fc{width:100%;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border2);font-size:13px;background:var(--surface);color:var(--ink);font-family:var(--font);transition:border .15s}
+.fc:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+textarea.fc{resize:vertical;min-height:70px}
+
+/* ── ALERT BOXES ── */
+.alert{border-radius:var(--r);padding:10px 13px;margin-bottom:11px;font-size:12.5px;border-left:3px solid}
+.alert-g{background:var(--gl);border-color:var(--g);color:var(--g2)}
+.alert-a{background:var(--al);border-color:var(--amber);color:var(--amber)}
+.alert-r{background:var(--rl);border-color:var(--red);color:#A32D2D}
+.alert-b{background:var(--bl);border-color:var(--blue);color:var(--blue)}
+
+/* ── PROGRESS BAR ── */
+.prog{height:6px;border-radius:3px;background:var(--border);overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width .4s}
+
+/* ── HBAR ── */
+.hbar-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.hbar-row:last-child{border-bottom:none}
+.hbar-lbl{font-size:11.5px;color:var(--ink2);width:110px;flex-shrink:0}
+.hbar-t{flex:1;height:6px;border-radius:3px;background:var(--border);overflow:hidden}
+.hbar-f{height:100%;border-radius:3px}
+.hbar-v{font-size:11.5px;font-weight:600;width:40px;text-align:right}
+
+/* ══════════════════════════════════════
+   KANBAN BOARD
+══════════════════════════════════════ */
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;min-height:500px}
+.kanban::-webkit-scrollbar{height:6px}
+.kb-col{min-width:220px;max-width:220px;flex-shrink:0}
+.kb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 4px}
+.kb-title{font-size:12px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
+.kb-count{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--surface2);color:var(--ink2)}
+.kb-total{font-size:10px;color:var(--ink3);margin-top:2px}
+.kb-cards{display:flex;flex-direction:column;gap:8px;min-height:200px}
+
+/* ── Proposal card (kanban) ── */
+.prop-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl2);padding:12px;cursor:pointer;transition:all .2s;position:relative}
+.prop-card:hover{border-color:var(--g);box-shadow:var(--sh2);transform:translateY(-1px)}
+.prop-card.won{border-left:3px solid var(--g)}
+.prop-card.lost{opacity:.65}
+.prop-card.overdue::before{content:'';position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.pc-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;line-height:1.35}
+.pc-client{font-size:11.5px;color:var(--ink3);margin-bottom:8px}
+.pc-value{font-size:14px;font-weight:700;color:var(--ink);font-family:var(--font-head);margin-bottom:6px}
+.pc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.pc-prob{font-size:11px;font-weight:600;padding:2px 6px;border-radius:5px}
+.pc-followup{font-size:10.5px;color:var(--ink3);display:flex;align-items:center;gap:3px}
+.pc-followup.due{color:var(--amber);font-weight:500}
+.pc-followup.overdue{color:var(--red);font-weight:600}
+.prob-bar{height:3px;border-radius:2px;background:var(--border);overflow:hidden;margin-bottom:6px}
+.prob-fill{height:100%;border-radius:2px;transition:width .4s}
+
+/* ══════════════════════════════════════
+   PROPOSAL DETAIL PANEL
+══════════════════════════════════════ */
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:480px;background:var(--surface);border-left:1px solid var(--border);z-index:200;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;box-shadow:-4px 0 24px rgba(0,0,0,.1)}
+.detail-panel.open{transform:translateX(0)}
+.dp-top{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0}
+.dp-close{width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--ink3);flex-shrink:0;background:var(--surface)}
+.dp-close:hover{background:var(--surface2)}
+.dp-body{flex:1;overflow-y:auto;padding:16px 18px}
+.dp-footer{padding:12px 18px;border-top:1px solid var(--border);flex-shrink:0}
+.dp-num{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase}
+.dp-title{font-family:var(--font-head);font-size:18px;font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:6px}
+.dp-client{font-size:13px;color:var(--ink2)}
+.dp-value{font-family:var(--font-head);font-size:26px;font-weight:700;color:var(--ink);margin:10px 0 4px}
+.dp-weighted{font-size:12px;color:var(--ink3)}
+
+/* ── Stage steps ── */
+.stage-steps{display:flex;margin:14px 0;overflow-x:auto}
+.stage-step{flex:1;min-width:60px;text-align:center;padding:6px 4px;font-size:10px;color:var(--ink3);border-bottom:2px solid var(--border);cursor:pointer;transition:all .15s;white-space:nowrap}
+.stage-step.done{border-color:var(--g);color:var(--g2);font-weight:500}
+.stage-step.current{border-color:var(--g);color:var(--g2);font-weight:600;background:var(--gx)}
+.stage-step.terminal.won{border-color:var(--g);color:var(--g2)}
+.stage-step.terminal.lost{border-color:var(--red);color:#A32D2D}
+.stage-step:hover:not(.current):not(.terminal){background:var(--surface2);color:var(--ink)}
+
+/* ── Activity feed ── */
+.activity-feed{display:flex;flex-direction:column;gap:0}
+.act-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);position:relative}
+.act-item:last-child{border-bottom:none}
+.act-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+.act-body{flex:1}
+.act-content{font-size:12.5px;color:var(--ink);line-height:1.5}
+.act-meta{font-size:11px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:8px}
+.act-outcome{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600}
+.act-outcome.positive{background:var(--gl);color:var(--g2)}
+.act-outcome.negative{background:var(--rl);color:#A32D2D}
+.act-outcome.neutral{background:var(--surface2);color:var(--ink2);border:1px solid var(--border)}
+
+/* ── Add activity form ── */
+.add-act-form{background:var(--surface2);border-radius:var(--r);padding:12px;margin-top:12px}
+.act-type-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.atp{padding:4px 10px;border-radius:15px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--ink2);transition:all .12s;font-family:var(--font)}
+.atp.on{background:var(--g);color:#fff;border-color:var(--g)}
+.atp:hover:not(.on){border-color:var(--g);color:var(--g)}
+
+/* ── Stage transition bar ── */
+.transition-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.trans-btn{padding:6px 12px;border-radius:20px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid;transition:all .15s;font-family:var(--font)}
+.trans-btn.next{border-color:var(--g);color:var(--g2);background:var(--gl)}
+.trans-btn.next:hover{background:var(--g);color:#fff}
+.trans-btn.won{border-color:var(--g);color:#fff;background:var(--g)}
+.trans-btn.won:hover{background:var(--g2)}
+.trans-btn.lost{border-color:var(--red);color:#A32D2D;background:var(--rl)}
+.trans-btn.lost:hover{background:var(--red);color:#fff}
+.trans-btn.stalled{border-color:var(--amber);color:var(--amber);background:var(--al)}
+
+/* ── Follow-up info ── */
+.followup-box{background:var(--al);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.followup-box.overdue{background:var(--rl)}
+.followup-box .fu-label{font-size:12px;font-weight:600}
+.followup-box .fu-date{font-size:12px;color:var(--ink2)}
+
+/* ── Convert banner ── */
+.convert-banner{background:linear-gradient(135deg,var(--g) 0%,var(--g2) 100%);border-radius:var(--rl2);padding:16px;color:#fff;margin-bottom:14px}
+.convert-banner h4{font-size:14px;font-weight:700;margin-bottom:4px;font-family:var(--font-head)}
+.convert-banner p{font-size:12px;opacity:.85;margin-bottom:12px}
+.convert-banner .btn-white{background:#fff;color:var(--g2);border:none;font-weight:600;width:100%;justify-content:center;padding:9px}
+.convert-banner .btn-white:hover{background:#f0faf6}
+
+/* ── Pipeline funnel ── */
+.funnel-bar{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.funnel-row{display:flex;align-items:center;gap:10px}
+.funnel-label{width:130px;font-size:12px;color:var(--ink2);flex-shrink:0}
+.funnel-track{flex:1;height:8px;border-radius:4px;background:var(--border);overflow:hidden}
+.funnel-fill{height:100%;border-radius:4px}
+.funnel-stats{display:flex;gap:8px;font-size:11px;width:90px;text-align:right;flex-shrink:0}
+.funnel-count{font-weight:600;color:var(--ink)}
+.funnel-value{color:var(--ink3)}
+
+/* ── List view ── */
+.proposals-table{width:100%;border-collapse:collapse;font-size:13px}
+.proposals-table th{text-align:left;padding:6px 10px;font-size:11px;font-weight:600;color:var(--ink3);border-bottom:1px solid var(--border);letter-spacing:.03em}
+.proposals-table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.proposals-table tr:hover td{background:var(--surface2);cursor:pointer}
+.proposals-table tr:last-child td{border-bottom:none}
+
+/* ── Overlay backdrop ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:199;display:none}
+.overlay.on{display:block}
+
+/* ── New proposal modal ── */
+.modal-wrap{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.4)}
+.modal-wrap.on{display:flex}
+.modal{background:var(--surface);border-radius:var(--rx);max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(--font-head);font-size:16px;font-weight:600;color:var(--ink)}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--ink3)}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
+.empty-title{font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.empty-desc{font-size:13px}
+
+/* ── Responsive ── */
+@media(max-width:760px){
+  .sidebar{display:none}
+  .kanban{flex-wrap:nowrap}
+  .detail-panel{width:100%;left:0;right:0}
+  .g4{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){.g2,.g3,.g4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+    Afri<em>Quote</em>
+  </div>
+  <div class="topbar-badge">Proposal Tracker</div>
+  <div class="view-tabs" style="margin-left:16px">
+    <button class="vtab on" onclick="switchView('pipeline',this)">Pipeline</button>
+    <button class="vtab" onclick="switchView('list',this)">List</button>
+    <button class="vtab" onclick="switchView('analytics',this)">Analytics</button>
+    <button class="vtab" onclick="switchView('followups',this)">Follow-ups</button>
+  </div>
+  <div class="topbar-right">
+    <button class="btn btn-p btn-sm" onclick="openNewModal()">+ New proposal</button>
+    <div class="av">AO</div>
+  </div>
+</div>
+
+<div class="body">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-section">
+    <div class="sb-label">Pipeline</div>
+    <div class="sb-item on" onclick="filterStage(null,this)"><div class="sb-dot"></div>All proposals <div class="sb-count gray" id="sb-all">5</div></div>
+    <div class="sb-item" onclick="filterStage('draft',this)"><div class="sb-dot"></div>Draft <div class="sb-count gray" id="sb-draft">1</div></div>
+    <div class="sb-item" onclick="filterStage('sent',this)"><div class="sb-dot"></div>Sent</div>
+    <div class="sb-item" onclick="filterStage('viewed',this)"><div class="sb-dot"></div>Viewed <div class="sb-count amber" id="sb-viewed">1</div></div>
+    <div class="sb-item" onclick="filterStage('meeting_scheduled',this)"><div class="sb-dot"></div>Meeting sched.</div>
+    <div class="sb-item" onclick="filterStage('negotiating',this)"><div class="sb-dot"></div>Negotiating</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Closed</div>
+    <div class="sb-item" onclick="filterStage('won',this)"><div class="sb-dot"></div>Won <div class="sb-count" id="sb-won">1</div></div>
+    <div class="sb-item" onclick="filterStage('lost',this)"><div class="sb-dot"></div>Lost <div class="sb-count gray">1</div></div>
+    <div class="sb-item" onclick="filterStage('stalled',this)"><div class="sb-dot"></div>Stalled</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Action needed</div>
+    <div class="sb-item" onclick="switchView('followups',null);setActiveNav(this)"><div class="sb-dot"></div>Follow-ups due <div class="sb-count" id="sb-fu">2</div></div>
+    <div class="sb-item" onclick="filterOverdue(this)"><div class="sb-dot"></div>Overdue</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ── PIPELINE VIEW ── -->
+  <div id="view-pipeline" class="view on">
+    <div class="ph">
+      <div><div class="pt">Proposal pipeline</div><div class="psub" id="pipeline-sub">5 active · ₦3.28M total pipeline value</div></div>
+      <div style="display:flex;gap:8px">
+        <input class="fc" id="search-input" placeholder="Search proposals..." style="width:200px;padding:6px 10px;font-size:12.5px" oninput="applySearch(this.value)">
+      </div>
+    </div>
+    <div class="kanban" id="kanban-board"></div>
+  </div>
+
+  <!-- ── LIST VIEW ── -->
+  <div id="view-list" class="view">
+    <div class="ph">
+      <div><div class="pt">All proposals</div></div>
+      <button class="btn btn-p btn-sm" onclick="openNewModal()">+ New proposal</button>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="proposals-table" id="list-table">
+        <thead><tr>
+          <th style="padding-left:14px">Proposal</th>
+          <th>Client</th>
+          <th>Value</th>
+          <th>Stage</th>
+          <th>Probability</th>
+          <th>Follow-up</th>
+          <th>Type</th>
+        </tr></thead>
+        <tbody id="list-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── ANALYTICS VIEW ── -->
+  <div id="view-analytics" class="view">
+    <div class="ph"><div class="pt">Pipeline analytics</div></div>
+    <div class="g4">
+      <div class="sc"><div class="lbl">Total pipeline</div><div class="val" id="an-total-val">₦3.28M</div><div class="sub green">5 active proposals</div></div>
+      <div class="sc"><div class="lbl">Weighted value</div><div class="val green" id="an-weighted">₦2.04M</div><div class="sub" style="color:var(--ink3)">By probability</div></div>
+      <div class="sc"><div class="lbl">Win rate</div><div class="val" id="an-winrate">50%</div><div class="sub" style="color:var(--ink3)">1 won, 1 lost</div></div>
+      <div class="sc"><div class="lbl">Avg. days to close</div><div class="val" id="an-avgdays">—</div><div class="sub" style="color:var(--ink3)">Won proposals</div></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">Stage funnel</div>
+        <div class="funnel-bar" id="funnel-chart"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Pipeline by type</div>
+        <div id="type-chart"></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">Win / loss analysis</div>
+        <div id="winloss-chart"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Proposals by currency</div>
+        <div id="currency-chart"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOLLOW-UPS VIEW ── -->
+  <div id="view-followups" class="view">
+    <div class="ph"><div class="pt">Follow-ups</div><div class="psub">Proposals requiring action in the next 7 days</div></div>
+    <div id="followups-list"></div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /body -->
+</div><!-- /shell -->
+
+<!-- DETAIL PANEL OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeDetail()"></div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-panel" id="detailPanel">
+  <div class="dp-top">
+    <div style="flex:1">
+      <div class="dp-num" id="dp-num">PRO-0001</div>
+      <div class="dp-title" id="dp-title">Proposal title</div>
+      <div class="dp-client" id="dp-client">Client name</div>
+    </div>
+    <button class="dp-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="dp-body" id="dp-body">
+    <!-- injected by JS -->
+  </div>
+  <div class="dp-footer">
+    <button class="btn btn-sm" onclick="closeDetail()">Close</button>
+    <button class="btn btn-p btn-sm" onclick="openNewModal(currentProposal?.id)">Edit</button>
+  </div>
+</div>
+
+<!-- NEW PROPOSAL MODAL -->
+<div class="modal-wrap" id="newModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="modal-title">New proposal</span>
+      <button class="dp-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="g2">
+        <div class="fg"><label class="fl">Title *</label><input class="fc" id="f-title" placeholder="e.g. Digital transformation roadmap"></div>
+        <div class="fg"><label class="fl">Client name *</label><input class="fc" id="f-client" placeholder="Company or contact name"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Estimated value</label><input class="fc" id="f-value" type="number" placeholder="0"></div>
+        <div class="fg"><label class="fl">Currency</label>
+          <select class="fc" id="f-currency">
+            <option value="NGN">NGN — Nigerian Naira (₦)</option>
+            <option value="GHS">GHS — Ghanaian Cedi (GH₵)</option>
+            <option value="KES">KES — Kenyan Shilling</option>
+            <option value="ZAR">ZAR — South African Rand (R)</option>
+            <option value="USD">USD — US Dollar ($)</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Proposal type</label>
+          <select class="fc" id="f-type">
+            <option value="services">Services</option>
+            <option value="technology">Technology</option>
+            <option value="consulting">Consulting</option>
+            <option value="construction">Construction</option>
+            <option value="creative">Creative</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Country</label>
+          <select class="fc" id="f-country">
+            <option value="NG">Nigeria</option>
+            <option value="GH">Ghana</option>
+            <option value="KE">Kenya</option>
+            <option value="ZA">South Africa</option>
+            <option value="RW">Rwanda</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Description</label><textarea class="fc" id="f-desc" placeholder="Brief overview of what you're proposing..."></textarea></div>
+      <div class="fg"><label class="fl">Scope of work</label><textarea class="fc" id="f-scope" placeholder="Detailed scope of work..."></textarea></div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Client email</label><input class="fc" id="f-email" type="email" placeholder="client@company.com"></div>
+        <div class="fg"><label class="fl">Client WhatsApp</label><input class="fc" id="f-whatsapp" placeholder="+234..."></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Valid until</label><input class="fc" id="f-valid" type="date"></div>
+        <div class="fg"><label class="fl">Follow-up date</label><input class="fc" id="f-followup" type="date"></div>
+      </div>
+      <div class="fg"><label class="fl">Win probability override (%)</label><input class="fc" id="f-prob" type="number" min="0" max="100" placeholder="Leave blank to auto-estimate"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-p" onclick="saveProposal()">Save proposal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   DATA — 5 realistic seeded proposals
+════════════════════════════════════════ */
+const STAGES_ORDER = ['draft','sent','viewed','meeting_scheduled','negotiating','won','lost','stalled','expired'];
+const STAGE_LABELS = {
+  draft:'Draft', sent:'Sent', viewed:'Viewed',
+  meeting_scheduled:'Meeting', negotiating:'Negotiating',
+  won:'Won', lost:'Lost', stalled:'Stalled', expired:'Expired'
+};
+const STAGE_TRANSITIONS = {
+  draft:             ['sent'],
+  sent:              ['viewed','stalled','lost'],
+  viewed:            ['meeting_scheduled','negotiating','stalled','lost'],
+  meeting_scheduled: ['negotiating','won','stalled','lost'],
+  negotiating:       ['won','lost','stalled'],
+  stalled:           ['sent','negotiating','lost'],
+  won:[], lost:[], expired:[]
+};
+const TERMINAL = new Set(['won','lost','expired']);
+
+const currencySymbol = { NGN:'₦', GHS:'GH₵', KES:'KES', ZAR:'R', USD:'$', GBP:'£' };
+const formatCurrency = (v, c='NGN') => {
+  const sym = currencySymbol[c] || c;
+  if (v >= 1_000_000) return sym + (v/1_000_000).toFixed(2).replace(/\.00$/,'') + 'M';
+  if (v >= 1_000)     return sym + Math.round(v/1000) + 'K';
+  return sym + v.toLocaleString();
+};
+const formatDate = d => d ? new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short'}) : '—';
+const daysFromNow = d => {
+  if (!d) return null;
+  return Math.ceil((new Date(d) - Date.now()) / 86400000);
+};
+
+function uid() {
+  return Math.random().toString(36).slice(2,10);
+}
+
+const now = new Date().toISOString();
+const today = now.split('T')[0];
+const inDays = n => new Date(Date.now() + n * 86400000).toISOString().split('T')[0];
+
+let proposals = [
+  {
+    id:'p1', number:'PRO-0001', stage:'negotiating',
+    title:'Digital transformation roadmap',
+    clientName:'BetaRide Lagos', company:'BetaRide Estates',
+    currency:'NGN', proposalType:'technology',
+    estimatedValue:2400000, winProbabilityOverride:75,
+    description:'End-to-end digital transformation covering ERP, mobile app, and data analytics.',
+    scopeOfWork:'Phase 1: Discovery & architecture. Phase 2: ERP. Phase 3: Mobile app. Phase 4: Analytics.',
+    deliverables:['Architecture document','ERP system','iOS & Android app','Analytics dashboard'],
+    timeline:'6 months', country:'NG',
+    validUntil: inDays(18), followUpDate: inDays(3), followUpMethod:'whatsapp',
+    clientEmail:'projects@betaride.ng', clientPhone:'+234 801 100 0001', clientWhatsapp:'+234 801 100 0001',
+    viewCount:5, lastViewedAt: inDays(-1), sentAt: inDays(-14),
+    stageChangedAt: inDays(-4), wonAt:null, lostAt:null, lostReason:null,
+    readyForContract:false, contractId:null, quoteId:null,
+    activities:[
+      { id:'a1', type:'stage_change', content:'Proposal PRO-0001 created.', auto:true, createdAt: inDays(-14) },
+      { id:'a2', type:'email_sent',   content:'Initial proposal sent with PDF. Confirmed receipt within 2 hours.', outcome:'positive', createdAt: inDays(-14) },
+      { id:'a3', type:'stage_change', content:'Stage moved from "Sent" to "Viewed".', auto:true, createdAt: inDays(-12) },
+      { id:'a4', type:'call',         content:'30 min intro call. Client impressed with proposal approach. Asked for phased budget breakdown.', outcome:'positive', createdAt: inDays(-10) },
+      { id:'a5', type:'meeting',      content:'Presentation at BetaRide HQ. 4 stakeholders present. MD very engaged. Concerned about 6-month timeline.', outcome:'positive', createdAt: inDays(-7) },
+      { id:'a6', type:'follow_up',    content:'Sent revised timeline (5 months) and phased payment structure. Client reviewing internally.', outcome:'neutral', createdAt: inDays(-3) },
+    ],
+  },
+  {
+    id:'p2', number:'PRO-0002', stage:'viewed',
+    title:'Brand identity & design system',
+    clientName:'TradaKo Ltd', company:'TradaKo Ltd',
+    currency:'NGN', proposalType:'creative',
+    estimatedValue:580000, winProbabilityOverride:null,
+    description:'Full brand identity refresh — logo, guidelines, and digital design system.',
+    scopeOfWork:'Logo design (3 concepts), brand guidelines PDF, Figma design system with 40+ components.',
+    deliverables:['Logo suite','Brand guidelines','Figma design system','Social media kit'],
+    timeline:'8 weeks', country:'NG',
+    validUntil: inDays(10), followUpDate: inDays(2), followUpMethod:'whatsapp',
+    clientEmail:'info@tradako.com', clientPhone:'+234 802 200 0002', clientWhatsapp:'+234 802 200 0002',
+    viewCount:3, lastViewedAt: inDays(-1), sentAt: inDays(-5),
+    stageChangedAt: inDays(-2), wonAt:null, lostAt:null, lostReason:null,
+    readyForContract:false, contractId:null, quoteId:null,
+    activities:[
+      { id:'b1', type:'stage_change', content:'Proposal PRO-0002 created.', auto:true, createdAt: inDays(-8) },
+      { id:'b2', type:'email_sent',   content:'Proposal emailed with branded PDF cover. Requested response by end of week.', outcome:'positive', createdAt: inDays(-5) },
+      { id:'b3', type:'stage_change', content:'Stage moved from "Sent" to "Viewed".', auto:true, createdAt: inDays(-2) },
+    ],
+  },
+  {
+    id:'p3', number:'PRO-0003', stage:'meeting_scheduled',
+    title:'Agriculture platform — AgroConnect',
+    clientName:'AgroConnect GH', company:'AgroConnect Ghana',
+    currency:'GHS', proposalType:'technology',
+    estimatedValue:85000, winProbabilityOverride:null,
+    description:'Farmer-to-buyer marketplace platform for Ghanaian agricultural supply chain.',
+    scopeOfWork:'Web platform + mobile app for farmers. Admin panel for buyers and logistics.',
+    deliverables:['Marketplace web app','Farmer mobile app','Admin panel','API docs'],
+    timeline:'4 months', country:'GH',
+    validUntil: inDays(14), followUpDate: inDays(1), followUpMethod:'call',
+    clientEmail:'design@agroconnect.gh', clientPhone:'+233 244 300 003', clientWhatsapp:'+233 244 300 003',
+    viewCount:2, lastViewedAt: inDays(-2), sentAt: inDays(-9),
+    stageChangedAt: inDays(-1), wonAt:null, lostAt:null, lostReason:null,
+    readyForContract:false, contractId:null, quoteId:null,
+    activities:[
+      { id:'c1', type:'stage_change', content:'Proposal PRO-0003 created.', auto:true, createdAt: inDays(-12) },
+      { id:'c2', type:'email_sent',   content:'Proposal sent. Highlighted local market experience in cover email.', outcome:'positive', createdAt: inDays(-9) },
+      { id:'c3', type:'call',         content:'Brief intro call. Very interested. Asked to schedule a proper presentation.', outcome:'positive', createdAt: inDays(-5) },
+      { id:'c4', type:'stage_change', content:'Stage moved from "Viewed" to "Meeting scheduled".', auto:false, createdAt: inDays(-1) },
+    ],
+  },
+  {
+    id:'p4', number:'PRO-0004', stage:'won',
+    title:'IT infrastructure audit — NovaPay',
+    clientName:'NovaPay Kenya', company:'NovaPay Ltd',
+    currency:'KES', proposalType:'consulting',
+    estimatedValue:220000, winProbabilityOverride:100,
+    description:'Comprehensive IT audit covering security, infrastructure, and compliance.',
+    scopeOfWork:'Network security audit, penetration testing, GDPR/data compliance review.',
+    deliverables:['Security audit report','Risk register','Remediation roadmap','Compliance checklist'],
+    timeline:'6 weeks', country:'KE',
+    validUntil: inDays(30), followUpDate:null, followUpMethod:'email',
+    clientEmail:'ops@novapay.ke', clientPhone:'+254 722 400 004', clientWhatsapp:'+254 722 400 004',
+    viewCount:4, lastViewedAt: inDays(-3), sentAt: inDays(-21),
+    stageChangedAt: inDays(-3), wonAt: inDays(-3), lostAt:null, lostReason:null,
+    readyForContract:true, contractId:'contract-nk-001', quoteId:null,
+    activities:[
+      { id:'d1', type:'stage_change', content:'Proposal PRO-0004 created.', auto:true, createdAt: inDays(-25) },
+      { id:'d2', type:'email_sent',   content:'Detailed proposal with case studies from similar FinTech audits.', outcome:'positive', createdAt: inDays(-21) },
+      { id:'d3', type:'call',         content:'Technical review call. CTO and security lead present. High confidence.', outcome:'positive', createdAt: inDays(-14) },
+      { id:'d4', type:'meeting',      content:'Final presentation and Q&A. Budget approved. Requested contract.', outcome:'positive', createdAt: inDays(-7) },
+      { id:'d5', type:'stage_change', content:'Stage moved from "Negotiating" to "Won".', auto:false, createdAt: inDays(-3) },
+      { id:'d6', type:'note',         content:'Converted to contract. Awaiting signature from NovaPay CFO.', auto:true, createdAt: inDays(-3) },
+    ],
+  },
+  {
+    id:'p5', number:'PRO-0005', stage:'lost',
+    title:'E-commerce strategy & implementation',
+    clientName:'ShopLync ZA', company:'ShopLync Pty Ltd',
+    currency:'ZAR', proposalType:'consulting',
+    estimatedValue:95000, winProbabilityOverride:0,
+    description:'E-commerce channel strategy, platform selection, and launch support.',
+    scopeOfWork:'Market analysis, platform recommendation, Shopify build, launch campaign.',
+    deliverables:['Strategy deck','Platform setup','Product catalogue','Launch report'],
+    timeline:'10 weeks', country:'ZA',
+    validUntil: inDays(-5), followUpDate:null, followUpMethod:'email',
+    clientEmail:'digital@shoplync.co.za', clientPhone:'+27 82 500 0005', clientWhatsapp:'+27 82 500 0005',
+    viewCount:6, lastViewedAt: inDays(-10), sentAt: inDays(-28),
+    stageChangedAt: inDays(-8), wonAt:null, lostAt: inDays(-8), lostReason:'Client reduced budget and decided to build with in-house team.',
+    readyForContract:false, contractId:null, quoteId:null,
+    activities:[
+      { id:'e1', type:'stage_change', content:'Proposal PRO-0005 created.', auto:true, createdAt: inDays(-32) },
+      { id:'e2', type:'email_sent',   content:'Proposal sent with market analysis preview.', outcome:'positive', createdAt: inDays(-28) },
+      { id:'e3', type:'call',         content:'Discovery call. Budget confirmed at R120K. Seemed positive.', outcome:'positive', createdAt: inDays(-20) },
+      { id:'e4', type:'follow_up',    content:'Sent additional case studies on SA e-commerce. No response.', outcome:'neutral', createdAt: inDays(-15) },
+      { id:'e5', type:'follow_up',    content:'Second follow-up via WhatsApp. Client mentioned internal review.', outcome:'neutral', createdAt: inDays(-12) },
+      { id:'e6', type:'stage_change', content:'Stage moved from "Viewed" to "Lost". Reason: Budget reduced.', auto:false, createdAt: inDays(-8) },
+    ],
+  },
+];
+
+/* ════════════════════════════════════════
+   DERIVED FIELDS
+════════════════════════════════════════ */
+function derivedProposal(p) {
+  const prob = p.winProbabilityOverride !== null && p.winProbabilityOverride !== undefined
+    ? p.winProbabilityOverride
+    : stageDefaultProbability(p.stage);
+  const followDays = daysFromNow(p.followUpDate);
+  return {
+    ...p,
+    estimatedProbability: prob,
+    weightedValue: Math.round((p.estimatedValue || 0) * prob / 100),
+    isOverdue: p.followUpDate && followDays < 0 && !TERMINAL.has(p.stage),
+    followUpDaysFromNow: followDays,
+    isTerminal: TERMINAL.has(p.stage),
+  };
+}
+
+function stageDefaultProbability(stage) {
+  const map = { draft:5, sent:20, viewed:35, meeting_scheduled:55, negotiating:75, won:100, lost:0, stalled:15, expired:0 };
+  return map[stage] || 0;
+}
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let currentView  = 'pipeline';
+let currentFilter = null;
+let searchQuery  = '';
+let currentProposal = null;
+
+/* ════════════════════════════════════════
+   COMPUTED
+════════════════════════════════════════ */
+function getFilteredProposals() {
+  let list = proposals.map(derivedProposal);
+  if (currentFilter) list = list.filter(p => p.stage === currentFilter);
+  if (searchQuery)   list = list.filter(p =>
+    p.title.toLowerCase().includes(searchQuery) ||
+    p.clientName.toLowerCase().includes(searchQuery) ||
+    (p.company||'').toLowerCase().includes(searchQuery)
+  );
+  return list;
+}
+
+function getPipelineStats() {
+  const all    = proposals.map(derivedProposal);
+  const active = all.filter(p => !TERMINAL.has(p.stage));
+  const won    = all.filter(p => p.stage === 'won');
+  const lost   = all.filter(p => p.stage === 'lost');
+  const decided = won.length + lost.length;
+  const overdue = active.filter(p => p.isOverdue);
+  const followUps7 = active.filter(p => {
+    const d = daysFromNow(p.followUpDate);
+    return d !== null && d >= 0 && d <= 7;
+  });
+  return {
+    total: all.length, active: active.length,
+    won: won.length, lost: lost.length,
+    overdue: overdue.length, followUps7: followUps7.length,
+    winRate: decided > 0 ? Math.round(won.length / decided * 100) : 0,
+    totalPipelineValue: active.reduce((s,p) => s + (p.estimatedValue||0), 0),
+    totalWeightedValue: active.reduce((s,p) => s + (p.weightedValue||0), 0),
+    activeCurrency: 'NGN', // simplified for demo
+  };
+}
+
+/* ════════════════════════════════════════
+   SIDEBAR COUNTERS
+════════════════════════════════════════ */
+function updateSidebarCounts() {
+  const stats = getPipelineStats();
+  document.getElementById('sb-all').textContent  = proposals.length;
+  document.getElementById('sb-won').textContent  = stats.won;
+  document.getElementById('sb-fu').textContent   = stats.followUps7;
+  const draftCount = proposals.filter(p=>p.stage==='draft').length;
+  const viewCount  = proposals.filter(p=>p.stage==='viewed').length;
+  if(document.getElementById('sb-draft')) document.getElementById('sb-draft').textContent = draftCount;
+  if(document.getElementById('sb-viewed')) document.getElementById('sb-viewed').textContent = viewCount;
+}
+
+/* ════════════════════════════════════════
+   KANBAN BOARD RENDER
+════════════════════════════════════════ */
+const KANBAN_STAGES = ['draft','sent','viewed','meeting_scheduled','negotiating'];
+
+function probColor(prob) {
+  if (prob >= 75) return 'var(--g)';
+  if (prob >= 50) return 'var(--amber)';
+  if (prob >= 25) return '#185FA5';
+  return 'var(--ink3)';
+}
+function probBg(prob) {
+  if (prob >= 75) return 'var(--gl)';
+  if (prob >= 50) return 'var(--al)';
+  if (prob >= 25) return 'var(--bl)';
+  return 'var(--surface2)';
+}
+
+function renderKanban() {
+  const board    = document.getElementById('kanban-board');
+  const filtered = getFilteredProposals();
+  const stats    = getPipelineStats();
+
+  document.getElementById('pipeline-sub').textContent =
+    `${stats.active} active · ${formatCurrency(stats.totalPipelineValue,'NGN')} total pipeline · ${formatCurrency(stats.totalWeightedValue,'NGN')} weighted`;
+
+  const allStages = currentFilter
+    ? [currentFilter, 'won','lost']
+    : [...KANBAN_STAGES, 'won', 'lost'];
+
+  board.innerHTML = allStages.map(stage => {
+    const cards = filtered.filter(p => p.stage === stage);
+    const totalVal = cards.reduce((s,p) => s + (p.estimatedValue||0), 0);
+    const stageStyle = stage === 'won' ? 'border-top:3px solid var(--g)' :
+                       stage === 'lost' ? 'border-top:3px solid var(--red);opacity:.8' : '';
+
+    return `<div class="kb-col">
+      <div class="kb-head">
+        <div>
+          <div class="kb-title">${STAGE_LABELS[stage]||stage}</div>
+          ${totalVal > 0 ? `<div class="kb-total">${formatCurrency(totalVal,'NGN')}</div>` : ''}
+        </div>
+        <div class="kb-count">${cards.length}</div>
+      </div>
+      <div class="kb-cards" style="${stageStyle}">
+        ${cards.length ? cards.map(p => renderPropCard(p)).join('') : `<div style="padding:12px;text-align:center;font-size:11.5px;color:var(--ink3)">No proposals</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPropCard(p) {
+  const followDays = p.followUpDaysFromNow;
+  let fuClass = '', fuText = '';
+  if (p.followUpDate && !p.isTerminal) {
+    if (followDays < 0)     { fuClass = 'overdue'; fuText = `${Math.abs(followDays)}d overdue`; }
+    else if (followDays === 0) { fuClass = 'due'; fuText = 'Today'; }
+    else if (followDays === 1) { fuClass = 'due'; fuText = 'Tomorrow'; }
+    else                       { fuText = `${formatDate(p.followUpDate)}`; }
+  }
+
+  return `<div class="prop-card ${p.stage} ${p.isOverdue?'overdue':''}" onclick="openDetail('${p.id}')">
+    <div class="pc-title">${p.title}</div>
+    <div class="pc-client">${p.clientName}${p.company && p.company !== p.clientName ? ` · ${p.company}` : ''}</div>
+    ${p.estimatedValue > 0 ? `<div class="pc-value">${formatCurrency(p.estimatedValue, p.currency)}</div>` : ''}
+    <div class="prob-bar"><div class="prob-fill" style="width:${p.estimatedProbability}%;background:${probColor(p.estimatedProbability)}"></div></div>
+    <div class="pc-bottom">
+      <span class="pc-prob" style="background:${probBg(p.estimatedProbability)};color:${probColor(p.estimatedProbability)}">${p.estimatedProbability}%</span>
+      ${fuText ? `<div class="pc-followup ${fuClass}">↺ ${fuText}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════
+   LIST VIEW
+════════════════════════════════════════ */
+function renderList() {
+  const tbody = document.getElementById('list-tbody');
+  const list  = getFilteredProposals();
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--ink3)">No proposals yet</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(p => {
+    const stageBdg = stageToBadge(p.stage);
+    const followDays = p.followUpDaysFromNow;
+    const fuStr = p.followUpDate && !p.isTerminal
+      ? (followDays < 0 ? `<span style="color:var(--red);font-weight:600">${Math.abs(followDays)}d late</span>`
+         : followDays === 0 ? `<span style="color:var(--amber);font-weight:600">Today</span>`
+         : formatDate(p.followUpDate))
+      : '—';
+    return `<tr onclick="openDetail('${p.id}')">
+      <td style="padding-left:14px">
+        <div style="font-weight:600;font-size:12.5px;color:var(--ink)">${p.title}</div>
+        <div style="font-size:11px;color:var(--ink3)">${p.number}</div>
+      </td>
+      <td><div style="font-size:12.5px">${p.clientName}</div></td>
+      <td style="font-weight:600;font-size:13px;font-family:var(--font-head)">${formatCurrency(p.estimatedValue,p.currency)}</td>
+      <td>${stageBdg}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:50px;height:5px;border-radius:3px;background:var(--border);overflow:hidden">
+            <div style="width:${p.estimatedProbability}%;height:100%;background:${probColor(p.estimatedProbability)};border-radius:3px"></div>
+          </div>
+          <span style="font-size:11.5px;font-weight:600;color:${probColor(p.estimatedProbability)}">${p.estimatedProbability}%</span>
+        </div>
+      </td>
+      <td style="font-size:12px">${fuStr}</td>
+      <td><span class="bdg b-gray" style="font-size:10.5px">${p.proposalType}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function stageToBadge(stage) {
+  const cls = { draft:'b-gray', sent:'b-blue', viewed:'b-blue', meeting_scheduled:'b-purple',
+    negotiating:'b-warn', won:'b-ok', lost:'b-red', stalled:'b-warn', expired:'b-red' };
+  return `<span class="bdg ${cls[stage]||'b-gray'}">${STAGE_LABELS[stage]||stage}</span>`;
+}
+
+/* ════════════════════════════════════════
+   ANALYTICS VIEW
+════════════════════════════════════════ */
+function renderAnalytics() {
+  const stats = getPipelineStats();
+  document.getElementById('an-total-val').textContent = formatCurrency(stats.totalPipelineValue,'NGN');
+  document.getElementById('an-weighted').textContent  = formatCurrency(stats.totalWeightedValue,'NGN');
+  document.getElementById('an-winrate').textContent   = stats.winRate + '%';
+
+  const won = proposals.filter(p => p.stage === 'won' && p.wonAt && p.sentAt);
+  const avgDays = won.length
+    ? Math.round(won.reduce((s,p) => s + (new Date(p.wonAt)-new Date(p.sentAt))/86400000, 0) / won.length)
+    : null;
+  document.getElementById('an-avgdays').textContent = avgDays != null ? avgDays + 'd' : '—';
+
+  // Funnel chart
+  const funnelEl = document.getElementById('funnel-chart');
+  const allFunnel = [...KANBAN_STAGES,'won','lost'];
+  const maxCount  = Math.max(...allFunnel.map(s => proposals.filter(p=>p.stage===s).length), 1);
+  funnelEl.innerHTML = allFunnel.map(s => {
+    const ps    = proposals.filter(p => p.stage === s);
+    const cnt   = ps.length;
+    const total = ps.reduce((sum,p) => sum + (p.estimatedValue||0), 0);
+    const pct   = Math.round(cnt / maxCount * 100);
+    const color = s === 'won' ? 'var(--g)' : s === 'lost' ? 'var(--red)' : 'var(--blue)';
+    return `<div class="funnel-row">
+      <div class="funnel-label">${STAGE_LABELS[s]}</div>
+      <div class="funnel-track"><div class="funnel-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="funnel-stats">
+        <span class="funnel-count">${cnt}</span>
+        <span class="funnel-value">${total>0?formatCurrency(total,'NGN'):''}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Type chart
+  const typeEl  = document.getElementById('type-chart');
+  const types   = {};
+  proposals.forEach(p => { types[p.proposalType] = (types[p.proposalType]||0) + (p.estimatedValue||0); });
+  const maxType = Math.max(...Object.values(types), 1);
+  typeEl.innerHTML = Object.entries(types).sort((a,b)=>b[1]-a[1]).map(([t,v]) =>
+    `<div class="hbar-row">
+      <div class="hbar-lbl">${t.charAt(0).toUpperCase()+t.slice(1)}</div>
+      <div class="hbar-t"><div class="hbar-f" style="width:${Math.round(v/maxType*100)}%;background:var(--g)"></div></div>
+      <div class="hbar-v green">${formatCurrency(v,'NGN')}</div>
+    </div>`
+  ).join('');
+
+  // Win/loss
+  const wlEl = document.getElementById('winloss-chart');
+  const wonPs = proposals.filter(p=>p.stage==='won');
+  const lostPs= proposals.filter(p=>p.stage==='lost');
+  const wonVal = wonPs.reduce((s,p)=>s+(p.estimatedValue||0),0);
+  const lostVal= lostPs.reduce((s,p)=>s+(p.estimatedValue||0),0);
+  wlEl.innerHTML = `
+    <div class="hbar-row"><div class="hbar-lbl">Won</div><div class="hbar-t"><div class="hbar-f" style="width:${wonVal>0?100:0}%;background:var(--g)"></div></div><div class="hbar-v green">${wonPs.length}</div></div>
+    <div class="hbar-row"><div class="hbar-lbl">Lost</div><div class="hbar-t"><div class="hbar-f" style="width:${lostVal>0?Math.round(lostVal/Math.max(wonVal,lostVal)*100):0}%;background:var(--red)"></div></div><div class="hbar-v red">${lostPs.length}</div></div>
+    <div style="margin-top:12px;font-size:12px;color:var(--ink2)">Win rate: <strong style="color:var(--g)">${stats.winRate}%</strong></div>
+    ${lostPs.length ? `<div style="margin-top:8px"><div class="card-title" style="margin-bottom:6px;font-size:11px">Loss reasons</div>${lostPs.filter(p=>p.lostReason).map(p=>`<div style="font-size:11.5px;color:var(--ink2);padding:4px 0;border-bottom:1px solid var(--border)">${p.clientName}: ${p.lostReason}</div>`).join('')}</div>` : ''}
+  `;
+
+  // Currency chart
+  const curEl = document.getElementById('currency-chart');
+  const curs  = {};
+  proposals.filter(p=>!TERMINAL.has(p.stage)).forEach(p => { curs[p.currency] = (curs[p.currency]||0) + (p.estimatedValue||0); });
+  const maxCur = Math.max(...Object.values(curs), 1);
+  curEl.innerHTML = Object.entries(curs).sort((a,b)=>b[1]-a[1]).map(([c,v]) =>
+    `<div class="hbar-row">
+      <div class="hbar-lbl">${c}</div>
+      <div class="hbar-t"><div class="hbar-f" style="width:${Math.round(v/maxCur*100)}%;background:var(--purple)"></div></div>
+      <div class="hbar-v" style="color:var(--purple)">${formatCurrency(v,c)}</div>
+    </div>`
+  ).join('');
+}
+
+/* ════════════════════════════════════════
+   FOLLOW-UPS VIEW
+════════════════════════════════════════ */
+function renderFollowUps() {
+  const el  = document.getElementById('followups-list');
+  const all = proposals.map(derivedProposal).filter(p => !TERMINAL.has(p.stage) && p.followUpDate);
+  const overdue = all.filter(p => p.followUpDaysFromNow < 0).sort((a,b)=>a.followUpDaysFromNow-b.followUpDaysFromNow);
+  const upcoming= all.filter(p => p.followUpDaysFromNow >= 0).sort((a,b)=>a.followUpDaysFromNow-b.followUpDaysFromNow);
+
+  let html = '';
+  if (overdue.length) {
+    html += `<div class="alert alert-r"><strong>${overdue.length} overdue follow-up${overdue.length>1?'s':''}</strong> — take action to avoid losing these proposals.</div>`;
+    html += '<div class="card" style="padding:0;overflow:hidden"><table class="proposals-table"><thead><tr><th style="padding-left:14px">Proposal</th><th>Client</th><th>Due date</th><th>Method</th><th>Stage</th><th></th></tr></thead><tbody>';
+    html += overdue.map(p => followUpRow(p, true)).join('');
+    html += '</tbody></table></div>';
+  }
+  if (upcoming.length) {
+    html += `<div class="card-title" style="margin:16px 0 10px">Upcoming (${upcoming.length})</div>`;
+    html += '<div class="card" style="padding:0;overflow:hidden"><table class="proposals-table"><thead><tr><th style="padding-left:14px">Proposal</th><th>Client</th><th>Due date</th><th>Method</th><th>Stage</th><th></th></tr></thead><tbody>';
+    html += upcoming.map(p => followUpRow(p, false)).join('');
+    html += '</tbody></table></div>';
+  }
+  if (!overdue.length && !upcoming.length) {
+    html = `<div class="empty-state"><div class="empty-icon">✓</div><div class="empty-title">All caught up</div><div class="empty-desc">No follow-ups due in the next 7 days.</div></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function followUpRow(p, isOverdue) {
+  const days = p.followUpDaysFromNow;
+  const dateStr = days < 0 ? `<span style="color:var(--red);font-weight:600">${Math.abs(days)}d overdue</span>`
+    : days === 0 ? `<span style="color:var(--amber);font-weight:600">Today</span>`
+    : days === 1 ? `<span style="color:var(--amber)">Tomorrow</span>`
+    : formatDate(p.followUpDate);
+  const methodIcon = { email:'✉', whatsapp:'💬', call:'📞', meeting:'📅', other:'→' };
+  return `<tr onclick="openDetail('${p.id}')">
+    <td style="padding-left:14px"><div style="font-weight:600;font-size:12.5px">${p.title}</div><div style="font-size:11px;color:var(--ink3)">${p.number}</div></td>
+    <td>${p.clientName}</td>
+    <td>${dateStr}</td>
+    <td><span style="font-size:13px">${methodIcon[p.followUpMethod]||'→'}</span> <span style="font-size:12px;text-transform:capitalize">${p.followUpMethod||'email'}</span></td>
+    <td>${stageToBadge(p.stage)}</td>
+    <td style="text-align:right;padding-right:12px"><button class="btn btn-sm btn-p" onclick="event.stopPropagation();logFollowUpPrompt('${p.id}')">Log action</button></td>
+  </tr>`;
+}
+
+/* ════════════════════════════════════════
+   DETAIL PANEL
+════════════════════════════════════════ */
+function openDetail(id) {
+  const p = proposals.map(derivedProposal).find(x => x.id === id);
+  if (!p) return;
+  currentProposal = p;
+
+  document.getElementById('dp-num').textContent    = p.number;
+  document.getElementById('dp-title').textContent  = p.title;
+  document.getElementById('dp-client').textContent = p.clientName + (p.company && p.company !== p.clientName ? ` · ${p.company}` : '');
+  document.getElementById('dp-body').innerHTML     = buildDetailBody(p);
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('on');
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+  currentProposal = null;
+}
+
+function buildDetailBody(p) {
+  const allStages   = STAGES_ORDER.filter(s => !['expired'].includes(s));
+  const doneIdx     = allStages.indexOf(p.stage);
+  const transitions = STAGE_TRANSITIONS[p.stage] || [];
+
+  // Stage stepper
+  const stepperHtml = `<div class="stage-steps">
+    ${allStages.map((s,i) => {
+      const cls = p.stage === s ? 'current' + (TERMINAL.has(s) ? ' terminal '+s : '') :
+                  TERMINAL.has(s) && p.stage !== s ? '' :
+                  i < doneIdx && !TERMINAL.has(s) ? 'done' : '';
+      return `<div class="stage-step ${cls}" onclick="if(!${p.isTerminal})doTransition('${p.id}','${s}')">${STAGE_LABELS[s]}</div>`;
+    }).join('')}
+  </div>`;
+
+  // Follow-up alert
+  let fuAlertHtml = '';
+  if (p.followUpDate && !p.isTerminal) {
+    const d = p.followUpDaysFromNow;
+    const isOD = d < 0;
+    fuAlertHtml = `<div class="followup-box ${isOD?'overdue':''}" style="color:${isOD?'#A32D2D':var_amber()}">
+      <div style="font-size:16px">${isOD?'⚠':'📅'}</div>
+      <div>
+        <div class="fu-label" style="color:${isOD?'#A32D2D':var_amber()}">${isOD?'Follow-up overdue':'Follow-up scheduled'}</div>
+        <div class="fu-date">${p.followUpMethod} · ${formatDate(p.followUpDate)}${isOD ? ` (${Math.abs(d)} days late)` : d===0?' (Today)':d===1?' (Tomorrow)':` (in ${d} days)`}</div>
+      </div>
+    </div>`;
+  }
+
+  function var_amber() { return '#BA7517'; }
+
+  // Convert to contract banner
+  let convertBannerHtml = '';
+  if (p.stage === 'won' && !p.contractId) {
+    convertBannerHtml = `<div class="convert-banner">
+      <h4>🎉 Proposal Won!</h4>
+      <p>Ready to formalise this win? Convert to a contract and send for signature.</p>
+      <button class="btn btn-white" onclick="doConvert('${p.id}')">Convert to contract →</button>
+    </div>`;
+  }
+  if (p.stage === 'won' && p.contractId) {
+    convertBannerHtml = `<div class="alert alert-g">✓ Converted to contract <strong>${p.contractId}</strong>. Awaiting signature.</div>`;
+  }
+
+  // Transition buttons
+  const transBtns = !p.isTerminal && transitions.length ? `<div class="transition-bar">
+    ${transitions.map(t => {
+      const cls = t==='won'?'won':t==='lost'?'lost':t==='stalled'?'stalled':'next';
+      return `<button class="trans-btn ${cls}" onclick="doTransition('${p.id}','${t}')">${STAGE_LABELS[t]}</button>`;
+    }).join('')}
+  </div>` : '';
+
+  // Key info
+  const infoHtml = `
+    <div class="g2">
+      <div class="sc"><div class="lbl">Estimated value</div><div class="val">${formatCurrency(p.estimatedValue, p.currency)}</div></div>
+      <div class="sc"><div class="lbl">Weighted value</div><div class="val green">${formatCurrency(p.weightedValue, p.currency)}</div><div class="sub" style="color:var(--ink3)">at ${p.estimatedProbability}%</div></div>
+    </div>
+    <div class="g2">
+      <div class="sc"><div class="lbl">Type</div><div style="font-size:14px;font-weight:600;margin-top:4px;text-transform:capitalize">${p.proposalType}</div></div>
+      <div class="sc"><div class="lbl">Valid until</div><div style="font-size:14px;font-weight:600;margin-top:4px;color:${p.validUntil && daysFromNow(p.validUntil) < 3 ? 'var(--red)' : 'var(--ink)'}">${formatDate(p.validUntil)}</div></div>
+    </div>`;
+
+  // Scope / description
+  let scopeHtml = '';
+  if (p.description || p.scopeOfWork) {
+    scopeHtml = `<div class="card"><div class="card-title">Proposal details</div>
+      ${p.description ? `<p style="font-size:13px;color:var(--ink2);margin-bottom:8px">${p.description}</p>` : ''}
+      ${p.scopeOfWork ? `<div class="div"></div><div style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:5px">Scope of work</div><p style="font-size:12.5px;color:var(--ink2)">${p.scopeOfWork}</p>` : ''}
+      ${p.deliverables?.length ? `<div class="div"></div><div style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:5px">Deliverables</div><ul style="font-size:12.5px;color:var(--ink2);margin-left:18px">${p.deliverables.map(d=>`<li>${d}</li>`).join('')}</ul>` : ''}
+    </div>`;
+  }
+
+  // Contact
+  const contactHtml = `<div class="card"><div class="card-title">Client contact</div>
+    <div class="row"><div class="ri"><div class="rt">${p.clientName}</div><div class="rd">${p.company||''}</div></div></div>
+    ${p.clientEmail ? `<div class="row"><div class="ri"><div class="rt">${p.clientEmail}</div><div class="rd">Email</div></div><a href="mailto:${p.clientEmail}" class="btn btn-sm">✉ Send</a></div>` : ''}
+    ${p.clientWhatsapp ? `<div class="row"><div class="ri"><div class="rt">${p.clientWhatsapp}</div><div class="rd">WhatsApp</div></div><button class="btn btn-sm btn-wa" style="width:auto;padding:5px 10px" onclick="alert('Opening WhatsApp...')">💬</button></div>` : ''}
+  </div>`;
+
+  // Activity timeline
+  const acts = [...(p.activities||[])].reverse();
+  const actIcons = { stage_change:'⬡', email_sent:'✉', whatsapp_sent:'💬', call:'📞', meeting:'📅', follow_up:'↺', note:'◎', document_shared:'📎', other:'•' };
+  const actColors = { stage_change:'var(--bl)', email_sent:'var(--gl)', whatsapp_sent:'#dcf8c6', call:'var(--pl)', meeting:'var(--al)', follow_up:'var(--al)', note:'var(--surface2)', document_shared:'var(--bl)', other:'var(--surface2)' };
+  const timelineHtml = `<div class="card"><div class="card-title">Activity timeline <span style="font-size:11px;font-weight:400;color:var(--ink3)">(${acts.length} entries)</span></div>
+    <div class="activity-feed">
+      ${acts.map(a => `<div class="act-item">
+        <div class="act-icon" style="background:${actColors[a.type]||'var(--surface2)'}">${actIcons[a.type]||'•'}</div>
+        <div class="act-body">
+          <div class="act-content">${a.content}</div>
+          <div class="act-meta">
+            <span>${formatDate(a.createdAt)}</span>
+            ${a.outcome ? `<span class="act-outcome ${a.outcome}">${a.outcome}</span>` : ''}
+            ${a.auto ? '<span style="font-size:10px;color:var(--ink3)">auto</span>' : ''}
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+    ${!p.isTerminal ? buildAddActivityForm(p.id) : ''}
+  </div>`;
+
+  return `
+    ${stepperHtml}
+    ${fuAlertHtml}
+    ${convertBannerHtml}
+    ${transBtns}
+    ${infoHtml}
+    ${scopeHtml}
+    ${contactHtml}
+    ${timelineHtml}
+  `;
+}
+
+function buildAddActivityForm(proposalId) {
+  const types = ['note','follow_up','call','meeting','email_sent','whatsapp_sent','document_shared'];
+  return `<div class="add-act-form">
+    <div style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:8px">Log activity</div>
+    <div class="act-type-pills" id="act-type-pills-${proposalId}">
+      ${types.map((t,i) => `<button class="atp ${i===0?'on':''}" onclick="selectActType(this,'${proposalId}','${t}')" data-type="${t}">${t.replace('_',' ')}</button>`).join('')}
+    </div>
+    <textarea class="fc" id="act-content-${proposalId}" placeholder="What happened? What was discussed?" style="min-height:55px;margin-bottom:8px"></textarea>
+    <div class="g2" style="margin-bottom:8px">
+      <select class="fc" id="act-outcome-${proposalId}" style="font-size:12px">
+        <option value="">Outcome (optional)</option>
+        <option value="positive">Positive</option>
+        <option value="neutral">Neutral</option>
+        <option value="negative">Negative</option>
+      </select>
+      <input class="fc" id="act-fu-${proposalId}" type="date" placeholder="Next follow-up" title="Set next follow-up date">
+    </div>
+    <button class="btn btn-p" style="width:100%;justify-content:center" onclick="saveActivity('${proposalId}')">Save activity</button>
+  </div>`;
+}
+
+let selectedActType = {};
+function selectActType(el, proposalId, type) {
+  document.querySelectorAll(`#act-type-pills-${proposalId} .atp`).forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  selectedActType[proposalId] = type;
+}
+
+function saveActivity(proposalId) {
+  const content = document.getElementById(`act-content-${proposalId}`)?.value?.trim();
+  if (!content) { alert('Please add a note about this activity.'); return; }
+  const outcome = document.getElementById(`act-outcome-${proposalId}`)?.value || null;
+  const fuDate  = document.getElementById(`act-fu-${proposalId}`)?.value || null;
+  const type    = selectedActType[proposalId] || 'note';
+
+  const idx = proposals.findIndex(p => p.id === proposalId);
+  if (idx === -1) return;
+  const entry = { id: uid(), type, content, outcome: outcome||null, auto: false, createdAt: new Date().toISOString() };
+  proposals[idx].activities = [...(proposals[idx].activities||[]), entry];
+  if (fuDate) {
+    proposals[idx].followUpDate = fuDate;
+  }
+  renderAll();
+  openDetail(proposalId);
+}
+
+/* ════════════════════════════════════════
+   TRANSITIONS
+════════════════════════════════════════ */
+function doTransition(id, newStage) {
+  const idx = proposals.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const p = proposals[idx];
+
+  const allowed = STAGE_TRANSITIONS[p.stage] || [];
+  if (!allowed.includes(newStage)) return;
+
+  let reason = null;
+  if (newStage === 'lost') {
+    reason = prompt('Reason for loss (optional):');
+    if (reason === null) return; // cancelled
+  }
+
+  const now2 = new Date().toISOString();
+  proposals[idx] = {
+    ...p,
+    stage: newStage,
+    stageChangedAt: now2,
+    sentAt: newStage === 'sent' ? now2 : p.sentAt,
+    viewCount: newStage === 'viewed' ? (p.viewCount||0)+1 : p.viewCount,
+    lastViewedAt: newStage === 'viewed' ? now2 : p.lastViewedAt,
+    wonAt:  newStage === 'won'  ? now2 : p.wonAt,
+    lostAt: newStage === 'lost' ? now2 : p.lostAt,
+    lostReason: newStage === 'lost' ? (reason || null) : p.lostReason,
+    readyForContract: newStage === 'won' ? true : p.readyForContract,
+    activities: [...(p.activities||[]), {
+      id: uid(), type:'stage_change',
+      content: `Stage moved from "${STAGE_LABELS[p.stage]}" to "${STAGE_LABELS[newStage]}"${reason ? `. Reason: ${reason}` : ''}.`,
+      auto: false, createdAt: now2
+    }],
+  };
+
+  // Auto follow-up
+  const fuDays = { sent:3, viewed:2, meeting_scheduled:1, negotiating:2 };
+  if (fuDays[newStage]) {
+    proposals[idx].followUpDate = inDays(fuDays[newStage]);
+  }
+
+  renderAll();
+  if (currentProposal?.id === id) openDetail(id);
+}
+
+function doConvert(id) {
+  const idx = proposals.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const contractRef = 'CON-' + uid().toUpperCase().slice(0,6);
+  proposals[idx].contractId = contractRef;
+  proposals[idx].activities = [...(proposals[idx].activities||[]), {
+    id: uid(), type:'note',
+    content: `Converted to contract ${contractRef}. Ready for signature.`,
+    auto:true, createdAt: new Date().toISOString()
+  }];
+  renderAll();
+  openDetail(id);
+}
+
+function logFollowUpPrompt(id) {
+  const content = prompt('Quick note for this follow-up:');
+  if (!content) return;
+  const idx = proposals.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  proposals[idx].activities = [...(proposals[idx].activities||[]), {
+    id: uid(), type:'follow_up', content, outcome:null, auto:false, createdAt: new Date().toISOString()
+  }];
+  renderAll();
+  openDetail(id);
+}
+
+/* ════════════════════════════════════════
+   NEW PROPOSAL MODAL
+════════════════════════════════════════ */
+let editingId = null;
+
+function openNewModal(id = null) {
+  editingId = id;
+  document.getElementById('modal-title').textContent = id ? 'Edit proposal' : 'New proposal';
+  if (id) {
+    const p = proposals.find(x => x.id === id);
+    if (p) {
+      document.getElementById('f-title').value    = p.title || '';
+      document.getElementById('f-client').value   = p.clientName || '';
+      document.getElementById('f-value').value    = p.estimatedValue || '';
+      document.getElementById('f-currency').value = p.currency || 'NGN';
+      document.getElementById('f-type').value     = p.proposalType || 'services';
+      document.getElementById('f-country').value  = p.country || 'NG';
+      document.getElementById('f-desc').value     = p.description || '';
+      document.getElementById('f-scope').value    = p.scopeOfWork || '';
+      document.getElementById('f-email').value    = p.clientEmail || '';
+      document.getElementById('f-whatsapp').value = p.clientWhatsapp || '';
+      document.getElementById('f-valid').value    = p.validUntil || '';
+      document.getElementById('f-followup').value = p.followUpDate || '';
+      document.getElementById('f-prob').value     = p.winProbabilityOverride !== null ? p.winProbabilityOverride : '';
+    }
+  } else {
+    ['f-title','f-client','f-value','f-desc','f-scope','f-email','f-whatsapp','f-valid','f-followup','f-prob'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('f-valid').value   = inDays(30);
+    document.getElementById('f-followup').value= inDays(3);
+  }
+  document.getElementById('newModal').classList.add('on');
+}
+
+function closeModal() {
+  document.getElementById('newModal').classList.remove('on');
+  editingId = null;
+}
+
+function saveProposal() {
+  const title  = document.getElementById('f-title').value.trim();
+  const client = document.getElementById('f-client').value.trim();
+  if (!title)  { document.getElementById('f-title').focus(); return; }
+  if (!client) { document.getElementById('f-client').focus(); return; }
+
+  const prob = document.getElementById('f-prob').value;
+  const data = {
+    title,
+    clientName:           client,
+    estimatedValue:       Number(document.getElementById('f-value').value) || 0,
+    currency:             document.getElementById('f-currency').value || 'NGN',
+    proposalType:         document.getElementById('f-type').value || 'services',
+    country:              document.getElementById('f-country').value || 'NG',
+    description:          document.getElementById('f-desc').value || null,
+    scopeOfWork:          document.getElementById('f-scope').value || null,
+    clientEmail:          document.getElementById('f-email').value || null,
+    clientWhatsapp:       document.getElementById('f-whatsapp').value || null,
+    validUntil:           document.getElementById('f-valid').value || null,
+    followUpDate:         document.getElementById('f-followup').value || null,
+    winProbabilityOverride: prob !== '' ? Number(prob) : null,
+    followUpMethod:       'email',
+  };
+
+  if (editingId) {
+    const idx = proposals.findIndex(p => p.id === editingId);
+    if (idx !== -1) proposals[idx] = { ...proposals[idx], ...data };
+  } else {
+    const num = `PRO-${String(proposals.length + 1).padStart(4,'0')}`;
+    proposals.push({
+      id: uid(), number: num, stage:'draft',
+      viewCount:0, lastViewedAt:null, sentAt:null, wonAt:null, lostAt:null, lostReason:null,
+      stageChangedAt: new Date().toISOString(), readyForContract:false,
+      contractId:null, quoteId:null, activities:[
+        { id:uid(), type:'stage_change', content:`Proposal ${num} created.`, auto:true, createdAt: new Date().toISOString() }
+      ],
+      company:null, deliverables:[], timeline:null, attachmentUrls:[],
+      ...data,
+    });
+  }
+
+  closeModal();
+  renderAll();
+}
+
+/* ════════════════════════════════════════
+   FILTERS / SEARCH
+════════════════════════════════════════ */
+function filterStage(stage, el) {
+  currentFilter = stage;
+  if (el) setActiveNav(el);
+  renderAll();
+}
+
+function filterOverdue(el) {
+  setActiveNav(el);
+  // Switch to pipeline, highlight overdue
+  switchView('pipeline', document.querySelector('.vtab'));
+}
+
+function applySearch(q) {
+  searchQuery = q.toLowerCase();
+  renderAll();
+}
+
+function setActiveNav(el) {
+  if (!el) return;
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ════════════════════════════════════════
+   VIEW SWITCHING
+════════════════════════════════════════ */
+function switchView(view, el) {
+  currentView = view;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('view-'+view)?.classList.add('on');
+  if (el) {
+    document.querySelectorAll('.vtab').forEach(t => t.classList.remove('on'));
+    el.classList.add('on');
+  }
+  renderCurrent();
+}
+
+function renderCurrent() {
+  updateSidebarCounts();
+  if (currentView === 'pipeline')  renderKanban();
+  if (currentView === 'list')      renderList();
+  if (currentView === 'analytics') renderAnalytics();
+  if (currentView === 'followups') renderFollowUps();
+}
+
+function renderAll() {
+  updateSidebarCounts();
+  renderKanban();
+  renderList();
+  renderAnalytics();
+  renderFollowUps();
+}
+
+/* ── INIT ── */
+renderAll();
+</script>
+</body>
+</html>
