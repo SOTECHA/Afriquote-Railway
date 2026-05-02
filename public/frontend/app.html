@@ -1459,7 +1459,7 @@ function doCheckin(btn){
 switchMod('finance', document.querySelector('.mn.on'));
 
 // Proposal module render trigger
-const _origSwitch = switchMod;
+var _origSwitch = switchMod;
 function switchMod(mod, el) {
   _origSwitch(mod, el);
   if (mod === 'proposals') setTimeout(propRenderAll, 60);
