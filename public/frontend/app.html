@@ -45,7 +45,21 @@ button,input,select,textarea{font-family:var(--font-body)}
 .notif-btn:hover{background:var(--surface2)}
 .notif-btn svg{width:15px;height:15px;color:var(--text2)}
 .notif-dot{width:7px;height:7px;border-radius:50%;background:var(--red);position:absolute;top:5px;right:5px;border:1.5px solid var(--surface)}
-.user-av{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white;cursor:pointer;font-family:var(--font-head)}
+.user-av{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white;cursor:pointer;font-family:var(--font-head);position:relative;flex-shrink:0}
+.user-menu{display:none;position:absolute;top:calc(100% + 10px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:13px;box-shadow:0 8px 32px rgba(14,20,16,.13);min-width:230px;z-index:100;padding:6px;animation:menuIn .15s ease}
+.user-menu.open{display:block}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
+.user-menu-profile{display:flex;align-items:center;gap:10px;padding:10px 10px 12px}
+.user-menu-av{width:36px;height:36px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;font-family:var(--font-head);flex-shrink:0}
+.user-menu-name{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.3}
+.user-menu-email{font-size:11.5px;color:var(--text3);margin-top:1px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-menu-divider{height:1px;background:var(--border);margin:4px 0}
+.user-menu-item{display:flex;align-items:center;gap:9px;padding:8px 10px;font-size:13px;color:var(--text2);cursor:pointer;border-radius:8px;transition:background .12s}
+.user-menu-item:hover{background:var(--surface2);color:var(--text)}
+.user-menu-item svg{width:15px;height:15px;flex-shrink:0;opacity:.7}
+.user-menu-logout{color:var(--red)}
+.user-menu-logout:hover{background:var(--red-light);color:var(--red)}
+.user-menu-logout svg{opacity:1}
 
 .body{display:flex;flex:1;overflow:hidden}
 .sidebar{width:195px;background:var(--surface);border-right:1px solid var(--border);padding:14px 0;flex-shrink:0;overflow-y:auto;display:none}
@@ -385,7 +399,31 @@ textarea.fc{resize:vertical;min-height:65px}
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1a5 5 0 0 0-5 5v3l-1.5 2h13L13 9V6a5 5 0 0 0-5-5zm0 14a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2z"/></svg>
       <div class="notif-dot"></div>
     </div>
-    <div class="user-av">AO</div>
+    <div class="user-av" id="userAvatar" onclick="toggleUserMenu()">AO</div>
+    <!-- User dropdown -->
+    <div class="user-menu" id="userMenu">
+      <div class="user-menu-profile">
+        <div class="user-menu-av" id="userMenuAv">AO</div>
+        <div>
+          <div class="user-menu-name" id="userMenuName">Loading…</div>
+          <div class="user-menu-email" id="userMenuEmail"></div>
+        </div>
+      </div>
+      <div class="user-menu-divider"></div>
+      <div class="user-menu-item" onclick="openProfileSettings()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+        Profile &amp; settings
+      </div>
+      <div class="user-menu-item" onclick="copyUserEmail()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="9" rx="1.5"/><path d="M2 6l6 4 6-4"/></svg>
+        <span id="copyEmailLabel">Copy email</span>
+      </div>
+      <div class="user-menu-divider"></div>
+      <div class="user-menu-item user-menu-logout" onclick="doLogout()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>
+        Sign out
+      </div>
+    </div>
   </div>
   <!-- Notification panel -->
   <div class="notif-panel" id="notifPanel">
@@ -1459,21 +1497,10 @@ function doCheckin(btn){
 switchMod('finance', document.querySelector('.mn.on'));
 
 // Proposal module render trigger
-function switchMod(mod,el){
-  document.querySelectorAll('.mn').forEach(m=>m.classList.remove('on'));
-  if(el) el.classList.add('on');
-  Object.values(modSidebars).forEach(id=>{const s=document.getElementById(id);if(s)s.classList.remove('on')});
-  const sb=document.getElementById(modSidebars[mod]);
-  if(sb){sb.classList.add('on')}
-  showPage(modDefaults[mod],null);
-  // set first sidebar item active
-  if(sb){
-    sb.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
-    const first=sb.querySelector('.sb-item');
-    if(first)first.classList.add('on');
-  }
-  // render proposals when switching to that tab
-  if(mod === 'proposals') setTimeout(propRenderAll, 60);
+const _origSwitch = switchMod;
+function switchMod(mod, el) {
+  _origSwitch(mod, el);
+  if (mod === 'proposals') setTimeout(propRenderAll, 60);
 }
 
 
@@ -1649,6 +1676,96 @@ document.addEventListener('DOMContentLoaded', function() { setTimeout(propRender
     </div>
   </div>
 </div>
+
+<script>
+// ══════════════════════════════════════════
+// AUTH GUARD + USER MENU
+// ══════════════════════════════════════════
+
+// 1. Auth guard
+(function() {
+  const token = localStorage.getItem('aq_token');
+  if (!token) window.location.href = '/';
+})();
+
+// 2. Load user data
+(function() {
+  const raw = localStorage.getItem('aq_user');
+  if (!raw) return;
+  try {
+    const user = JSON.parse(raw);
+    const initials = (user.name || 'AQ').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const av = document.getElementById('userAvatar');
+    const menuAv = document.getElementById('userMenuAv');
+    const menuName = document.getElementById('userMenuName');
+    const menuEmail = document.getElementById('userMenuEmail');
+    if (av) av.textContent = initials;
+    if (menuAv) menuAv.textContent = initials;
+    if (menuName) menuName.textContent = user.businessName || user.name || 'My Account';
+    if (menuEmail) menuEmail.textContent = user.email || '';
+  } catch(e) {}
+  const token = localStorage.getItem('aq_token');
+  if (token) {
+    fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.user) {
+          localStorage.setItem('aq_user', JSON.stringify(data.user));
+          const u = data.user;
+          const ini = (u.name||'AQ').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+          const av = document.getElementById('userAvatar');
+          const menuAv = document.getElementById('userMenuAv');
+          const menuName = document.getElementById('userMenuName');
+          const menuEmail = document.getElementById('userMenuEmail');
+          if (av) av.textContent = ini;
+          if (menuAv) menuAv.textContent = ini;
+          if (menuName) menuName.textContent = u.businessName || u.name;
+          if (menuEmail) menuEmail.textContent = u.email;
+        } else {
+          localStorage.removeItem('aq_token');
+          localStorage.removeItem('aq_user');
+          window.location.href = '/';
+        }
+      }).catch(()=>{});
+  }
+})();
+
+// 3. Toggle user menu
+function toggleUserMenu() {
+  document.getElementById('userMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const av = document.getElementById('userAvatar');
+  const menu = document.getElementById('userMenu');
+  if (menu && av && !av.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+// 4. Copy email
+function copyUserEmail() {
+  const user = JSON.parse(localStorage.getItem('aq_user') || '{}');
+  if (!user.email) return;
+  navigator.clipboard.writeText(user.email).then(() => {
+    const label = document.getElementById('copyEmailLabel');
+    if (label) { label.textContent = 'Copied!'; setTimeout(()=>label.textContent='Copy email',1800); }
+  });
+}
+
+// 5. Profile settings
+function openProfileSettings() {
+  document.getElementById('userMenu').classList.remove('open');
+  const user = JSON.parse(localStorage.getItem('aq_user') || '{}');
+  alert('Account: ' + (user.name||'') + '\nEmail: ' + (user.email||'') + '\nCountry: ' + (user.country||'') + '\nCurrency: ' + (user.currency||''));
+}
+
+// 6. Logout
+function doLogout() {
+  localStorage.removeItem('aq_token');
+  localStorage.removeItem('aq_user');
+  window.location.href = '/';
+}
+</script>
 
 </body>
 </html>

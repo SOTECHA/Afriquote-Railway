@@ -1520,33 +1520,301 @@ function tickPreviewTimer() {
   if (el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 setInterval(tickPreviewTimer, 1000);
+
+// ── CTA BUTTON HANDLERS ──
+document.querySelectorAll('button').forEach(btn => {
+  const label = btn.textContent.trim();
+  if (btn.onclick || btn.dataset.wired) return;
+  if (label === 'Sign in') {
+    btn.addEventListener('click', () => openAuthModal('login'));
+  } else if (['Get started free','Start for free','Start for free — no card needed',
+              'Start Lite free for 14 days','Start Pro free for 14 days'].includes(label)) {
+    btn.addEventListener('click', () => openAuthModal('register'));
+  } else if (label === 'Book a demo' || label === 'Contact sales') {
+    btn.addEventListener('click', () => window.location.href = 'mailto:hello@afriquote.africa');
+  }
+  btn.dataset.wired = 'true';
+  btn.style.cursor = 'pointer';
+});
 </script>
 
+<!-- ══════════════════════════════════════════
+     AUTH MODAL — Login & Register
+══════════════════════════════════════════ -->
+<style>
+.auth-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(14,20,16,.55);
+  backdrop-filter: blur(4px); z-index: 1000;
+  align-items: center; justify-content: center;
+}
+.auth-overlay.open { display: flex; }
+.auth-modal {
+  background: #fff; border-radius: 18px; padding: 40px;
+  width: 100%; max-width: 420px; margin: 16px;
+  box-shadow: 0 24px 64px rgba(14,20,16,.18);
+  animation: authIn .22s ease;
+}
+@keyframes authIn {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+.auth-logo { display: flex; align-items: center; gap: 9px; margin-bottom: 28px; }
+.auth-logo-mark {
+  width: 34px; height: 34px; border-radius: 9px; background: #1D9E75;
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-logo-mark svg { width: 17px; height: 17px; fill: white; }
+.auth-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #1a1c18; }
+.auth-logo-text em { color: #1D9E75; font-style: normal; }
+.auth-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: #1a1c18; margin-bottom: 6px; }
+.auth-sub { font-size: 13.5px; color: #5c6057; margin-bottom: 28px; }
+.auth-field { margin-bottom: 16px; }
+.auth-field label { display: block; font-size: 12.5px; font-weight: 600; color: #1a1c18; margin-bottom: 6px; }
+.auth-field input, .auth-field select {
+  width: 100%; padding: 10px 13px; border: 1.5px solid #e8eae6;
+  border-radius: 9px; font-size: 14px; color: #1a1c18;
+  font-family: 'DM Sans', sans-serif; outline: none;
+  transition: border-color .15s;
+}
+.auth-field input:focus, .auth-field select:focus { border-color: #1D9E75; }
+.auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.auth-btn {
+  width: 100%; padding: 12px; background: #1D9E75; color: white;
+  border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 6px;
+  transition: background .15s, transform .1s;
+}
+.auth-btn:hover { background: #0F6E56; transform: translateY(-1px); }
+.auth-btn:active { transform: none; }
+.auth-btn:disabled { background: #9aa094; cursor: not-allowed; transform: none; }
+.auth-switch { text-align: center; margin-top: 20px; font-size: 13px; color: #5c6057; }
+.auth-switch a { color: #1D9E75; font-weight: 600; cursor: pointer; text-decoration: none; }
+.auth-switch a:hover { text-decoration: underline; }
+.auth-error {
+  background: #FCEBEB; border: 1px solid #f5c2c2; color: #c0392b;
+  border-radius: 8px; padding: 10px 13px; font-size: 13px;
+  margin-bottom: 16px; display: none;
+}
+.auth-error.show { display: block; }
+.auth-close {
+  position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
+  border-radius: 50%; border: 1px solid #e8eae6; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; color: #5c6057;
+}
+.auth-close:hover { background: #f4f5f3; }
+.auth-modal-wrap { position: relative; }
+</style>
+
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-modal-wrap">
+    <div class="auth-modal" id="authModal">
+      <div class="auth-logo">
+        <div class="auth-logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L2 5v6l6 4 6-4V5z"/></svg></div>
+        <span class="auth-logo-text">Afri<em>Quote</em></span>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="authLoginForm">
+        <div class="auth-title">Welcome back</div>
+        <div class="auth-sub">Sign in to your AfriQuote account</div>
+        <div class="auth-error" id="loginError"></div>
+        <div class="auth-field">
+          <label>Email address</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="Your password" autocomplete="current-password">
+        </div>
+        <button class="auth-btn" id="loginBtn" onclick="doLogin()">Sign in</button>
+        <div class="auth-switch">
+          Don't have an account? <a onclick="switchAuth('register')">Get started free</a>
+        </div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="authRegisterForm" style="display:none">
+        <div class="auth-title">Create your account</div>
+        <div class="auth-sub">Free for 14 days — no card needed</div>
+        <div class="auth-error" id="registerError"></div>
+        <div class="auth-field">
+          <label>Full name</label>
+          <input type="text" id="regName" placeholder="Adaeze Okafor" autocomplete="name">
+        </div>
+        <div class="auth-field">
+          <label>Email address</label>
+          <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Password <span style="font-weight:400;color:#9aa094">(min 8 characters)</span></label>
+          <input type="password" id="regPassword" placeholder="Create a password" autocomplete="new-password">
+        </div>
+        <div class="auth-row">
+          <div class="auth-field">
+            <label>Country</label>
+            <select id="regCountry">
+              <option value="NG">🇳🇬 Nigeria</option>
+              <option value="GH">🇬🇭 Ghana</option>
+              <option value="KE">🇰🇪 Kenya</option>
+              <option value="ZA">🇿🇦 South Africa</option>
+              <option value="RW">🇷🇼 Rwanda</option>
+              <option value="TZ">🇹🇿 Tanzania</option>
+              <option value="SN">🇸🇳 Senegal</option>
+              <option value="EG">🇪🇬 Egypt</option>
+            </select>
+          </div>
+          <div class="auth-field">
+            <label>Currency</label>
+            <select id="regCurrency">
+              <option value="NGN">₦ NGN</option>
+              <option value="GHS">GH₵ GHS</option>
+              <option value="KES">KES</option>
+              <option value="ZAR">R ZAR</option>
+              <option value="RWF">RF RWF</option>
+              <option value="USD">$ USD</option>
+            </select>
+          </div>
+        </div>
+        <button class="auth-btn" id="registerBtn" onclick="doRegister()">Create account</button>
+        <div class="auth-switch">
+          Already have an account? <a onclick="switchAuth('login')">Sign in</a>
+        </div>
+      </div>
+    </div>
+    <div class="auth-close" onclick="closeAuthModal()">✕</div>
+  </div>
+</div>
+
 <script>
-  // ── CTA BUTTON HANDLERS ──
-  document.querySelectorAll('button').forEach(btn => {
-    const label = btn.textContent.trim();
+// ── AUTH MODAL LOGIC ──
+function openAuthModal(mode) {
+  document.getElementById('authOverlay').classList.add('open');
+  switchAuth(mode || 'login');
+  setTimeout(() => {
+    const f = mode === 'register'
+      ? document.getElementById('regName')
+      : document.getElementById('loginEmail');
+    if (f) f.focus();
+  }, 100);
+}
 
-    // Already has a handler — skip
-    if (btn.onclick || btn.dataset.wired) return;
+function closeAuthModal() {
+  document.getElementById('authOverlay').classList.remove('open');
+  clearAuthErrors();
+}
 
-    if (label === 'Sign in') {
-      btn.addEventListener('click', () => window.location.href = '/app');
-    } else if (label === 'Get started free' || label === 'Start for free — no card needed') {
-      btn.addEventListener('click', () => window.location.href = '/app');
-    } else if (label === 'Start Lite free for 14 days') {
-      btn.addEventListener('click', () => window.location.href = '/app');
-    } else if (label === 'Start Pro free for 14 days') {
-      btn.addEventListener('click', () => window.location.href = '/app');
-    } else if (label === 'Book a demo') {
-      btn.addEventListener('click', () => window.location.href = 'mailto:hello@afriquote.africa');
-    } else if (label === 'Contact sales') {
-      btn.addEventListener('click', () => window.location.href = 'mailto:hello@afriquote.africa');
-    }
+function switchAuth(mode) {
+  document.getElementById('authLoginForm').style.display    = mode === 'login'    ? '' : 'none';
+  document.getElementById('authRegisterForm').style.display = mode === 'register' ? '' : 'none';
+  clearAuthErrors();
+}
 
-    btn.dataset.wired = 'true';
-    btn.style.cursor = 'pointer';
+function clearAuthErrors() {
+  ['loginError','registerError'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('show'); el.textContent = ''; }
   });
+}
+
+function showAuthError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function setAuthLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.textContent = loading
+    ? (btnId === 'loginBtn' ? 'Signing in…' : 'Creating account…')
+    : (btnId === 'loginBtn' ? 'Sign in' : 'Create account');
+}
+
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) return showAuthError('loginError', 'Please enter your email and password.');
+  setAuthLoading('loginBtn', true);
+  try {
+    const res  = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      showAuthError('loginError', data.error || 'Invalid credentials. Please try again.');
+      setAuthLoading('loginBtn', false);
+      return;
+    }
+    localStorage.setItem('aq_token', data.token);
+    localStorage.setItem('aq_user',  JSON.stringify(data.user));
+    window.location.href = '/app';
+  } catch (e) {
+    showAuthError('loginError', 'Connection error. Please try again.');
+    setAuthLoading('loginBtn', false);
+  }
+}
+
+async function doRegister() {
+  const name     = document.getElementById('regName').value.trim();
+  const email    = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const country  = document.getElementById('regCountry').value;
+  const currency = document.getElementById('regCurrency').value;
+  if (!name || !email || !password) return showAuthError('registerError', 'Please fill in all required fields.');
+  if (password.length < 8) return showAuthError('registerError', 'Password must be at least 8 characters.');
+  setAuthLoading('registerBtn', true);
+  try {
+    const res  = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, country, currency })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      showAuthError('registerError', data.error || 'Registration failed. Please try again.');
+      setAuthLoading('registerBtn', false);
+      return;
+    }
+    localStorage.setItem('aq_token', data.token);
+    localStorage.setItem('aq_user',  JSON.stringify(data.user));
+    window.location.href = '/app';
+  } catch (e) {
+    showAuthError('registerError', 'Connection error. Please try again.');
+    setAuthLoading('registerBtn', false);
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('authOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAuthModal();
+});
+
+// Allow Enter key to submit
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAuthModal();
+  if (e.key === 'Enter') {
+    if (document.getElementById('authLoginForm').style.display !== 'none') doLogin();
+    else if (document.getElementById('authRegisterForm').style.display !== 'none') doRegister();
+  }
+});
+
+// If already logged in, update nav buttons to show "Go to app"
+(function() {
+  const token = localStorage.getItem('aq_token');
+  if (token) {
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.textContent.trim() === 'Sign in') {
+        btn.textContent = 'Go to app';
+        btn.dataset.wired = '';
+        btn.onclick = null;
+        btn.addEventListener('click', () => window.location.href = '/app');
+      }
+    });
+  }
+})();
 </script>
 </body>
 </html>
