@@ -600,15 +600,15 @@ textarea.fc{resize:vertical;min-height:65px}
 
 <!-- Invoices -->
 <div id="fin-invoices" class="page">
-  <div class="ph"><div class="pt">Invoices</div><button class="btn btn-primary">+ New invoice</button></div>
+  <div class="ph"><div class="pt">Invoices</div><button class="btn btn-primary" onclick="openInvoiceModal()">+ New invoice</button></div>
   <div class="alert-box alert-amber"><strong>₦380,000 outstanding</strong> across 2 invoices. NovaPay Kenya is 7 days overdue — chase now to protect cash flow.</div>
   <div class="card">
     <table class="tbl">
       <thead><tr><th>Invoice #</th><th>Client</th><th>Description</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>
-        <tr><td class="td-bold">INV-0041</td><td>BetaRide Lagos</td><td>Brand identity package</td><td class="td-bold">₦320,000</td><td>Apr 15</td><td><span class="badge b-ok">Paid</span></td><td><button class="btn btn-sm">Receipt</button></td></tr>
-        <tr><td class="td-bold">INV-0040</td><td>NovaPay Kenya</td><td>IT audit deposit (50%)</td><td class="td-bold">KES 47,500</td><td>Mar 30</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger">Chase</button></td></tr>
-        <tr><td class="td-bold">INV-0039</td><td>AgroConnect GH</td><td>Social media retainer</td><td class="td-bold">GH₵4,200</td><td>Apr 20</td><td><span class="badge b-blue">Sent</span></td><td><button class="btn btn-sm">View</button></td></tr>
+        <tr><td class="td-bold">INV-0041</td><td>BetaRide Lagos</td><td>Brand identity package</td><td class="td-bold">₦320,000</td><td>Apr 15</td><td><span class="badge b-ok">Paid</span></td><td><button class="btn btn-sm" onclick="invoiceAction('receipt','INV-0041','BetaRide Lagos','₦320,000')">Receipt</button></td></tr>
+        <tr><td class="td-bold">INV-0040</td><td>NovaPay Kenya</td><td>IT audit deposit (50%)</td><td class="td-bold">KES 47,500</td><td>Mar 30</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger" onclick="invoiceAction('chase','INV-0040','NovaPay Kenya','KES 47,500')">Chase</button></td></tr>
+        <tr><td class="td-bold">INV-0039</td><td>AgroConnect GH</td><td>Social media retainer</td><td class="td-bold">GH₵4,200</td><td>Apr 20</td><td><span class="badge b-blue">Sent</span></td><td><button class="btn btn-sm" onclick="invoiceAction('view','INV-0039','AgroConnect GH','GH₵4,200')">View</button></td></tr>
       </tbody>
     </table>
   </div>
@@ -616,7 +616,7 @@ textarea.fc{resize:vertical;min-height:65px}
 
 <!-- New Quote Builder -->
 <div id="fin-new-quote" class="page">
-  <div class="ph"><div class="pt">New quote</div><div style="display:flex;gap:8px"><button class="btn">Save draft</button><button class="btn btn-primary">Send quote</button></div></div>
+  <div class="ph"><div class="pt">New quote</div><div style="display:flex;gap:8px"><button class="btn" onclick="quoteSaveDraft()">Save draft</button><button class="btn btn-primary" onclick="quoteSend()">Send quote</button></div></div>
   <div class="grid2">
     <div class="card">
       <div class="card-title">Client details</div>
@@ -652,11 +652,12 @@ textarea.fc{resize:vertical;min-height:65px}
   <div class="card">
     <div class="card-title">Send via</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
-      <div class="tag on" onclick="toggleTag(this)">Email</div>
-      <div class="tag" onclick="toggleTag(this)">WhatsApp</div>
-      <div class="tag" onclick="toggleTag(this)">Shareable link</div>
+      <div class="tag on" id="qv-email" onclick="toggleTag(this)">Email</div>
+      <div class="tag" id="qv-whatsapp" onclick="toggleTag(this)">WhatsApp</div>
+      <div class="tag" id="qv-link" onclick="toggleTag(this)">Shareable link</div>
     </div>
-    <button class="btn-wa">Send via WhatsApp</button>
+    <div id="qv-link-box" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-size:12.5px;color:var(--text2);margin-bottom:8px;word-break:break-all" id="qShareLink"></div>
+    <button class="btn-wa" onclick="quoteSendWhatsApp()">📱 Send via WhatsApp</button>
   </div>
 </div>
 
@@ -666,13 +667,14 @@ textarea.fc{resize:vertical;min-height:65px}
   <div class="card">
     <div class="card-title">Accept payments across Africa</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r)">Paystack<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">NG · GH · KE · ZA</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">Flutterwave<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">20+ countries</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">M-Pesa<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">Kenya · Tanzania</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">MTN MoMo<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">GH · NG · RW · UG</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r)">Airtel Money<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">KE · TZ · NG · UG</div></div>
-      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r)">Bank transfer<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">All countries</div></div>
+      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'paystack')">Paystack<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">NG · GH · KE · ZA</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'flutterwave')">Flutterwave<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">20+ countries</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'mpesa')">M-Pesa<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">Kenya · Tanzania</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'mtn_momo')">MTN MoMo<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">GH · NG · RW · UG</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'airtel_money')">Airtel Money<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">KE · TZ · NG · UG</div></div>
+      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'bank_transfer')">Bank transfer<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">All countries</div></div>
     </div>
+    <div id="payGatewayInfo" style="margin-top:14px;display:none"></div>
   </div>
   <div class="card">
     <div class="card-title">Live exchange rates</div>
@@ -687,7 +689,7 @@ textarea.fc{resize:vertical;min-height:65px}
 
 <!-- Clients -->
 <div id="fin-clients" class="page">
-  <div class="ph"><div class="pt">Clients</div><button class="btn btn-primary">+ Add client</button></div>
+  <div class="ph"><div class="pt">Clients</div><button class="btn btn-primary" onclick="openClientModal()">+ Add client</button></div>
   <div class="card">
     <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark);width:36px;height:36px">BR</div><div class="row-info"><div class="row-title">BetaRide Lagos</div><div class="row-sub">Nigeria · 3 projects · ₦1.1M lifetime</div></div><span class="badge b-ok">Active</span></div>
     <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber);width:36px;height:36px">TK</div><div class="row-info"><div class="row-title">TradaKo Ltd</div><div class="row-sub">Nigeria · 2 projects · ₦850K lifetime</div></div><span class="badge b-warn">In progress</span></div>
@@ -1354,6 +1356,8 @@ function switchMod(mod,el){
     const first=sb.querySelector('.sb-item');
     if(first)first.classList.add('on');
   }
+  // render proposals when switching to proposals tab
+  if(mod === 'proposals') setTimeout(function(){ if(typeof propRenderAll==='function') propRenderAll(); }, 80);
 }
 
 function showPage(id,sidebarEl){
@@ -1495,13 +1499,6 @@ function doCheckin(btn){
 
 // ── INIT ──
 switchMod('finance', document.querySelector('.mn.on'));
-
-// Proposal module render trigger
-const _origSwitch = switchMod;
-function switchMod(mod, el) {
-  _origSwitch(mod, el);
-  if (mod === 'proposals') setTimeout(propRenderAll, 60);
-}
 
 
 /* ═══════════════════════════════════════════════════════════
@@ -1764,6 +1761,675 @@ function doLogout() {
   localStorage.removeItem('aq_token');
   localStorage.removeItem('aq_user');
   window.location.href = '/';
+}
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODALS: New Invoice · Add Client · Invoice Action
+═══════════════════════════════════════════════════════════════ -->
+
+<!-- ── New Invoice Modal ── -->
+<div class="prop-modal-wrap" id="invoiceModal">
+  <div class="prop-modal" style="max-width:540px">
+    <div class="prop-modal-head">
+      <span class="prop-modal-title">New invoice</span>
+      <button class="btn btn-sm" onclick="closeInvoiceModal()">✕ Close</button>
+    </div>
+    <div class="prop-modal-body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="fg"><label class="fl">Client name *</label><input class="fc" id="inv-client" placeholder="e.g. BetaRide Lagos"></div>
+      <div class="fg"><label class="fl">Client email</label><input class="fc" id="inv-email" type="email" placeholder="client@company.com"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label class="fl">Invoice #</label><input class="fc" id="inv-number" placeholder="INV-0042"></div>
+        <div class="fg"><label class="fl">Due date *</label><input class="fc" id="inv-due" type="date"></div>
+      </div>
+      <div class="fg"><label class="fl">Description</label><input class="fc" id="inv-desc" placeholder="e.g. Web design — Phase 1"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label class="fl">Amount *</label><input class="fc" id="inv-amount" type="number" placeholder="0" min="0"></div>
+        <div class="fg"><label class="fl">Currency</label>
+          <select class="fc" id="inv-currency">
+            <option value="NGN">₦ NGN – Naira</option>
+            <option value="GHS">GH₵ GHS – Cedi</option>
+            <option value="KES">KES – Shilling</option>
+            <option value="ZAR">R ZAR – Rand</option>
+            <option value="USD">$ USD</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">VAT / Tax rate</label>
+        <select class="fc" id="inv-vat">
+          <option value="0">0% – No tax</option>
+          <option value="7.5" selected>7.5% – Nigeria VAT</option>
+          <option value="12.5">12.5% – Ghana VAT</option>
+          <option value="16">16% – Kenya VAT</option>
+          <option value="15">15% – South Africa VAT</option>
+          <option value="18">18% – Rwanda VAT</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Payment terms</label>
+        <select class="fc" id="inv-terms">
+          <option>50% upfront, 50% on delivery</option>
+          <option>100% upfront</option>
+          <option>Net 14 days</option>
+          <option>Net 30 days</option>
+          <option>Milestone-based</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Notes (optional)</label><textarea class="fc" id="inv-notes" rows="2" placeholder="Payment instructions, bank details, etc."></textarea></div>
+      <div id="inv-error" style="display:none;background:var(--red-light);border:1px solid #f5c2c2;color:#c0392b;border-radius:8px;padding:9px 12px;font-size:13px"></div>
+    </div>
+    <div class="prop-modal-foot">
+      <button class="btn" onclick="closeInvoiceModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveInvoice()">Create invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Add Client Modal ── -->
+<div class="prop-modal-wrap" id="clientModal">
+  <div class="prop-modal" style="max-width:500px">
+    <div class="prop-modal-head">
+      <span class="prop-modal-title" id="clientModalTitle">Add client</span>
+      <button class="btn btn-sm" onclick="closeClientModal()">✕ Close</button>
+    </div>
+    <div class="prop-modal-body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="fg"><label class="fl">Client / company name *</label><input class="fc" id="cl-name" placeholder="e.g. BetaRide Lagos"></div>
+      <div class="fg"><label class="fl">Email</label><input class="fc" id="cl-email" type="email" placeholder="contact@company.com"></div>
+      <div class="fg"><label class="fl">Phone / WhatsApp</label><input class="fc" id="cl-phone" placeholder="+234 801 234 5678"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label class="fl">Country</label>
+          <select class="fc" id="cl-country">
+            <option value="NG">🇳🇬 Nigeria</option>
+            <option value="GH">🇬🇭 Ghana</option>
+            <option value="KE">🇰🇪 Kenya</option>
+            <option value="ZA">🇿🇦 South Africa</option>
+            <option value="RW">🇷🇼 Rwanda</option>
+            <option value="TZ">🇹🇿 Tanzania</option>
+            <option value="EG">🇪🇬 Egypt</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Currency</label>
+          <select class="fc" id="cl-currency">
+            <option value="NGN">₦ NGN</option>
+            <option value="GHS">GH₵ GHS</option>
+            <option value="KES">KES</option>
+            <option value="ZAR">R ZAR</option>
+            <option value="USD">$ USD</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Address</label><input class="fc" id="cl-address" placeholder="Street, city"></div>
+      <div class="fg"><label class="fl">TIN (Tax ID)</label><input class="fc" id="cl-tin" placeholder="Optional"></div>
+      <div class="fg"><label class="fl">Notes</label><textarea class="fc" id="cl-notes" rows="2" placeholder="Any notes about this client"></textarea></div>
+      <div id="cl-error" style="display:none;background:var(--red-light);border:1px solid #f5c2c2;color:#c0392b;border-radius:8px;padding:9px 12px;font-size:13px"></div>
+    </div>
+    <div class="prop-modal-foot">
+      <button class="btn" onclick="closeClientModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()">Save client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Invoice Action Modal (View / Receipt / Chase) ── -->
+<div class="prop-modal-wrap" id="invActionModal">
+  <div class="prop-modal" style="max-width:460px">
+    <div class="prop-modal-head">
+      <span class="prop-modal-title" id="invActionTitle">Invoice</span>
+      <button class="btn btn-sm" onclick="closeInvActionModal()">✕ Close</button>
+    </div>
+    <div class="prop-modal-body" id="invActionBody"></div>
+    <div class="prop-modal-foot">
+      <button class="btn" onclick="closeInvActionModal()">Close</button>
+      <button class="btn btn-primary" id="invActionBtn" onclick="invActionPrimary()">Copy</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast notification ── -->
+<div id="aqToast" style="
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1a1c18;color:white;padding:11px 20px;border-radius:10px;
+  font-size:13px;font-weight:500;opacity:0;transition:all .25s;z-index:9999;
+  pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25)
+"></div>
+
+<!-- ── Quote send modal ── -->
+<div class="prop-modal-wrap" id="quoteSendModal">
+  <div class="prop-modal" style="max-width:460px">
+    <div class="prop-modal-head">
+      <span class="prop-modal-title" id="quoteSendTitle">Send quote</span>
+      <button class="btn btn-sm" onclick="closeQuoteSendModal()">✕ Close</button>
+    </div>
+    <div class="prop-modal-body" id="quoteSendBody"></div>
+    <div class="prop-modal-foot">
+      <button class="btn" onclick="closeQuoteSendModal()">Cancel</button>
+      <button class="btn btn-primary" id="quoteSendActionBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// AFRIQUOTE — Buttons & Functionality Fix
+// Covers: Quotes, Invoices, Payment Methods, Clients
+// ══════════════════════════════════════════════════════════════
+
+// ── Toast helper ─────────────────────────────────────────────
+function aqToast(msg, duration = 2800) {
+  const t = document.getElementById('aqToast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, duration);
+}
+
+// ── Close modal on backdrop click ────────────────────────────
+['invoiceModal','clientModal','invActionModal','quoteSendModal'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('click', e => { if (e.target === el) el.classList.remove('on'); });
+});
+
+// ── Escape key closes modals ──────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  ['invoiceModal','clientModal','invActionModal','quoteSendModal'].forEach(id => {
+    document.getElementById(id)?.classList.remove('on');
+  });
+});
+
+// ════════════════════════════════════════
+// 1. QUOTE FUNCTIONS
+// ════════════════════════════════════════
+
+function quoteGetData() {
+  const rows = document.querySelectorAll('#lineBody tr');
+  const items = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const desc  = inputs[0]?.value?.trim();
+    const qty   = parseFloat(inputs[1]?.value) || 0;
+    const price = parseFloat(inputs[2]?.value) || 0;
+    if (desc) items.push({ desc, qty, price, total: qty * price });
+  });
+  const clientName   = document.querySelector('#fin-new-quote input[placeholder="Company or individual"]')?.value?.trim() || '';
+  const contact      = document.querySelector('#fin-new-quote input[placeholder="+234 or email address"]')?.value?.trim() || '';
+  const title        = document.querySelector('#fin-new-quote input[placeholder="e.g. Brand identity package"]')?.value?.trim() || '';
+  const validUntil   = document.querySelector('#fin-new-quote input[type=date]')?.value || '';
+  const currency     = document.getElementById('q-currency')?.value || '₦';
+  const vatRate      = parseFloat(document.getElementById('q-vat')?.value) || 0;
+  const paymentTerms = document.querySelector('#fin-new-quote select:last-of-type')?.value || '';
+  const subtotal     = items.reduce((s, i) => s + i.total, 0);
+  const vatAmt       = subtotal * vatRate / 100;
+  const total        = subtotal + vatAmt;
+  return { clientName, contact, title, validUntil, currency, vatRate, vatAmt, paymentTerms, items, subtotal, total };
+}
+
+function quoteValidate(d) {
+  if (!d.clientName) return 'Please enter a client name.';
+  if (!d.title)      return 'Please enter a quote title.';
+  if (!d.items.length) return 'Please add at least one line item.';
+  return null;
+}
+
+function quoteSaveDraft() {
+  const d = quoteGetData();
+  const err = quoteValidate(d);
+  if (err) return aqToast('⚠️ ' + err);
+
+  // Save to localStorage as drafts list
+  const drafts = JSON.parse(localStorage.getItem('aq_quote_drafts') || '[]');
+  const draft = {
+    id: 'QT-' + Date.now(),
+    number: 'QT-' + String(drafts.length + 1).padStart(4, '0'),
+    status: 'draft',
+    savedAt: new Date().toISOString(),
+    ...d,
+  };
+  drafts.push(draft);
+  localStorage.setItem('aq_quote_drafts', JSON.stringify(drafts));
+  aqToast('✅ Draft saved — ' + draft.number);
+}
+
+function quoteSend() {
+  const d = quoteGetData();
+  const err = quoteValidate(d);
+  if (err) return aqToast('⚠️ ' + err);
+
+  // Which channels are selected?
+  const emailOn = document.getElementById('qv-email')?.classList.contains('on');
+  const waOn    = document.getElementById('qv-whatsapp')?.classList.contains('on');
+  const linkOn  = document.getElementById('qv-link')?.classList.contains('on');
+
+  const fmtNum  = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const itemLines = d.items.map(i => `• ${i.desc} × ${i.qty} = ${d.currency}${fmtNum(i.total)}`).join('\n');
+  const quoteText = `*Quote from AfriQuote*\n\n*${d.title}*\nClient: ${d.clientName}\n\nItems:\n${itemLines}\n\nSubtotal: ${d.currency}${fmtNum(d.subtotal)}\nVAT (${d.vatRate}%): ${d.currency}${fmtNum(d.vatAmt)}\n*Total: ${d.currency}${fmtNum(d.total)}*\n\nTerms: ${d.paymentTerms}\nValid until: ${d.validUntil || 'N/A'}`;
+
+  // Generate shareable link token
+  const token = btoa(JSON.stringify({ ...d, generatedAt: Date.now() })).slice(0, 32);
+  const shareUrl = window.location.origin + '/quote/' + token;
+
+  // Build send modal content
+  let body = `<div style="display:flex;flex-direction:column;gap:14px">`;
+  body += `<div style="background:var(--surface2);border-radius:var(--r);padding:14px;font-size:13px;line-height:1.7">
+    <div style="font-weight:600;margin-bottom:6px">${d.title}</div>
+    <div style="color:var(--text2)">Client: ${d.clientName}</div>
+    <div style="color:var(--text2)">${d.items.length} item(s) · Total: <strong style="color:var(--green)">${d.currency}${fmtNum(d.total)}</strong></div>
+  </div>`;
+
+  if (emailOn && d.contact && d.contact.includes('@')) {
+    body += `<div style="padding:12px;background:var(--blue-light);border-radius:var(--r);font-size:13px">
+      <div style="font-weight:600;color:var(--blue);margin-bottom:4px">✉ Email</div>
+      <div>Ready to send to <strong>${d.contact}</strong></div>
+    </div>`;
+  }
+  if (waOn || (d.contact && d.contact.startsWith('+'))) {
+    const phone = d.contact?.replace(/\D/g,'') || '';
+    body += `<div style="padding:12px;background:#E8FBF1;border-radius:var(--r);font-size:13px">
+      <div style="font-weight:600;color:#128C7E;margin-bottom:4px">📱 WhatsApp</div>
+      <div>Opens WhatsApp with quote details pre-filled.</div>
+      <button class="btn-wa" style="margin-top:8px" onclick="quoteWhatsAppDirect('${encodeURIComponent(quoteText)}','${phone}')">Open WhatsApp</button>
+    </div>`;
+  }
+  if (linkOn) {
+    body += `<div style="padding:12px;background:var(--green-light);border-radius:var(--r);font-size:13px">
+      <div style="font-weight:600;color:var(--green-dark);margin-bottom:4px">🔗 Shareable link</div>
+      <div style="word-break:break-all;color:var(--text2);font-size:12px;margin-top:4px">${shareUrl}</div>
+      <button class="btn btn-sm" style="margin-top:8px" onclick="navigator.clipboard.writeText('${shareUrl}').then(()=>aqToast('🔗 Link copied!'))">Copy link</button>
+    </div>`;
+  }
+  body += `</div>`;
+
+  document.getElementById('quoteSendBody').innerHTML = body;
+  document.getElementById('quoteSendTitle').textContent = 'Send quote — ' + d.title;
+  document.getElementById('quoteSendActionBtn').textContent = 'Mark as sent ✓';
+  document.getElementById('quoteSendActionBtn').onclick = () => {
+    aqToast('✅ Quote marked as sent!');
+    closeQuoteSendModal();
+  };
+  document.getElementById('quoteSendModal').classList.add('on');
+}
+
+function quoteWhatsAppDirect(encodedText, phone) {
+  const url = phone
+    ? `https://wa.me/${phone}?text=${encodedText}`
+    : `https://wa.me/?text=${encodedText}`;
+  window.open(url, '_blank');
+}
+
+function quoteSendWhatsApp() {
+  const d = quoteGetData();
+  const err = quoteValidate(d);
+  if (err) return aqToast('⚠️ ' + err);
+  const fmtNum = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0 });
+  const itemLines = d.items.map(i => `• ${i.desc} × ${i.qty} = ${d.currency}${fmtNum(i.total)}`).join('%0A');
+  const msg = `*Quote from AfriQuote*%0A%0A*${encodeURIComponent(d.title)}*%0AClient: ${encodeURIComponent(d.clientName)}%0A%0AItems:%0A${itemLines}%0A%0A*Total: ${d.currency}${fmtNum(d.total)}*%0ATerms: ${encodeURIComponent(d.paymentTerms)}`;
+  const phone = d.contact?.replace(/\D/g,'') || '';
+  const url = phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`;
+  window.open(url, '_blank');
+}
+
+function closeQuoteSendModal() {
+  document.getElementById('quoteSendModal').classList.remove('on');
+}
+
+// ════════════════════════════════════════
+// 2. INVOICE FUNCTIONS
+// ════════════════════════════════════════
+
+// In-memory invoice list (seeded with demo data)
+const aqInvoices = [
+  { id:'INV-0041', client:'BetaRide Lagos', email:'', desc:'Brand identity package', amount:320000, currency:'NGN', due:'2025-04-15', status:'paid', terms:'100% upfront', notes:'' },
+  { id:'INV-0040', client:'NovaPay Kenya',  email:'', desc:'IT audit deposit (50%)', amount:47500,  currency:'KES', due:'2025-03-30', status:'overdue', terms:'50% upfront, 50% on delivery', notes:'' },
+  { id:'INV-0039', client:'AgroConnect GH', email:'', desc:'Social media retainer',  amount:4200,   currency:'GHS', due:'2025-04-20', status:'sent', terms:'Net 30 days', notes:'' },
+];
+
+const CURRENCY_SYMBOLS = { NGN:'₦', GHS:'GH₵', KES:'KES ', ZAR:'R ', USD:'$', GBP:'£' };
+
+function openInvoiceModal() {
+  // Auto-fill next invoice number
+  const nextNum = 'INV-' + String(aqInvoices.length + 42).padStart(4,'0');
+  document.getElementById('inv-number').value = nextNum;
+  // Default due date = 14 days from today
+  const due = new Date(); due.setDate(due.getDate() + 14);
+  document.getElementById('inv-due').value = due.toISOString().split('T')[0];
+  ['inv-client','inv-email','inv-desc','inv-amount','inv-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('inv-error').style.display = 'none';
+  document.getElementById('invoiceModal').classList.add('on');
+}
+
+function closeInvoiceModal() {
+  document.getElementById('invoiceModal').classList.remove('on');
+}
+
+function saveInvoice() {
+  const client  = document.getElementById('inv-client').value.trim();
+  const amount  = parseFloat(document.getElementById('inv-amount').value) || 0;
+  const due     = document.getElementById('inv-due').value;
+  const errEl   = document.getElementById('inv-error');
+
+  if (!client || !amount || !due) {
+    errEl.textContent = 'Please fill in client name, amount, and due date.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const inv = {
+    id:       document.getElementById('inv-number').value || ('INV-' + Date.now()),
+    client,
+    email:    document.getElementById('inv-email').value.trim(),
+    desc:     document.getElementById('inv-desc').value.trim(),
+    amount,
+    currency: document.getElementById('inv-currency').value,
+    vat:      parseFloat(document.getElementById('inv-vat').value) || 0,
+    due,
+    status:   'draft',
+    terms:    document.getElementById('inv-terms').value,
+    notes:    document.getElementById('inv-notes').value.trim(),
+    createdAt: new Date().toISOString(),
+  };
+  aqInvoices.push(inv);
+  renderInvoiceTable();
+  closeInvoiceModal();
+  aqToast('✅ Invoice ' + inv.id + ' created!');
+}
+
+function renderInvoiceTable() {
+  const tbody = document.querySelector('#fin-invoices .tbl tbody');
+  if (!tbody) return;
+  const statusBadge = s => ({
+    paid:   '<span class="badge b-ok">Paid</span>',
+    overdue:'<span class="badge b-danger">Overdue</span>',
+    sent:   '<span class="badge b-blue">Sent</span>',
+    draft:  '<span class="badge b-gray">Draft</span>',
+  })[s] || '<span class="badge b-gray">Draft</span>';
+
+  const actionBtn = inv => {
+    const actions = { paid:'receipt', overdue:'chase', sent:'view', draft:'view' };
+    const labels  = { receipt:'Receipt', chase:'Chase', view:'View' };
+    const classes = { receipt:'btn btn-sm', chase:'btn btn-sm btn-danger', view:'btn btn-sm' };
+    const action  = actions[inv.status] || 'view';
+    const sym     = CURRENCY_SYMBOLS[inv.currency] || '';
+    return `<button class="${classes[action]}" onclick="invoiceAction('${action}','${inv.id}','${inv.client}','${sym}${inv.amount.toLocaleString()}')">${labels[action]}</button>`;
+  };
+
+  const fmtDate = d => {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('en-NG', { day:'numeric', month:'short' }); } catch { return d; }
+  };
+
+  tbody.innerHTML = aqInvoices.map(inv => {
+    const sym = CURRENCY_SYMBOLS[inv.currency] || '';
+    return `<tr>
+      <td class="td-bold">${inv.id}</td>
+      <td>${inv.client}</td>
+      <td>${inv.desc || '—'}</td>
+      <td class="td-bold">${sym}${inv.amount.toLocaleString()}</td>
+      <td>${fmtDate(inv.due)}</td>
+      <td>${statusBadge(inv.status)}</td>
+      <td>${actionBtn(inv)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function invoiceAction(action, id, client, amount) {
+  const modal = document.getElementById('invActionModal');
+  const title = document.getElementById('invActionTitle');
+  const body  = document.getElementById('invActionBody');
+  const btn   = document.getElementById('invActionBtn');
+
+  if (action === 'receipt') {
+    title.textContent = 'Payment receipt — ' + id;
+    body.innerHTML = `
+      <div style="text-align:center;padding:16px 0 8px">
+        <div style="font-size:32px;margin-bottom:8px">✅</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px">${amount}</div>
+        <div style="color:var(--text2);font-size:13px">Paid by ${client}</div>
+        <div style="color:var(--text3);font-size:12px;margin-top:4px">Invoice ${id} · Paid in full</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:var(--r);padding:12px;font-size:12.5px;color:var(--text2);margin-top:12px">
+        Receipt #${id}-R · Generated ${new Date().toLocaleDateString('en-NG', {day:'numeric',month:'long',year:'numeric'})}
+      </div>`;
+    btn.textContent = '📋 Copy receipt';
+    btn._action = () => {
+      navigator.clipboard.writeText(`Receipt: ${id} | Client: ${client} | Amount: ${amount} | Status: Paid`);
+      aqToast('📋 Receipt copied to clipboard');
+    };
+
+  } else if (action === 'chase') {
+    title.textContent = 'Chase payment — ' + id;
+    const msg = `Hi, this is a reminder that invoice ${id} for ${amount} was due. Please let us know when payment will be made. Thank you.`;
+    body.innerHTML = `
+      <div style="background:var(--red-light);border-radius:var(--r);padding:12px;margin-bottom:14px;font-size:13px">
+        <strong style="color:var(--red)">⚠️ Overdue</strong> — ${id} · ${amount} · Client: ${client}
+      </div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">Payment reminder message:</div>
+      <textarea class="fc" id="chaseMsg" rows="4" style="font-size:13px">${msg}</textarea>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn-wa" onclick="chaseViaWhatsApp()">📱 Send via WhatsApp</button>
+      </div>`;
+    window._chaseMsg = msg;
+    btn.textContent = '✉ Copy message';
+    btn._action = () => {
+      const m = document.getElementById('chaseMsg')?.value || msg;
+      navigator.clipboard.writeText(m);
+      aqToast('✉ Message copied to clipboard');
+    };
+
+  } else {
+    title.textContent = 'Invoice — ' + id;
+    body.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13.5px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Invoice #</span><strong>${id}</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Client</span><strong>${client}</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Amount</span><strong style="color:var(--green)">${amount}</strong></div>
+      </div>`;
+    btn.textContent = '📋 Copy details';
+    btn._action = () => {
+      navigator.clipboard.writeText(`Invoice: ${id} | Client: ${client} | Amount: ${amount}`);
+      aqToast('📋 Details copied');
+    };
+  }
+
+  document.getElementById('invActionBtn').onclick = () => btn._action?.();
+  modal.classList.add('on');
+}
+
+function chaseViaWhatsApp() {
+  const msg = encodeURIComponent(document.getElementById('chaseMsg')?.value || window._chaseMsg || '');
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
+function invActionPrimary() {
+  const btn = document.getElementById('invActionBtn');
+  if (btn && typeof btn._action === 'function') btn._action();
+}
+
+function closeInvActionModal() {
+  document.getElementById('invActionModal').classList.remove('on');
+}
+
+// ════════════════════════════════════════
+// 3. PAYMENT GATEWAY FUNCTIONS
+// ════════════════════════════════════════
+
+const GATEWAY_INFO = {
+  paystack: {
+    name: 'Paystack', color: '#011B33', emoji: '💳',
+    countries: 'Nigeria · Ghana · Kenya · South Africa',
+    features: ['Card payments (Visa, Mastercard, Verve)', 'Bank transfers', 'USSD payments', 'Mobile money (GH/KE)', 'Recurring billing'],
+    link: 'https://paystack.com',
+    setup: 'Add your <strong>PAYSTACK_SECRET_KEY</strong> and <strong>PAYSTACK_PUBLIC_KEY</strong> to Railway environment variables.',
+  },
+  flutterwave: {
+    name: 'Flutterwave', color: '#F5A623', emoji: '🌍',
+    countries: '20+ African countries',
+    features: ['Card payments', 'Mobile money (MTN, Airtel, M-Pesa)', 'Bank transfers', 'USSD', 'Barter wallet'],
+    link: 'https://flutterwave.com',
+    setup: 'Add your <strong>FLUTTERWAVE_SECRET_KEY</strong> to Railway environment variables.',
+  },
+  mpesa: {
+    name: 'M-Pesa', color: '#4CAF50', emoji: '📱',
+    countries: 'Kenya · Tanzania · Uganda · Rwanda',
+    features: ['STK push payments', 'Paybill integration', 'Till number payments', 'B2C disbursements'],
+    link: 'https://developer.safaricom.co.ke',
+    setup: 'Add your <strong>MPESA_CONSUMER_KEY</strong>, <strong>MPESA_CONSUMER_SECRET</strong>, and <strong>MPESA_SHORTCODE</strong> to Railway environment variables.',
+  },
+  mtn_momo: {
+    name: 'MTN MoMo', color: '#FFC107', emoji: '📲',
+    countries: 'Ghana · Nigeria · Rwanda · Uganda · Côte d'Ivoire',
+    features: ['Mobile money collections', 'Disbursements', 'API integration'],
+    link: 'https://momodeveloper.mtn.com',
+    setup: 'Add your <strong>MTN_MOMO_API_KEY</strong> and <strong>MTN_MOMO_USER_ID</strong> to Railway environment variables.',
+  },
+  airtel_money: {
+    name: 'Airtel Money', color: '#E0001A', emoji: '📡',
+    countries: 'Kenya · Tanzania · Nigeria · Uganda · Rwanda',
+    features: ['Collections API', 'Disbursements', 'Account balance check'],
+    link: 'https://developers.airtel.africa',
+    setup: 'Add your <strong>AIRTEL_CLIENT_ID</strong> and <strong>AIRTEL_CLIENT_SECRET</strong> to Railway environment variables.',
+  },
+  bank_transfer: {
+    name: 'Bank Transfer', color: '#185FA5', emoji: '🏦',
+    countries: 'All countries',
+    features: ['No integration needed', 'Add your account details to invoices', 'Manual confirmation', 'Works everywhere'],
+    link: null,
+    setup: 'No setup needed. Add your bank account details in your profile settings and they'll appear on all invoices automatically.',
+  },
+};
+
+const enabledGateways = new Set(['paystack', 'bank_transfer']);
+
+function togglePayGateway(el, key) {
+  el.classList.toggle('on');
+  if (el.classList.contains('on')) {
+    enabledGateways.add(key);
+  } else {
+    enabledGateways.delete(key);
+  }
+
+  const info = GATEWAY_INFO[key];
+  if (!info) return;
+
+  const infoBox = document.getElementById('payGatewayInfo');
+  infoBox.style.display = 'block';
+  infoBox.innerHTML = `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-weight:600;font-size:14px">${info.emoji} ${info.name}
+          <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:8px">${info.countries}</span>
+        </div>
+        <span class="badge ${el.classList.contains('on') ? 'b-ok' : 'b-gray'}">${el.classList.contains('on') ? 'Enabled' : 'Disabled'}</span>
+      </div>
+      <ul style="font-size:12.5px;color:var(--text2);margin:0 0 10px 16px;line-height:1.8">
+        ${info.features.map(f => `<li>${f}</li>`).join('')}
+      </ul>
+      <div style="background:var(--blue-light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--blue)">
+        <strong>Setup:</strong> ${info.setup}
+      </div>
+      ${info.link ? `<a href="${info.link}" target="_blank" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--green);font-weight:600">Visit ${info.name} developer docs →</a>` : ''}
+    </div>`;
+
+  aqToast((el.classList.contains('on') ? '✅ ' : '⭕ ') + info.name + (el.classList.contains('on') ? ' enabled' : ' disabled'));
+}
+
+// ════════════════════════════════════════
+// 4. CLIENT FUNCTIONS
+// ════════════════════════════════════════
+
+// In-memory client list (seeded with demo data)
+const aqClients = [
+  { id:'cl-001', name:'BetaRide Lagos',  country:'NG', currency:'NGN', status:'active',   projects:3, lifetime:'₦1.1M' },
+  { id:'cl-002', name:'TradaKo Ltd',     country:'NG', currency:'NGN', status:'progress', projects:2, lifetime:'₦850K' },
+  { id:'cl-003', name:'AgroConnect GH',  country:'GH', currency:'GHS', status:'retainer', projects:1, lifetime:'GH₵4,200' },
+  { id:'cl-004', name:'NovaPay Kenya',   country:'KE', currency:'KES', status:'overdue',  projects:1, lifetime:'KES 95K' },
+  { id:'cl-005', name:'ShopLync ZA',     country:'ZA', currency:'ZAR', status:'new',      projects:1, lifetime:'R 18,500' },
+];
+
+const CLIENT_STATUS_BADGE = {
+  active:   '<span class="badge b-ok">Active</span>',
+  progress: '<span class="badge b-warn">In progress</span>',
+  retainer: '<span class="badge b-blue">Retainer</span>',
+  overdue:  '<span class="badge b-danger">Overdue</span>',
+  new:      '<span class="badge b-gray">New</span>',
+};
+
+function openClientModal(editId = null) {
+  ['cl-name','cl-email','cl-phone','cl-address','cl-tin','cl-notes'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('cl-error').style.display = 'none';
+  document.getElementById('clientModalTitle').textContent = editId ? 'Edit client' : 'Add client';
+  document.getElementById('clientModal').classList.add('on');
+}
+
+function closeClientModal() {
+  document.getElementById('clientModal').classList.remove('on');
+}
+
+function saveClient() {
+  const name    = document.getElementById('cl-name').value.trim();
+  const errEl   = document.getElementById('cl-error');
+  if (!name) {
+    errEl.textContent = 'Client name is required.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const client = {
+    id:       'cl-' + Date.now(),
+    name,
+    email:    document.getElementById('cl-email').value.trim(),
+    phone:    document.getElementById('cl-phone').value.trim(),
+    country:  document.getElementById('cl-country').value,
+    currency: document.getElementById('cl-currency').value,
+    address:  document.getElementById('cl-address').value.trim(),
+    tin:      document.getElementById('cl-tin').value.trim(),
+    notes:    document.getElementById('cl-notes').value.trim(),
+    status:   'new',
+    projects: 0,
+    lifetime: '—',
+    createdAt: new Date().toISOString(),
+  };
+
+  aqClients.push(client);
+  renderClientList();
+  closeClientModal();
+  aqToast('✅ Client "' + name + '" added!');
+}
+
+function renderClientList() {
+  const card = document.querySelector('#fin-clients .card');
+  if (!card) return;
+  const COUNTRY_FLAGS = { NG:'🇳🇬', GH:'🇬🇭', KE:'🇰🇪', ZA:'🇿🇦', RW:'🇷🇼', TZ:'🇹🇿', EG:'🇪🇬' };
+  const COUNTRY_NAMES = { NG:'Nigeria', GH:'Ghana', KE:'Kenya', ZA:'South Africa', RW:'Rwanda', TZ:'Tanzania', EG:'Egypt' };
+  const colors = ['var(--green-light)','var(--amber-light)','var(--blue-light)','var(--red-light)','var(--surface2)','var(--purple-light)'];
+  const textColors = ['var(--green-dark)','var(--amber)','var(--blue)','#A32D2D','var(--text3)','var(--purple)'];
+
+  card.innerHTML = aqClients.map((cl, i) => {
+    const initials = cl.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const flag = COUNTRY_FLAGS[cl.country] || '';
+    const countryName = COUNTRY_NAMES[cl.country] || cl.country;
+    const badge = CLIENT_STATUS_BADGE[cl.status] || CLIENT_STATUS_BADGE.new;
+    const bg = colors[i % colors.length];
+    const tc = textColors[i % textColors.length];
+    return `<div class="row" onclick="aqToast('${cl.name} · ${cl.email || 'no email'}')" style="cursor:pointer">
+      <div class="av" style="background:${bg};color:${tc};width:36px;height:36px">${initials}</div>
+      <div class="row-info">
+        <div class="row-title">${cl.name} ${flag}</div>
+        <div class="row-sub">${countryName} · ${cl.projects} project${cl.projects !== 1?'s':''} · ${cl.lifetime}</div>
+      </div>
+      ${badge}
+    </div>`;
+  }).join('');
 }
 </script>
 
