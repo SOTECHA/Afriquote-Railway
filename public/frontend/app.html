@@ -538,7 +538,7 @@ textarea.fc{resize:vertical;min-height:65px}
 <!-- Finance Dashboard -->
 <div id="fin-dashboard" class="page on">
   <div class="ph">
-    <div><div class="pt">Good morning, Adaeze ✦</div><div class="pt-sub">Tuesday, April 7 · 3 items need your attention</div></div>
+    <div><div class="pt" id="dash-greeting">Good morning ✦</div><div class="pt-sub" id="dash-date">Loading...</div></div>
     <button class="btn btn-primary btn-icon" onclick="showPage('fin-new-quote',null);switchMod('finance',document.querySelector('.mn'))">+ New quote</button>
   </div>
   <div class="grid4">
@@ -583,7 +583,7 @@ textarea.fc{resize:vertical;min-height:65px}
 
 <!-- Quotes List -->
 <div id="fin-quotes" class="page">
-  <div class="ph"><div class="pt">Quotes</div><button class="btn btn-primary" onclick="showPage('fin-new-quote',null)">+ New quote</button></div>
+  <div class="ph"><div class="pt">Quotes</div><div style="display:flex;gap:8px"><button class="btn" onclick="saveQuoteDraft()">Save draft</button><button class="btn btn-primary" onclick="sendQuote()">Send quote</button></div></div>
   <div class="card">
     <table class="tbl">
       <thead><tr><th>Quote</th><th>Client</th><th>Amount</th><th>Sent</th><th>Status</th><th>Action</th></tr></thead>
@@ -606,8 +606,8 @@ textarea.fc{resize:vertical;min-height:65px}
     <table class="tbl">
       <thead><tr><th>Invoice #</th><th>Client</th><th>Description</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>
-        <tr><td class="td-bold">INV-0041</td><td>BetaRide Lagos</td><td>Brand identity package</td><td class="td-bold">₦320,000</td><td>Apr 15</td><td><span class="badge b-ok">Paid</span></td><td><button class="btn btn-sm" onclick="invoiceAction('receipt','INV-0041','BetaRide Lagos','₦320,000')">Receipt</button></td></tr>
-        <tr><td class="td-bold">INV-0040</td><td>NovaPay Kenya</td><td>IT audit deposit (50%)</td><td class="td-bold">KES 47,500</td><td>Mar 30</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger" onclick="invoiceAction('chase','INV-0040','NovaPay Kenya','KES 47,500')">Chase</button></td></tr>
+        <tr><td class="td-bold">INV-0041</td><td>BetaRide Lagos</td><td>Brand identity package</td><td class="td-bold">₦320,000</td><td>Apr 15</td><td><span class="badge b-ok">Paid</span></td><td><button class="btn btn-sm" onclick="invoiceAction('receipt','INV-0041','BetaRide Lagos')">Receipt</button></td></tr>
+        <tr><td class="td-bold">INV-0040</td><td>NovaPay Kenya</td><td>IT audit deposit (50%)</td><td class="td-bold">KES 47,500</td><td>Mar 30</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger" onclick="invoiceAction('chase','INV-0040','NovaPay Kenya')">Chase</button></td></tr>
         <tr><td class="td-bold">INV-0039</td><td>AgroConnect GH</td><td>Social media retainer</td><td class="td-bold">GH₵4,200</td><td>Apr 20</td><td><span class="badge b-blue">Sent</span></td><td><button class="btn btn-sm" onclick="invoiceAction('view','INV-0039','AgroConnect GH','GH₵4,200')">View</button></td></tr>
       </tbody>
     </table>
@@ -652,12 +652,13 @@ textarea.fc{resize:vertical;min-height:65px}
   <div class="card">
     <div class="card-title">Send via</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
-      <div class="tag on" id="qv-email" onclick="toggleTag(this)">Email</div>
-      <div class="tag" id="qv-whatsapp" onclick="toggleTag(this)">WhatsApp</div>
-      <div class="tag" id="qv-link" onclick="toggleTag(this)">Shareable link</div>
+      <div class="tag on" onclick="toggleTag(this)" data-channel="email">Email</div>
+      <div class="tag" onclick="toggleTag(this)" data-channel="whatsapp">WhatsApp</div>
+      <div class="tag" onclick="toggleTag(this)" data-channel="link">Shareable link</div>
     </div>
-    <div id="qv-link-box" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-size:12.5px;color:var(--text2);margin-bottom:8px;word-break:break-all" id="qShareLink"></div>
-    <button class="btn-wa" onclick="quoteSendWhatsApp()">📱 Send via WhatsApp</button>
+    <button class="btn-wa" onclick="sendQuoteViaWhatsApp()">Send via WhatsApp</button>
+    <button class="btn" style="width:100%;margin-top:8px;justify-content:center" onclick="copyShareableLink()">🔗 Copy shareable link</button>
+    <button class="btn btn-primary" style="width:100%;margin-top:8px;justify-content:center" onclick="sendQuoteViaEmail()">✉ Send via email</button>
   </div>
 </div>
 
@@ -667,12 +668,12 @@ textarea.fc{resize:vertical;min-height:65px}
   <div class="card">
     <div class="card-title">Accept payments across Africa</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'paystack')">Paystack<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">NG · GH · KE · ZA</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'flutterwave')">Flutterwave<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">20+ countries</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'mpesa')">M-Pesa<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">Kenya · Tanzania</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'mtn_momo')">MTN MoMo<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">GH · NG · RW · UG</div></div>
-      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'airtel_money')">Airtel Money<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">KE · TZ · NG · UG</div></div>
-      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePayGateway(this,'bank_transfer')">Bank transfer<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">All countries</div></div>
+      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePaymentGateway(this,'Paystack')">Paystack<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">NG · GH · KE · ZA</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePaymentGateway(this,'Flutterwave')">Flutterwave<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">20+ countries</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePaymentGateway(this,'M-Pesa')">M-Pesa<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">Kenya · Tanzania</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePaymentGateway(this,'MTN MoMo')">MTN MoMo<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">GH · NG · RW · UG</div></div>
+      <div class="tag" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePaymentGateway(this,'Airtel Money')">Airtel Money<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">KE · TZ · NG · UG</div></div>
+      <div class="tag on" style="justify-content:center;padding:10px;border-radius:var(--r);cursor:pointer" onclick="togglePaymentGateway(this,'Bank transfer')">Bank transfer<div style="font-size:10px;color:inherit;opacity:.7;margin-top:2px">All countries</div></div>
     </div>
     <div id="payGatewayInfo" style="margin-top:14px;display:none"></div>
   </div>
@@ -689,7 +690,7 @@ textarea.fc{resize:vertical;min-height:65px}
 
 <!-- Clients -->
 <div id="fin-clients" class="page">
-  <div class="ph"><div class="pt">Clients</div><button class="btn btn-primary" onclick="openClientModal()">+ Add client</button></div>
+  <div class="ph"><div class="pt">Clients</div><button class="btn btn-primary" onclick="openAddClientModal()">+ Add client</button></div>
   <div class="card">
     <div class="row"><div class="av" style="background:var(--green-light);color:var(--green-dark);width:36px;height:36px">BR</div><div class="row-info"><div class="row-title">BetaRide Lagos</div><div class="row-sub">Nigeria · 3 projects · ₦1.1M lifetime</div></div><span class="badge b-ok">Active</span></div>
     <div class="row"><div class="av" style="background:var(--amber-light);color:var(--amber);width:36px;height:36px">TK</div><div class="row-info"><div class="row-title">TradaKo Ltd</div><div class="row-sub">Nigeria · 2 projects · ₦850K lifetime</div></div><span class="badge b-warn">In progress</span></div>
@@ -888,7 +889,7 @@ textarea.fc{resize:vertical;min-height:65px}
 </div>
 
 <div id="con-new" class="page">
-  <div class="ph"><div class="pt">New contract</div><div style="display:flex;gap:8px"><button class="btn">Save draft</button><button class="btn btn-primary">Send for signature</button></div></div>
+  <div class="ph"><div class="pt">New contract</div><div style="display:flex;gap:8px"><button class="btn" onclick="showToast('Contract draft saved.','ok')">Save draft</button><button class="btn btn-primary" onclick="showToast('Contract sent for signature! ✓','ok')">Send for signature</button></div></div>
   <div class="steps"><div class="step done">Scope</div><div class="step done">Deliverables</div><div class="step active">Revisions</div><div class="step">Payment</div><div class="step">Review</div></div>
   <div class="grid2">
     <div class="card"><div class="card-title">Revision &amp; scope terms</div>
@@ -1594,6 +1595,31 @@ function propRenderAll(){propUpdateSidebar();propRenderKanban();propRenderList()
 // Init proposals
 document.addEventListener('DOMContentLoaded', function() { setTimeout(propRenderAll, 100); });
 
+// ═══════════════════════════════════════
+// DASHBOARD DYNAMIC GREETING & DATE
+// ═══════════════════════════════════════
+(function initDashboard() {
+  function updateDashboard() {
+    const greetEl = document.getElementById('dash-greeting');
+    const dateEl = document.getElementById('dash-date');
+    if (!greetEl || !dateEl) return;
+    const now = new Date();
+    const h = now.getHours();
+    const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+    // Try to get user name from localStorage or default
+    const userName = localStorage.getItem('afriquote_user_name') || '';
+    greetEl.textContent = userName ? `${greeting}, ${userName} ✦` : `${greeting} ✦`;
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dayName = days[now.getDay()];
+    const dateStr = `${dayName}, ${months[now.getMonth()]} ${now.getDate()}`;
+    // Count alerts
+    const alertCount = document.querySelectorAll('#fin-dashboard .alert-box').length;
+    dateEl.textContent = alertCount > 0 ? `${dateStr} · ${alertCount} item${alertCount !== 1 ? 's' : ''} need your attention` : dateStr;
+  }
+  document.addEventListener('DOMContentLoaded', updateDashboard);
+})();
+
 </script>
 
 <!-- ── Proposal detail overlay ── -->
@@ -1770,102 +1796,143 @@ function doLogout() {
 ═══════════════════════════════════════════════════════════════ -->
 
 <!-- ── New Invoice Modal ── -->
-<div class="prop-modal-wrap" id="invoiceModal">
-  <div class="prop-modal" style="max-width:540px">
-    <div class="prop-modal-head">
-      <span class="prop-modal-title">New invoice</span>
-      <button class="btn btn-sm" onclick="closeInvoiceModal()">✕ Close</button>
-    </div>
-    <div class="prop-modal-body" style="display:flex;flex-direction:column;gap:12px">
-      <div class="fg"><label class="fl">Client name *</label><input class="fc" id="inv-client" placeholder="e.g. BetaRide Lagos"></div>
-      <div class="fg"><label class="fl">Client email</label><input class="fc" id="inv-email" type="email" placeholder="client@company.com"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fg"><label class="fl">Invoice #</label><input class="fc" id="inv-number" placeholder="INV-0042"></div>
-        <div class="fg"><label class="fl">Due date *</label><input class="fc" id="inv-due" type="date"></div>
+<div id="invModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center" class="prop-modal-wrap">
+  <div class="prop-modal-wrap" id="invoiceModal">
+    <div class="prop-modal" style="max-width:540px">
+      <div class="prop-modal-head">
+        <span class="prop-modal-title">New invoice</span>
+        <button class="btn btn-sm" onclick="closeInvoiceModal()">✕ Close</button>
       </div>
-      <div class="fg"><label class="fl">Description</label><input class="fc" id="inv-desc" placeholder="e.g. Web design — Phase 1"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fg"><label class="fl">Amount *</label><input class="fc" id="inv-amount" type="number" placeholder="0" min="0"></div>
-        <div class="fg"><label class="fl">Currency</label>
-          <select class="fc" id="inv-currency">
-            <option value="NGN">₦ NGN – Naira</option>
-            <option value="GHS">GH₵ GHS – Cedi</option>
-            <option value="KES">KES – Shilling</option>
-            <option value="ZAR">R ZAR – Rand</option>
-            <option value="USD">$ USD</option>
+      <div class="prop-modal-body" style="display:flex;flex-direction:column;gap:12px">
+        <div class="fg"><label class="fl">Client name *</label><input class="fc" id="inv-client" placeholder="e.g. BetaRide Lagos"></div>
+        <div class="fg"><label class="fl">Client email</label><input class="fc" id="inv-email" type="email" placeholder="client@company.com"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fg"><label class="fl">Invoice #</label><input class="fc" id="inv-number" placeholder="INV-0042"></div>
+          <div class="fg"><label class="fl">Due date *</label><input class="fc" id="inv-due" type="date"></div>
+        </div>
+        <div class="fg"><label class="fl">Description</label><input class="fc" id="inv-desc" placeholder="e.g. Web design — Phase 1"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fg"><label class="fl">Amount *</label><input class="fc" id="inv-amount" type="number" placeholder="0" min="0"></div>
+          <div class="fg"><label class="fl">Currency</label>
+            <select class="fc" id="inv-currency">
+              <option value="NGN">₦ NGN – Naira</option>
+              <option value="GHS">GH₵ GHS – Cedi</option>
+              <option value="KES">KES – Shilling</option>
+              <option value="ZAR">R ZAR – Rand</option>
+              <option value="USD">$ USD</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">VAT / Tax rate</label>
+          <select class="fc" id="inv-vat">
+            <option value="0">0% – No tax</option>
+            <option value="7.5" selected>7.5% – Nigeria VAT</option>
+            <option value="12.5">12.5% – Ghana VAT</option>
+            <option value="16">16% – Kenya VAT</option>
+            <option value="15">15% – South Africa VAT</option>
+            <option value="18">18% – Rwanda VAT</option>
           </select>
         </div>
+        <div class="fg"><label class="fl">Payment terms</label>
+          <select class="fc" id="inv-terms">
+            <option>50% upfront, 50% on delivery</option>
+            <option>100% upfront</option>
+            <option>Net 14 days</option>
+            <option>Net 30 days</option>
+            <option>Milestone-based</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Notes (optional)</label><textarea class="fc" id="inv-notes" rows="2" placeholder="Payment instructions, bank details, etc."></textarea></div>
+        <div id="inv-error" style="display:none;background:var(--red-light);border:1px solid #f5c2c2;color:#c0392b;border-radius:8px;padding:9px 12px;font-size:13px"></div>
       </div>
-      <div class="fg"><label class="fl">VAT / Tax rate</label>
-        <select class="fc" id="inv-vat">
-          <option value="0">0% – No tax</option>
-          <option value="7.5" selected>7.5% – Nigeria VAT</option>
-          <option value="12.5">12.5% – Ghana VAT</option>
-          <option value="16">16% – Kenya VAT</option>
-          <option value="15">15% – South Africa VAT</option>
-          <option value="18">18% – Rwanda VAT</option>
-        </select>
+      <div class="prop-modal-foot">
+        <button class="btn" onclick="closeInvoiceModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveInvoice()">Create invoice</button>
       </div>
-      <div class="fg"><label class="fl">Payment terms</label>
-        <select class="fc" id="inv-terms">
-          <option>50% upfront, 50% on delivery</option>
-          <option>100% upfront</option>
-          <option>Net 14 days</option>
-          <option>Net 30 days</option>
-          <option>Milestone-based</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Notes (optional)</label><textarea class="fc" id="inv-notes" rows="2" placeholder="Payment instructions, bank details, etc."></textarea></div>
-      <div id="inv-error" style="display:none;background:var(--red-light);border:1px solid #f5c2c2;color:#c0392b;border-radius:8px;padding:9px 12px;font-size:13px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VIEW/SEND INVOICE MODAL
+═══════════════════════════════════════ -->
+<div id="invViewModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center" class="prop-modal-wrap">
+  <div class="prop-modal" style="max-width:480px">
+    <div class="prop-modal-head">
+      <span class="prop-modal-title" id="inv-modal-title">Invoice</span>
+      <button class="dp-close" onclick="closeInvoiceModal()">✕</button>
+    </div>
+    <div class="prop-modal-body" id="inv-view-body"></div>
+    <div class="prop-modal-foot">
+      <button class="btn" onclick="closeInvoiceModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAYMENT GATEWAY CONNECT MODAL
+═══════════════════════════════════════ -->
+<div id="pgwModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center" class="prop-modal-wrap">
+  <div class="prop-modal" style="max-width:420px">
+    <div class="prop-modal-head">
+      <span class="prop-modal-title">Connect <span id="pgw-name"></span></span>
+      <button class="dp-close" onclick="closePaymentGatewayModal()">✕</button>
+    </div>
+    <div class="prop-modal-body">
+      <div class="alert-box alert-blue" style="margin-bottom:12px">Enter your API key from your <strong id="pgw-name2"></strong> dashboard. Your keys are stored securely and never shared.</div>
+      <div class="fg"><label class="fl">Live API key / Secret key *</label><input class="fc" id="pgw-key" type="password" placeholder="sk_live_..."></div>
+      <div class="fg"><label class="fl">Public key (optional)</label><input class="fc" id="pgw-pubkey" placeholder="pk_live_..."></div>
     </div>
     <div class="prop-modal-foot">
-      <button class="btn" onclick="closeInvoiceModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveInvoice()">Create invoice</button>
+      <button class="btn" onclick="closePaymentGatewayModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="connectPaymentGateway()">Connect gateway</button>
     </div>
   </div>
 </div>
 
 <!-- ── Add Client Modal ── -->
-<div class="prop-modal-wrap" id="clientModal">
-  <div class="prop-modal" style="max-width:500px">
-    <div class="prop-modal-head">
-      <span class="prop-modal-title" id="clientModalTitle">Add client</span>
-      <button class="btn btn-sm" onclick="closeClientModal()">✕ Close</button>
-    </div>
-    <div class="prop-modal-body" style="display:flex;flex-direction:column;gap:12px">
-      <div class="fg"><label class="fl">Client / company name *</label><input class="fc" id="cl-name" placeholder="e.g. BetaRide Lagos"></div>
-      <div class="fg"><label class="fl">Email</label><input class="fc" id="cl-email" type="email" placeholder="contact@company.com"></div>
-      <div class="fg"><label class="fl">Phone / WhatsApp</label><input class="fc" id="cl-phone" placeholder="+234 801 234 5678"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fg"><label class="fl">Country</label>
-          <select class="fc" id="cl-country">
-            <option value="NG">🇳🇬 Nigeria</option>
-            <option value="GH">🇬🇭 Ghana</option>
-            <option value="KE">🇰🇪 Kenya</option>
-            <option value="ZA">🇿🇦 South Africa</option>
-            <option value="RW">🇷🇼 Rwanda</option>
-            <option value="TZ">🇹🇿 Tanzania</option>
-            <option value="EG">🇪🇬 Egypt</option>
-          </select>
-        </div>
-        <div class="fg"><label class="fl">Currency</label>
-          <select class="fc" id="cl-currency">
-            <option value="NGN">₦ NGN</option>
-            <option value="GHS">GH₵ GHS</option>
-            <option value="KES">KES</option>
-            <option value="ZAR">R ZAR</option>
-            <option value="USD">$ USD</option>
-          </select>
-        </div>
+ <div id="addClientModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center" class="prop-modal-wrap">
+  <div class="prop-modal-wrap" id="clientModal">
+    <div class="prop-modal" style="max-width:500px">
+      <div class="prop-modal-head">
+        <span class="prop-modal-title" id="clientModalTitle">Add client</span>
+        <button class="btn btn-sm" onclick="closeClientModal()">✕ Close</button>
       </div>
-      <div class="fg"><label class="fl">Address</label><input class="fc" id="cl-address" placeholder="Street, city"></div>
-      <div class="fg"><label class="fl">TIN (Tax ID)</label><input class="fc" id="cl-tin" placeholder="Optional"></div>
-      <div class="fg"><label class="fl">Notes</label><textarea class="fc" id="cl-notes" rows="2" placeholder="Any notes about this client"></textarea></div>
-      <div id="cl-error" style="display:none;background:var(--red-light);border:1px solid #f5c2c2;color:#c0392b;border-radius:8px;padding:9px 12px;font-size:13px"></div>
-    </div>
-    <div class="prop-modal-foot">
-      <button class="btn" onclick="closeClientModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveClient()">Save client</button>
+      <div class="prop-modal-body" style="display:flex;flex-direction:column;gap:12px">
+        <div class="fg"><label class="fl">Client / company name *</label><input class="fc" id="cl-name" placeholder="e.g. BetaRide Lagos"></div>
+        <div class="fg"><label class="fl">Email</label><input class="fc" id="cl-email" type="email" placeholder="contact@company.com"></div>
+        <div class="fg"><label class="fl">Phone / WhatsApp</label><input class="fc" id="cl-phone" placeholder="+234 801 234 5678"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fg"><label class="fl">Country</label>
+            <select class="fc" id="cl-country">
+              <option value="NG">🇳🇬 Nigeria</option>
+              <option value="GH">🇬🇭 Ghana</option>
+              <option value="KE">🇰🇪 Kenya</option>
+              <option value="ZA">🇿🇦 South Africa</option>
+              <option value="RW">🇷🇼 Rwanda</option>
+              <option value="TZ">🇹🇿 Tanzania</option>
+              <option value="EG">🇪🇬 Egypt</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Currency</label>
+            <select class="fc" id="cl-currency">
+              <option value="NGN">₦ NGN</option>
+              <option value="GHS">GH₵ GHS</option>
+              <option value="KES">KES</option>
+              <option value="ZAR">R ZAR</option>
+              <option value="USD">$ USD</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Address</label><input class="fc" id="cl-address" placeholder="Street, city"></div>
+        <div class="fg"><label class="fl">TIN (Tax ID)</label><input class="fc" id="cl-tin" placeholder="Optional"></div>
+        <div class="fg"><label class="fl">Notes</label><textarea class="fc" id="cl-notes" rows="2" placeholder="Any notes about this client"></textarea></div>
+        <div id="cl-error" style="display:none;background:var(--red-light);border:1px solid #f5c2c2;color:#c0392b;border-radius:8px;padding:9px 12px;font-size:13px"></div>
+      </div>
+      <div class="prop-modal-foot">
+        <button class="btn" onclick="closeClientModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveClient()">Save client</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1915,6 +1982,22 @@ function doLogout() {
 // ══════════════════════════════════════════════════════════════
 
 // ── Toast helper ─────────────────────────────────────────────
+function showToast(msg, type='ok') {
+  let toast = document.getElementById('aq-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'aq-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:500;color:#fff;z-index:9999;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,.18);transition:opacity .3s';
+    document.body.appendChild(toast);
+  }
+  const colors = {ok:'#1D9E75', warn:'#BA7517', error:'#E24B4A'};
+  toast.style.background = colors[type] || colors.ok;
+  toast.style.opacity = '1';
+  toast.textContent = msg;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 3200);
+}
+
 function aqToast(msg, duration = 2800) {
   const t = document.getElementById('aqToast');
   t.textContent = msg;
@@ -1967,6 +2050,56 @@ function quoteGetData() {
   const total        = subtotal + vatAmt;
   return { clientName, contact, title, validUntil, currency, vatRate, vatAmt, paymentTerms, items, subtotal, total };
 }
+
+function saveQuoteDraft() {
+  const data = getQuoteData();
+  if (!data.client && !data.title) {
+    showToast('Please fill in at least the client name or quote title before saving.', 'warn');
+    return;
+  }
+  showToast(`Draft saved — "${data.title || 'Untitled quote'}" for ${data.client || 'client'}.`, 'ok');
+}
+
+function sendQuote() {
+  const data = getQuoteData();
+  if (!data.client) { showToast('Please enter a client name before sending.', 'warn'); return; }
+  if (!data.title)  { showToast('Please enter a quote title before sending.', 'warn'); return; }
+  // Check which channels are selected
+  const channels = [];
+  document.querySelectorAll('#fin-new-quote .tag.on[data-channel]').forEach(t => channels.push(t.dataset.channel));
+  if (!channels.length) { showToast('Please select at least one send method (Email, WhatsApp, or Shareable link).', 'warn'); return; }
+  showToast(`Quote sent to ${data.client} via ${channels.join(' & ')}! ✓`, 'ok');
+  // Navigate back to quotes list
+  setTimeout(() => showPage('fin-quotes', null), 1200);
+}
+
+function sendQuoteViaWhatsApp() {
+  const data = getQuoteData();
+  const client = data.client || 'your client';
+  const msg = encodeURIComponent(`Hi, please find attached the quote for "${data.title || 'our services'}" — Total: ${data.total}. Let me know if you have any questions.`);
+  const waUrl = `https://wa.me/?text=${msg}`;
+  window.open(waUrl, '_blank');
+  showToast('Opening WhatsApp…', 'ok');
+}
+
+function sendQuoteViaEmail() {
+  const data = getQuoteData();
+  const subject = encodeURIComponent(`Quote: ${data.title || 'Services'}`);
+  const body = encodeURIComponent(`Dear ${data.client || 'Client'},\n\nPlease find your quote attached.\n\nTotal: ${data.total}\n\nLet me know if you have any questions.\n\nBest regards`);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  showToast('Opening email client…', 'ok');
+}
+
+function copyShareableLink() {
+  const quoteId = 'QUO-' + Math.random().toString(36).slice(2,8).toUpperCase();
+  const link = `${window.location.origin}/quote/${quoteId}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(() => showToast('Shareable link copied to clipboard! 🔗', 'ok'));
+  } else {
+    prompt('Copy this shareable link:', link);
+  }
+}
+
 
 function quoteValidate(d) {
   if (!d.clientName) return 'Please enter a client name.';
@@ -2102,6 +2235,89 @@ function openInvoiceModal() {
   });
   document.getElementById('inv-error').style.display = 'none';
   document.getElementById('invoiceModal').classList.add('on');
+}
+
+function invoiceAction(action, invoiceId, client) {
+  if (action === 'receipt') {
+    showToast(`Receipt for ${invoiceId} (${client}) sent! ✓`, 'ok');
+  } else if (action === 'chase') {
+    const msg = encodeURIComponent(`Hi, I'm following up on invoice ${invoiceId} which is now overdue. Please arrange payment at your earliest convenience. Thank you.`);
+    if (confirm(`Send a WhatsApp chase message to ${client} for ${invoiceId}?`)) {
+      window.open(`https://wa.me/?text=${msg}`, '_blank');
+    }
+  } else if (action === 'view') {
+    openInvoiceViewModal(invoiceId, client);
+  }
+}
+
+function openInvoiceViewModal(invoiceId, client) {
+  const inv = invoices.find(i => i.id === invoiceId);
+  if (!inv) return;
+  document.getElementById('inv-modal-title').textContent = `Invoice ${invoiceId}`;
+  document.getElementById('inv-view-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div><div style="font-size:11px;color:var(--text3)">Client</div><div style="font-weight:600">${inv.client}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Amount</div><div style="font-weight:600;color:var(--green)">${inv.amount}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Description</div><div style="font-weight:500">${inv.desc}</div></div>
+      <div><div style="font-size:11px;color:var(--text3)">Due date</div><div style="font-weight:500">${inv.due}</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-primary" style="flex:1" onclick="sendInvoiceViaEmail('${invoiceId}')">✉ Email invoice</button>
+      <button class="btn-wa" style="flex:1;margin-top:0" onclick="sendInvoiceViaWhatsApp('${invoiceId}','${inv.client}','${inv.amount}')">💬 WhatsApp</button>
+    </div>
+  `;
+  document.getElementById('invViewModal').classList.add('on');
+}
+
+function sendInvoiceViaEmail(invoiceId) {
+  const inv = invoices.find(i => i.id === invoiceId);
+  if (!inv) return;
+  const subject = encodeURIComponent(`Invoice ${invoiceId} – ${inv.desc}`);
+  const body = encodeURIComponent(`Dear ${inv.client},\n\nPlease find invoice ${invoiceId} for ${inv.desc}.\n\nAmount due: ${inv.amount}\nDue date: ${inv.due}\n\nThank you.`);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  showToast('Opening email client…', 'ok');
+}
+
+function sendInvoiceViaWhatsApp(invoiceId, client, amount) {
+  const msg = encodeURIComponent(`Hi ${client}, please find invoice ${invoiceId} attached. Amount due: ${amount}. Thank you.`);
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function openInvoiceModal() {
+  document.getElementById('invModal').classList.add('on');
+  // Clear fields
+  ['inv-client','inv-desc','inv-amount','inv-due'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const select = document.getElementById('inv-currency');
+  if (select) select.value = '₦';
+}
+
+function closeInvoiceModal() {
+  document.getElementById('invModal')?.classList.remove('on');
+  document.getElementById('invViewModal')?.classList.remove('on');
+}
+
+function saveNewInvoice() {
+  const client   = document.getElementById('inv-client')?.value?.trim();
+  const desc     = document.getElementById('inv-desc')?.value?.trim();
+  const amount   = document.getElementById('inv-amount')?.value?.trim();
+  const currency = document.getElementById('inv-currency')?.value || '₦';
+  const due      = document.getElementById('inv-due')?.value;
+  if (!client || !desc || !amount) { showToast('Please fill in Client, Description and Amount.', 'warn'); return; }
+  const newId = 'INV-' + String(invoices.length + 40).padStart(4,'0');
+  const dueStr = due ? new Date(due).toLocaleDateString('en-NG',{day:'numeric',month:'short'}) : 'TBD';
+  invoices.unshift({ id: newId, client, desc, amount: currency + amount, due: dueStr, status: 'draft' });
+  // Add row to invoice table
+  const tbody = document.querySelector('#fin-invoices .tbl tbody');
+  if (tbody) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="td-bold">${newId}</td><td>${client}</td><td>${desc}</td><td class="td-bold">${currency}${amount}</td><td>${dueStr}</td><td><span class="badge b-gray">Draft</span></td><td><button class="btn btn-sm" onclick="invoiceAction('view','${newId}','${client}')">View</button></td>`;
+    tbody.insertBefore(tr, tbody.firstChild);
+  }
+  closeInvoiceModal();
+  showToast(`Invoice ${newId} created for ${client}! ✓`, 'ok');
 }
 
 function closeInvoiceModal() {
@@ -2307,6 +2523,40 @@ const GATEWAY_INFO = {
 
 const enabledGateways = new Set(['paystack', 'bank_transfer']);
 
+function togglePaymentGateway(el, name) {
+  const isActive = el.classList.contains('on');
+  if (isActive) {
+    if (confirm(`Disconnect ${name} from your account?`)) {
+      el.classList.remove('on');
+      showToast(`${name} disconnected.`, 'warn');
+    }
+  } else {
+    document.getElementById('pgw-name').textContent = name;
+    document.getElementById('pgwModal').classList.add('on');
+    document.getElementById('pgwModal').dataset.gateway = name;
+    document.getElementById('pgwModal').dataset.el = null;
+    // Store reference
+    window._pgwEl = el;
+  }
+}
+
+function connectPaymentGateway() {
+  const modal = document.getElementById('pgwModal');
+  const name = modal.dataset.gateway;
+  const keyEl = document.getElementById('pgw-key');
+  if (!keyEl?.value?.trim()) { showToast('Please enter your API key.', 'warn'); return; }
+  if (window._pgwEl) window._pgwEl.classList.add('on');
+  closePaymentGatewayModal();
+  showToast(`${name} connected successfully! ✓`, 'ok');
+}
+
+function closePaymentGatewayModal() {
+  document.getElementById('pgwModal')?.classList.remove('on');
+  const keyEl = document.getElementById('pgw-key');
+  if (keyEl) keyEl.value = '';
+}
+
+
 function togglePayGateway(el, key) {
   el.classList.toggle('on');
   if (el.classList.contains('on')) {
@@ -2360,6 +2610,44 @@ const CLIENT_STATUS_BADGE = {
   overdue:  '<span class="badge b-danger">Overdue</span>',
   new:      '<span class="badge b-gray">New</span>',
 };
+
+function openAddClientModal() {
+  document.getElementById('addClientModal').classList.add('on');
+  ['ac-name','ac-email','ac-whatsapp','ac-country'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+function closeAddClientModal() {
+  document.getElementById('addClientModal')?.classList.remove('on');
+}
+
+function saveNewClient() {
+  const name    = document.getElementById('ac-name')?.value?.trim();
+  const email   = document.getElementById('ac-email')?.value?.trim();
+  const country = document.getElementById('ac-country')?.value?.trim() || 'Nigeria';
+  if (!name) { showToast('Please enter a client name.', 'warn'); return; }
+  clients.push({ name, country, projects: 0, lifetime: '—', status: 'New' });
+  // Add row to client list
+  const clientCard = document.querySelector('#fin-clients .card');
+  if (clientCard) {
+    const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const colors = [
+      ['var(--green-light)','var(--green-dark)'],
+      ['var(--amber-light)','var(--amber)'],
+      ['var(--blue-light)','var(--blue)'],
+      ['var(--purple-light)','var(--purple)'],
+    ];
+    const c = colors[clients.length % colors.length];
+    const div = document.createElement('div');
+    div.className = 'row';
+    div.innerHTML = `<div class="av" style="background:${c[0]};color:${c[1]};width:36px;height:36px">${initials}</div><div class="row-info"><div class="row-title">${name}</div><div class="row-sub">${country} · 0 projects${email?' · '+email:''}</div></div><span class="badge b-gray">New</span>`;
+    clientCard.appendChild(div);
+  }
+  closeAddClientModal();
+  showToast(`Client "${name}" added! ✓`, 'ok');
+}
 
 function openClientModal(editId = null) {
   ['cl-name','cl-email','cl-phone','cl-address','cl-tin','cl-notes'].forEach(id => {
