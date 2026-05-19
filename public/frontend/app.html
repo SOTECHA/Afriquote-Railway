@@ -586,9 +586,13 @@ textarea.fc{resize:vertical;min-height:65px}
   <div class="ph"><div class="pt">Quotes</div><button class="btn btn-primary" onclick="showPage('fin-new-quote',null)">+ New quote</button></div>
   <div class="card">
     <table class="tbl">
-      <thead><tr><th>Title / Client</th><th>Client</th><th>Amount</th><th>Sent</th><th>Status</th><th>Action</th></tr></thead>
+      <thead><tr><th>Quote</th><th>Client</th><th>Amount</th><th>Sent</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>
-        <!-- populated by renderQuoteTable() -->
+        <tr><td><div class="td-bold">Brand identity package</div><div class="td-muted" style="font-size:11px">Incl. 2 revision rounds</div></td><td>BetaRide Lagos</td><td class="td-bold">₦320,000</td><td>Apr 1</td><td><span class="badge b-ok">Accepted</span></td><td><button class="btn btn-sm">Invoice</button></td></tr>
+        <tr><td><div class="td-bold">Website redesign — Ph.1</div><div class="td-muted" style="font-size:11px">⚑ Scope alert active</div></td><td>TradaKo Ltd</td><td class="td-bold">₦850,000</td><td>Apr 3</td><td><span class="badge b-blue">Sent</span></td><td><button class="btn btn-sm">Follow up</button></td></tr>
+        <tr><td><div class="td-bold">Social media retainer 3mo</div></td><td>AgroConnect GH</td><td class="td-bold">GH₵4,200</td><td>Apr 5</td><td><span class="badge b-warn">Pending</span></td><td><button class="btn btn-sm">Remind</button></td></tr>
+        <tr><td><div class="td-bold">IT audit &amp; risk report</div></td><td>NovaPay Kenya</td><td class="td-bold">KES 95,000</td><td>Mar 28</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger">Chase</button></td></tr>
+        <tr><td><div class="td-bold">E-commerce strategy</div></td><td>ShopLync ZA</td><td class="td-bold">R 18,500</td><td>—</td><td><span class="badge b-gray">Draft</span></td><td><button class="btn btn-sm btn-primary">Send</button></td></tr>
       </tbody>
     </table>
   </div>
@@ -602,7 +606,9 @@ textarea.fc{resize:vertical;min-height:65px}
     <table class="tbl">
       <thead><tr><th>Invoice #</th><th>Client</th><th>Description</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>
-        <!-- populated by renderInvoiceTable() -->
+        <tr><td class="td-bold">INV-0041</td><td>BetaRide Lagos</td><td>Brand identity package</td><td class="td-bold">₦320,000</td><td>Apr 15</td><td><span class="badge b-ok">Paid</span></td><td><button class="btn btn-sm" onclick="invoiceAction('receipt','INV-0041','BetaRide Lagos','₦320,000')">Receipt</button></td></tr>
+        <tr><td class="td-bold">INV-0040</td><td>NovaPay Kenya</td><td>IT audit deposit (50%)</td><td class="td-bold">KES 47,500</td><td>Mar 30</td><td><span class="badge b-danger">Overdue</span></td><td><button class="btn btn-sm btn-danger" onclick="invoiceAction('chase','INV-0040','NovaPay Kenya','KES 47,500')">Chase</button></td></tr>
+        <tr><td class="td-bold">INV-0039</td><td>AgroConnect GH</td><td>Social media retainer</td><td class="td-bold">GH₵4,200</td><td>Apr 20</td><td><span class="badge b-blue">Sent</span></td><td><button class="btn btn-sm" onclick="invoiceAction('view','INV-0039','AgroConnect GH','GH₵4,200')">View</button></td></tr>
       </tbody>
     </table>
   </div>
@@ -1586,11 +1592,7 @@ function propRenderAll(){propUpdateSidebar();propRenderKanban();propRenderList()
 
 
 // Init proposals
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(propRenderAll, 100);
-  renderQuoteTable();
-  renderInvoiceTable();
-});
+document.addEventListener('DOMContentLoaded', function() { setTimeout(propRenderAll, 100); });
 
 </script>
 
@@ -1677,18 +1679,22 @@ document.addEventListener('DOMContentLoaded', function() {
 // AUTH GUARD + USER MENU
 // ══════════════════════════════════════════
 
-// 1. Auth guard
+// 1. Auth guard — skip redirect for standalone HTML deployments
 (function() {
-  const token = localStorage.getItem('aq_token');
-  if (!token) window.location.href = '/';
+  // No redirect needed for static/standalone HTML
 })();
 
-// 2. Load user data
+// 2. Load user data from localStorage
 (function() {
   const raw = localStorage.getItem('aq_user');
-  if (!raw) return;
+  if (!raw) {
+    // Set a default user so the UI looks correct without a backend
+    const defaultUser = { name: 'AfriQuote User', email: 'user@afriquote.app', businessName: 'My Business' };
+    localStorage.setItem('aq_user', JSON.stringify(defaultUser));
+    localStorage.setItem('aq_token', 'standalone');
+  }
   try {
-    const user = JSON.parse(raw);
+    const user = JSON.parse(localStorage.getItem('aq_user') || '{}');
     const initials = (user.name || 'AQ').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const av = document.getElementById('userAvatar');
     const menuAv = document.getElementById('userMenuAv');
@@ -1699,30 +1705,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (menuName) menuName.textContent = user.businessName || user.name || 'My Account';
     if (menuEmail) menuEmail.textContent = user.email || '';
   } catch(e) {}
-  const token = localStorage.getItem('aq_token');
-  if (token) {
-    fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success && data.user) {
-          localStorage.setItem('aq_user', JSON.stringify(data.user));
-          const u = data.user;
-          const ini = (u.name||'AQ').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-          const av = document.getElementById('userAvatar');
-          const menuAv = document.getElementById('userMenuAv');
-          const menuName = document.getElementById('userMenuName');
-          const menuEmail = document.getElementById('userMenuEmail');
-          if (av) av.textContent = ini;
-          if (menuAv) menuAv.textContent = ini;
-          if (menuName) menuName.textContent = u.businessName || u.name;
-          if (menuEmail) menuEmail.textContent = u.email;
-        } else {
-          localStorage.removeItem('aq_token');
-          localStorage.removeItem('aq_user');
-          window.location.href = '/';
-        }
-      }).catch(()=>{});
-  }
 })();
 
 // 3. Toggle user menu
@@ -1758,7 +1740,7 @@ function openProfileSettings() {
 function doLogout() {
   localStorage.removeItem('aq_token');
   localStorage.removeItem('aq_user');
-  window.location.href = '/';
+  location.reload();
 }
 
 // 7. Dynamic dashboard greeting & date
@@ -1984,110 +1966,44 @@ document.addEventListener('keydown', e => {
 });
 
 // ════════════════════════════════════════
-// 1. QUOTE FUNCTIONS
+// PERSISTENCE HELPERS — localStorage
 // ════════════════════════════════════════
 
-// In-memory quote store (seeded with demo data)
-const aqQuotes = [
-  { id:'QT-0001', number:'QT-0001', title:'Brand identity package', client:'BetaRide Lagos', currency:'₦', total:320000, items:[{desc:'Brand identity package',qty:1,price:320000,total:320000}], vatRate:7.5, vatAmt:24000, subtotal:320000, status:'accepted', contact:'', paymentTerms:'50% upfront, 50% on delivery', validUntil:'', savedAt: new Date(Date.now()-15*86400000).toISOString() },
-  { id:'QT-0002', number:'QT-0002', title:'Website redesign — Ph.1', client:'TradaKo Ltd', currency:'₦', total:850000, items:[{desc:'Website redesign',qty:1,price:850000,total:850000}], vatRate:7.5, vatAmt:63750, subtotal:850000, status:'sent', contact:'', paymentTerms:'Net 30 days', validUntil:'', savedAt: new Date(Date.now()-13*86400000).toISOString() },
-  { id:'QT-0003', number:'QT-0003', title:'Social media retainer 3mo', client:'AgroConnect GH', currency:'GH₵', total:4200, items:[{desc:'Social media retainer',qty:3,price:1400,total:4200}], vatRate:12.5, vatAmt:525, subtotal:4200, status:'pending', contact:'', paymentTerms:'Net 14 days', validUntil:'', savedAt: new Date(Date.now()-11*86400000).toISOString() },
-  { id:'QT-0004', number:'QT-0004', title:'IT audit & risk report', client:'NovaPay Kenya', currency:'KES', total:95000, items:[{desc:'IT audit & risk report',qty:1,price:95000,total:95000}], vatRate:16, vatAmt:15200, subtotal:95000, status:'overdue', contact:'', paymentTerms:'100% upfront', validUntil:'', savedAt: new Date(Date.now()-18*86400000).toISOString() },
-  { id:'QT-0005', number:'QT-0005', title:'E-commerce strategy', client:'ShopLync ZA', currency:'R', total:18500, items:[{desc:'E-commerce strategy',qty:1,price:18500,total:18500}], vatRate:15, vatAmt:2775, subtotal:18500, status:'draft', contact:'', paymentTerms:'Net 30 days', validUntil:'', savedAt: new Date(Date.now()-5*86400000).toISOString() },
+const SEED_QUOTES = [
+  { id:'QT-SEED-1', number:'QT-0001', title:'Brand identity package',   client:'BetaRide Lagos',  currency:'₦',   total:320000, subtotal:297674, vatRate:7.5,  vatAmt:22326,  items:[{desc:'Brand identity package',qty:1,price:297674,total:297674}], status:'accepted', contact:'', paymentTerms:'50% upfront, 50% on delivery', validUntil:'', savedAt: new Date(Date.now()-15*86400000).toISOString() },
+  { id:'QT-SEED-2', number:'QT-0002', title:'Website redesign — Ph.1',  client:'TradaKo Ltd',     currency:'₦',   total:850000, subtotal:790698, vatRate:7.5,  vatAmt:59302,  items:[{desc:'Website redesign',qty:1,price:790698,total:790698}],      status:'sent',     contact:'', paymentTerms:'Net 30 days',                    validUntil:'', savedAt: new Date(Date.now()-13*86400000).toISOString() },
+  { id:'QT-SEED-3', number:'QT-0003', title:'Social media retainer 3mo',client:'AgroConnect GH',  currency:'GH₵', total:4200,   subtotal:3733,  vatRate:12.5, vatAmt:467,    items:[{desc:'Social media retainer',qty:3,price:1244,total:3733}],      status:'pending',  contact:'', paymentTerms:'Net 14 days',                    validUntil:'', savedAt: new Date(Date.now()-11*86400000).toISOString() },
+  { id:'QT-SEED-4', number:'QT-0004', title:'IT audit & risk report',   client:'NovaPay Kenya',   currency:'KES', total:95000,  subtotal:81897, vatRate:16,   vatAmt:13103,  items:[{desc:'IT audit & risk report',qty:1,price:81897,total:81897}],    status:'overdue',  contact:'', paymentTerms:'100% upfront',                   validUntil:'', savedAt: new Date(Date.now()-18*86400000).toISOString() },
+  { id:'QT-SEED-5', number:'QT-0005', title:'E-commerce strategy',      client:'ShopLync ZA',     currency:'R',   total:18500,  subtotal:16087, vatRate:15,   vatAmt:2413,   items:[{desc:'E-commerce strategy',qty:1,price:16087,total:16087}],       status:'draft',    contact:'', paymentTerms:'Net 30 days',                    validUntil:'', savedAt: new Date(Date.now()-5*86400000).toISOString() },
 ];
 
-function renderQuoteTable() {
-  const tbody = document.querySelector('#fin-quotes .tbl tbody');
-  if (!tbody) return;
+const SEED_INVOICES = [
+  { id:'INV-0041', client:'BetaRide Lagos', email:'', desc:'Brand identity package', amount:320000, currency:'NGN', due:'2025-04-15', status:'paid',    terms:'100% upfront',                  notes:'' },
+  { id:'INV-0040', client:'NovaPay Kenya',  email:'', desc:'IT audit deposit (50%)', amount:47500,  currency:'KES', due:'2025-03-30', status:'overdue', terms:'50% upfront, 50% on delivery',  notes:'' },
+  { id:'INV-0039', client:'AgroConnect GH', email:'', desc:'Social media retainer',  amount:4200,   currency:'GHS', due:'2025-04-20', status:'sent',    terms:'Net 30 days',                   notes:'' },
+];
 
-  const fmtNum = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  const statusBadge = s => ({
-    accepted: '<span class="badge b-ok">Accepted</span>',
-    sent:     '<span class="badge b-blue">Sent</span>',
-    pending:  '<span class="badge b-warn">Pending</span>',
-    overdue:  '<span class="badge b-danger">Overdue</span>',
-    draft:    '<span class="badge b-gray">Draft</span>',
-  })[s] || '<span class="badge b-gray">Draft</span>';
-
-  const actionBtn = q => {
-    const map = {
-      accepted: { label:'Invoice', cls:'btn btn-sm btn-primary', action:'invoice' },
-      sent:     { label:'Follow up', cls:'btn btn-sm', action:'followup' },
-      pending:  { label:'Remind', cls:'btn btn-sm', action:'remind' },
-      overdue:  { label:'Chase', cls:'btn btn-sm btn-danger', action:'chase' },
-      draft:    { label:'Send', cls:'btn btn-sm btn-primary', action:'send' },
-    };
-    const cfg = map[q.status] || { label:'View', cls:'btn btn-sm', action:'view' };
-    return `<div style="display:flex;gap:5px">
-      <button class="btn btn-sm" onclick="viewQuote('${q.id}')">View</button>
-      <button class="${cfg.cls}" onclick="quoteRowAction('${cfg.action}','${q.id}')">${cfg.label}</button>
-    </div>`;
-  };
-
-  const fmtDate = d => {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('en-NG', { day:'numeric', month:'short' }); } catch { return d; }
-  };
-
-  tbody.innerHTML = aqQuotes.map(q => `<tr>
-    <td><div class="td-bold">${q.title}</div><div class="td-muted" style="font-size:11px">${q.client}</div></td>
-    <td>${q.client}</td>
-    <td class="td-bold">${q.currency}${fmtNum(q.total)}</td>
-    <td>${fmtDate(q.savedAt)}</td>
-    <td>${statusBadge(q.status)}</td>
-    <td>${actionBtn(q)}</td>
-  </tr>`).join('');
+function aqLoad(key, seed) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  localStorage.setItem(key, JSON.stringify(seed));
+  return seed;
 }
 
-function viewQuote(id) {
-  const q = aqQuotes.find(x => x.id === id);
-  if (!q) return;
-  const fmtNum = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  const modal = document.getElementById('invActionModal');
-  const title = document.getElementById('invActionTitle');
-  const body  = document.getElementById('invActionBody');
-  const btn   = document.getElementById('invActionBtn');
-
-  title.textContent = 'Quote — ' + q.number;
-  body.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:0">
-      <div style="background:var(--green);color:white;border-radius:10px 10px 0 0;padding:18px 20px;margin:-20px -22px 0;text-align:center">
-        <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.8;margin-bottom:4px">Quote ${q.number}</div>
-        <div style="font-size:26px;font-weight:700;font-family:var(--font-head)">${q.currency}${fmtNum(q.total)}</div>
-        <div style="font-size:12px;opacity:.85;margin-top:4px">${q.client}</div>
-      </div>
-      <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;font-size:13px">
-        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">Title</span><strong>${q.title}</strong></div>
-        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">Subtotal</span><span>${q.currency}${fmtNum(q.subtotal)}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">VAT (${q.vatRate}%)</span><span>${q.currency}${fmtNum(q.vatAmt)}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">Terms</span><span>${q.paymentTerms||'—'}</span></div>
-        <div style="display:flex;justify-content:space-between;padding:7px 0"><span style="color:var(--text2)">Status</span><span>${q.status.charAt(0).toUpperCase()+q.status.slice(1)}</span></div>
-      </div>
-      ${q.items.length ? `<div style="margin-top:14px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Line items</div>
-        ${q.items.map(i=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--border)"><span>${i.desc} × ${i.qty}</span><span style="font-weight:600">${q.currency}${fmtNum(i.total)}</span></div>`).join('')}
-      </div>` : ''}
-    </div>`;
-  btn.textContent = '📋 Copy quote';
-  btn._action = () => {
-    navigator.clipboard.writeText(`Quote ${q.number} | ${q.title} | Client: ${q.client} | Total: ${q.currency}${fmtNum(q.total)}`);
-    aqToast('📋 Quote details copied!');
-  };
-  document.getElementById('invActionBtn').onclick = () => btn._action?.();
-  modal.classList.add('on');
+function aqSave(key, data) {
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
 }
 
-function quoteRowAction(action, id) {
-  const q = aqQuotes.find(x => x.id === id);
-  if (!q) return;
-  if (action === 'send' || action === 'remind' || action === 'followup') {
-    aqToast('✅ Reminder sent for "' + q.title + '"');
-  } else if (action === 'chase') {
-    aqToast('⚡ Chase message sent to ' + q.client);
-  } else if (action === 'invoice') {
-    aqToast('📄 Creating invoice for "' + q.title + '"…');
-    setTimeout(() => { showPage('fin-invoices', null); }, 600);
-  }
-}
+// Live arrays — loaded from localStorage, written back on every change
+const aqQuotes   = aqLoad('aq_quotes',   SEED_QUOTES);
+const aqInvoices = aqLoad('aq_invoices', SEED_INVOICES);
+const CURRENCY_SYMBOLS = { NGN:'₦', GHS:'GH₵', KES:'KES ', ZAR:'R ', USD:'$', GBP:'£' };
+
+// ════════════════════════════════════════
+// 1. QUOTE FUNCTIONS
+// ════════════════════════════════════════
 
 function quoteGetData() {
   const rows = document.querySelectorAll('#lineBody tr');
@@ -2123,17 +2039,12 @@ function quoteSaveDraft() {
   const d = quoteGetData();
   const err = quoteValidate(d);
   if (err) return aqToast('⚠️ ' + err);
-
-  const draft = {
-    id: 'QT-' + Date.now(),
-    number: 'QT-' + String(aqQuotes.length + 1).padStart(4, '0'),
-    status: 'draft',
-    savedAt: new Date().toISOString(),
-    ...d,
-  };
+  const number = 'QT-' + String(aqQuotes.length + 1).padStart(4, '0');
+  const draft = { id: 'QT-' + Date.now(), number, status: 'draft', savedAt: new Date().toISOString(), ...d };
   aqQuotes.push(draft);
+  aqSave('aq_quotes', aqQuotes);
   renderQuoteTable();
-  aqToast('✅ Draft saved — ' + draft.number);
+  aqToast('✅ Draft saved — ' + number);
 }
 
 function quoteSend() {
@@ -2141,75 +2052,110 @@ function quoteSend() {
   const err = quoteValidate(d);
   if (err) return aqToast('⚠️ ' + err);
 
-  // Which channels are selected?
   const emailOn = document.getElementById('qv-email')?.classList.contains('on');
   const waOn    = document.getElementById('qv-whatsapp')?.classList.contains('on');
   const linkOn  = document.getElementById('qv-link')?.classList.contains('on');
 
-  const fmtNum  = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  const itemLines = d.items.map(i => `• ${i.desc} × ${i.qty} = ${d.currency}${fmtNum(i.total)}`).join('\n');
-  const quoteText = `*Quote from AfriQuote*\n\n*${d.title}*\nClient: ${d.clientName}\n\nItems:\n${itemLines}\n\nSubtotal: ${d.currency}${fmtNum(d.subtotal)}\nVAT (${d.vatRate}%): ${d.currency}${fmtNum(d.vatAmt)}\n*Total: ${d.currency}${fmtNum(d.total)}*\n\nTerms: ${d.paymentTerms}\nValid until: ${d.validUntil || 'N/A'}`;
+  const fmtNum = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
-  // Generate shareable link token
-  const token = btoa(JSON.stringify({ ...d, generatedAt: Date.now() })).slice(0, 32);
-  const shareUrl = window.location.origin + '/quote/' + token;
+  // Build plain-text quote body for sharing
+  const itemLines = d.items.map(i => `  • ${i.desc} × ${i.qty}  =  ${d.currency}${fmtNum(i.total)}`).join('\n');
+  const quoteText =
+    `Quote from AfriQuote\n` +
+    `${'─'.repeat(36)}\n` +
+    `Title:    ${d.title}\n` +
+    `Client:   ${d.clientName}\n` +
+    `${'─'.repeat(36)}\n` +
+    `${itemLines}\n` +
+    `${'─'.repeat(36)}\n` +
+    `Subtotal: ${d.currency}${fmtNum(d.subtotal)}\n` +
+    `VAT (${d.vatRate}%): ${d.currency}${fmtNum(d.vatAmt)}\n` +
+    `TOTAL:    ${d.currency}${fmtNum(d.total)}\n` +
+    `${'─'.repeat(36)}\n` +
+    `Terms: ${d.paymentTerms}\n` +
+    `Valid until: ${d.validUntil || 'N/A'}`;
 
-  // Build send modal content
+  // Shareable link — encode quote as base64 JSON in the URL hash (works without a server)
+  const quotePayload = btoa(unescape(encodeURIComponent(JSON.stringify({ ...d, generatedAt: Date.now() }))));
+  const shareUrl = window.location.href.split('#')[0] + '#quote=' + quotePayload;
+
+  // Email subject & body
+  const emailSubject = encodeURIComponent(`Quote: ${d.title} — AfriQuote`);
+  const emailBody    = encodeURIComponent(quoteText);
+  const mailtoLink   = d.contact && d.contact.includes('@')
+    ? `mailto:${d.contact}?subject=${emailSubject}&body=${emailBody}`
+    : `mailto:?subject=${emailSubject}&body=${emailBody}`;
+
+  // WhatsApp link
+  const phone = d.contact?.replace(/\D/g, '') || '';
+  const waUrl = phone
+    ? `https://wa.me/${phone}?text=${encodeURIComponent(quoteText)}`
+    : `https://wa.me/?text=${encodeURIComponent(quoteText)}`;
+
+  // Store data for modal buttons to reference
+  window._quoteSendData = { quoteText, mailtoLink, waUrl, shareUrl, d, fmtNum };
+
+  // Build modal HTML
   let body = `<div style="display:flex;flex-direction:column;gap:14px">`;
+
+  // Quote summary card
   body += `<div style="background:var(--surface2);border-radius:var(--r);padding:14px;font-size:13px;line-height:1.7">
-    <div style="font-weight:600;margin-bottom:6px">${d.title}</div>
-    <div style="color:var(--text2)">Client: ${d.clientName}</div>
-    <div style="color:var(--text2)">${d.items.length} item(s) · Total: <strong style="color:var(--green)">${d.currency}${fmtNum(d.total)}</strong></div>
+    <div style="font-weight:600;font-size:14px;margin-bottom:4px">${d.title}</div>
+    <div style="color:var(--text2)">Client: <strong>${d.clientName}</strong></div>
+    <div style="color:var(--text2)">${d.items.length} item(s) · Total: <strong style="color:var(--green);font-size:15px">${d.currency}${fmtNum(d.total)}</strong></div>
   </div>`;
 
-  if (emailOn && d.contact && d.contact.includes('@')) {
-    body += `<div style="padding:12px;background:var(--blue-light);border-radius:var(--r);font-size:13px">
-      <div style="font-weight:600;color:var(--blue);margin-bottom:4px">✉ Email</div>
-      <div>Ready to send to <strong>${d.contact}</strong></div>
+  // Email block — always shown, active only if email tag is on
+  if (emailOn) {
+    const label = d.contact && d.contact.includes('@') ? `to <strong>${d.contact}</strong>` : '(enter email in contact field to pre-fill)';
+    body += `<div style="padding:13px;background:var(--blue-light);border-radius:var(--r);font-size:13px">
+      <div style="font-weight:600;color:var(--blue);margin-bottom:6px">✉ Send via Email</div>
+      <div style="color:var(--text2);margin-bottom:10px">Opens your email client ${label} with the quote pre-filled.</div>
+      <a href="${mailtoLink}" class="btn btn-sm" style="background:var(--blue);color:white;border-color:var(--blue);text-decoration:none;display:inline-block">Open email client →</a>
     </div>`;
   }
-  if (waOn || (d.contact && d.contact.startsWith('+'))) {
-    const phone = d.contact?.replace(/\D/g,'') || '';
-    body += `<div style="padding:12px;background:#E8FBF1;border-radius:var(--r);font-size:13px">
-      <div style="font-weight:600;color:#128C7E;margin-bottom:4px">📱 WhatsApp</div>
-      <div>Opens WhatsApp with quote details pre-filled.</div>
-      <button class="btn-wa" style="margin-top:8px" onclick="quoteWhatsAppDirect('${encodeURIComponent(quoteText)}','${phone}')">Open WhatsApp</button>
+
+  // WhatsApp block — always shown, active only if WA tag is on
+  if (waOn) {
+    body += `<div style="padding:13px;background:#E8FBF1;border-radius:var(--r);font-size:13px">
+      <div style="font-weight:600;color:#128C7E;margin-bottom:6px">📱 Send via WhatsApp</div>
+      <div style="color:var(--text2);margin-bottom:10px">${phone ? `Opens WhatsApp with <strong>+${phone}</strong>` : 'Opens WhatsApp — enter a phone number in the contact field to pre-fill the recipient.'}</div>
+      <button class="btn-wa" style="margin-top:0" onclick="window.open(window._quoteSendData.waUrl,'_blank')">Open WhatsApp</button>
     </div>`;
   }
+
+  // Shareable link block
   if (linkOn) {
-    body += `<div style="padding:12px;background:var(--green-light);border-radius:var(--r);font-size:13px">
-      <div style="font-weight:600;color:var(--green-dark);margin-bottom:4px">🔗 Shareable link</div>
-      <div style="word-break:break-all;color:var(--text2);font-size:12px;margin-top:4px">${shareUrl}</div>
-      <button class="btn btn-sm" style="margin-top:8px" onclick="navigator.clipboard.writeText('${shareUrl}').then(()=>aqToast('🔗 Link copied!'))">Copy link</button>
+    body += `<div style="padding:13px;background:var(--green-light);border-radius:var(--r);font-size:13px">
+      <div style="font-weight:600;color:var(--green-dark);margin-bottom:6px">🔗 Shareable link</div>
+      <div style="font-size:11.5px;color:var(--text2);margin-bottom:8px">Copy this link — it contains the full quote and works without a server.</div>
+      <div id="share-url-display" style="background:white;border:1px solid var(--border2);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--text2);word-break:break-all;max-height:56px;overflow:hidden;line-height:1.5">${shareUrl.slice(0, 120)}…</div>
+      <button class="btn btn-sm btn-primary" style="margin-top:8px" onclick="navigator.clipboard.writeText(window._quoteSendData.shareUrl).then(()=>aqToast('🔗 Link copied to clipboard!'))">Copy link</button>
     </div>`;
   }
+
+  // Plain text copy fallback
+  body += `<div style="padding:13px;background:var(--surface2);border-radius:var(--r);font-size:13px">
+    <div style="font-weight:600;margin-bottom:6px;color:var(--text2)">📋 Copy quote text</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Paste into any email, chat, or document.</div>
+    <button class="btn btn-sm" onclick="navigator.clipboard.writeText(window._quoteSendData.quoteText).then(()=>aqToast('📋 Quote text copied!'))">Copy plain text</button>
+  </div>`;
+
   body += `</div>`;
 
   document.getElementById('quoteSendBody').innerHTML = body;
   document.getElementById('quoteSendTitle').textContent = 'Send quote — ' + d.title;
-  document.getElementById('quoteSendActionBtn').textContent = 'Mark as sent ✓';
+  document.getElementById('quoteSendActionBtn').textContent = 'Save & mark as sent ✓';
   document.getElementById('quoteSendActionBtn').onclick = () => {
-    // Save quote to in-memory store
-    const newQuote = {
-      id: 'QT-' + Date.now(),
-      number: 'QT-' + String(aqQuotes.length + 1).padStart(4, '0'),
-      status: 'sent',
-      savedAt: new Date().toISOString(),
-      ...d,
-    };
-    aqQuotes.push(newQuote);
+    const number = 'QT-' + String(aqQuotes.length + 1).padStart(4, '0');
+    const newQ = { id: 'QT-' + Date.now(), number, status: 'sent', savedAt: new Date().toISOString(), ...d };
+    aqQuotes.push(newQ);
+    aqSave('aq_quotes', aqQuotes);
     renderQuoteTable();
-    aqToast('✅ Quote saved & marked as sent — ' + newQuote.number);
+    aqToast('✅ Quote ' + number + ' saved & marked as sent!');
     closeQuoteSendModal();
   };
   document.getElementById('quoteSendModal').classList.add('on');
-}
-
-function quoteWhatsAppDirect(encodedText, phone) {
-  const url = phone
-    ? `https://wa.me/${phone}?text=${encodedText}`
-    : `https://wa.me/?text=${encodedText}`;
-  window.open(url, '_blank');
 }
 
 function quoteSendWhatsApp() {
@@ -2218,8 +2164,15 @@ function quoteSendWhatsApp() {
   if (err) return aqToast('⚠️ ' + err);
   const fmtNum = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0 });
   const itemLines = d.items.map(i => `• ${i.desc} × ${i.qty} = ${d.currency}${fmtNum(i.total)}`).join('\n');
-  const msg = `*Quote from AfriQuote*\n\n*${d.title}*\nClient: ${d.clientName}\n\nItems:\n${itemLines}\n\nSubtotal: ${d.currency}${fmtNum(d.subtotal)}\nVAT (${d.vatRate}%): ${d.currency}${fmtNum(d.vatAmt)}\n*Total: ${d.currency}${fmtNum(d.total)}*\nTerms: ${d.paymentTerms}\nValid until: ${d.validUntil || 'N/A'}`;
-  const phone = d.contact?.replace(/\D/g,'') || '';
+  const msg =
+    `Quote from AfriQuote\n\n` +
+    `*${d.title}*\nClient: ${d.clientName}\n\n` +
+    `Items:\n${itemLines}\n\n` +
+    `Subtotal: ${d.currency}${fmtNum(d.subtotal)}\n` +
+    `VAT (${d.vatRate}%): ${d.currency}${fmtNum(d.vatAmt)}\n` +
+    `*Total: ${d.currency}${fmtNum(d.total)}*\n` +
+    `Terms: ${d.paymentTerms}`;
+  const phone = d.contact?.replace(/\D/g, '') || '';
   const url = phone
     ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
     : `https://wa.me/?text=${encodeURIComponent(msg)}`;
@@ -2230,29 +2183,100 @@ function closeQuoteSendModal() {
   document.getElementById('quoteSendModal').classList.remove('on');
 }
 
+function renderQuoteTable() {
+  const tbody = document.querySelector('#fin-quotes .tbl tbody');
+  if (!tbody) return;
+  const fmtNum = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const statusBadge = s => ({
+    accepted: '<span class="badge b-ok">Accepted</span>',
+    sent:     '<span class="badge b-blue">Sent</span>',
+    pending:  '<span class="badge b-warn">Pending</span>',
+    overdue:  '<span class="badge b-danger">Overdue</span>',
+    draft:    '<span class="badge b-gray">Draft</span>',
+  })[s] || '<span class="badge b-gray">Draft</span>';
+
+  const actionMap = { accepted:'Invoice', sent:'Follow up', pending:'Remind', overdue:'Chase', draft:'Send' };
+  const classMap  = { accepted:'btn btn-sm btn-primary', sent:'btn btn-sm', pending:'btn btn-sm', overdue:'btn btn-sm btn-danger', draft:'btn btn-sm btn-primary' };
+
+  const fmtDate = iso => {
+    if (!iso) return '—';
+    try { return new Date(iso).toLocaleDateString('en-NG', { day:'numeric', month:'short' }); } catch { return iso; }
+  };
+
+  tbody.innerHTML = aqQuotes.map(q => `<tr>
+    <td><div class="td-bold">${q.title}</div><div class="td-muted" style="font-size:11px">${q.client || q.clientName || ''}</div></td>
+    <td>${q.client || q.clientName || '—'}</td>
+    <td class="td-bold">${q.currency}${fmtNum(q.total)}</td>
+    <td>${fmtDate(q.savedAt)}</td>
+    <td>${statusBadge(q.status)}</td>
+    <td><div style="display:flex;gap:5px">
+      <button class="btn btn-sm" onclick="viewQuote('${q.id}')">View</button>
+      <button class="${classMap[q.status]||'btn btn-sm'}" onclick="quoteRowAction('${q.status}','${q.id}')">${actionMap[q.status]||'View'}</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function viewQuote(id) {
+  const q = aqQuotes.find(x => x.id === id);
+  if (!q) return;
+  const fmtNum = n => n.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const clientName = q.client || q.clientName || '—';
+  const modal = document.getElementById('invActionModal');
+  document.getElementById('invActionTitle').textContent = 'Quote — ' + (q.number || q.id);
+  document.getElementById('invActionBody').innerHTML = `
+    <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--border)">
+      <div style="background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);padding:20px 22px 16px;color:white;text-align:center">
+        <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin-bottom:4px">${q.number || 'Quote'}</div>
+        <div style="font-size:28px;font-weight:700;font-family:var(--font-head)">${q.currency}${fmtNum(q.total)}</div>
+        <div style="font-size:13px;opacity:.9;margin-top:4px">${clientName}</div>
+      </div>
+      <div style="padding:16px 20px;display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--text3)">Title</span><strong style="font-size:13px">${q.title}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--text3)">Subtotal</span><span style="font-size:13px">${q.currency}${fmtNum(q.subtotal||0)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--text3)">VAT (${q.vatRate||0}%)</span><span style="font-size:13px">${q.currency}${fmtNum(q.vatAmt||0)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--text3)">Terms</span><span style="font-size:13px">${q.paymentTerms||'—'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:12px;color:var(--text3)">Status</span><span style="font-size:13px;font-weight:600">${(q.status||'draft').charAt(0).toUpperCase()+(q.status||'draft').slice(1)}</span></div>
+      </div>
+      ${q.items?.length ? `<div style="padding:0 20px 16px">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Line items</div>
+        ${q.items.map(i=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--border)"><span>${i.desc} × ${i.qty}</span><span style="font-weight:600">${q.currency}${fmtNum(i.total)}</span></div>`).join('')}
+      </div>` : ''}
+    </div>`;
+  const btn = document.getElementById('invActionBtn');
+  btn.textContent = '📋 Copy quote';
+  btn._action = () => {
+    navigator.clipboard.writeText(`Quote ${q.number||q.id} | ${q.title} | Client: ${clientName} | Total: ${q.currency}${fmtNum(q.total)}`);
+    aqToast('📋 Quote details copied!');
+  };
+  document.getElementById('invActionBtn').onclick = () => btn._action?.();
+  modal.classList.add('on');
+}
+
+function quoteRowAction(status, id) {
+  const q = aqQuotes.find(x => x.id === id);
+  if (!q) return;
+  const name = q.title;
+  if (status === 'accepted') {
+    aqToast('📄 Converting "' + name + '" to invoice…');
+    setTimeout(() => showPage('fin-invoices', null), 600);
+  } else if (status === 'overdue') {
+    aqToast('⚡ Chase message ready for ' + (q.client || q.clientName));
+  } else {
+    aqToast('✅ Action sent for "' + name + '"');
+  }
+}
+
 // ════════════════════════════════════════
 // 2. INVOICE FUNCTIONS
 // ════════════════════════════════════════
 
-// In-memory invoice list (seeded with demo data)
-const aqInvoices = [
-  { id:'INV-0041', client:'BetaRide Lagos', email:'', desc:'Brand identity package', amount:320000, currency:'NGN', due:'2025-04-15', status:'paid', terms:'100% upfront', notes:'' },
-  { id:'INV-0040', client:'NovaPay Kenya',  email:'', desc:'IT audit deposit (50%)', amount:47500,  currency:'KES', due:'2025-03-30', status:'overdue', terms:'50% upfront, 50% on delivery', notes:'' },
-  { id:'INV-0039', client:'AgroConnect GH', email:'', desc:'Social media retainer',  amount:4200,   currency:'GHS', due:'2025-04-20', status:'sent', terms:'Net 30 days', notes:'' },
-];
-
-const CURRENCY_SYMBOLS = { NGN:'₦', GHS:'GH₵', KES:'KES ', ZAR:'R ', USD:'$', GBP:'£' };
-
 function openInvoiceModal() {
-  // Auto-fill next invoice number
-  const nextNum = 'INV-' + String(aqInvoices.length + 42).padStart(4,'0');
+  const nextNum = 'INV-' + String(aqInvoices.length + 39).padStart(4,'0');
   document.getElementById('inv-number').value = nextNum;
-  // Default due date = 14 days from today
   const due = new Date(); due.setDate(due.getDate() + 14);
   document.getElementById('inv-due').value = due.toISOString().split('T')[0];
   ['inv-client','inv-email','inv-desc','inv-amount','inv-notes'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
+    const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('inv-error').style.display = 'none';
   document.getElementById('invoiceModal').classList.add('on');
@@ -2263,33 +2287,32 @@ function closeInvoiceModal() {
 }
 
 function saveInvoice() {
-  const client  = document.getElementById('inv-client').value.trim();
-  const amount  = parseFloat(document.getElementById('inv-amount').value) || 0;
-  const due     = document.getElementById('inv-due').value;
-  const errEl   = document.getElementById('inv-error');
-
+  const client = document.getElementById('inv-client').value.trim();
+  const amount = parseFloat(document.getElementById('inv-amount').value) || 0;
+  const due    = document.getElementById('inv-due').value;
+  const errEl  = document.getElementById('inv-error');
   if (!client || !amount || !due) {
     errEl.textContent = 'Please fill in client name, amount, and due date.';
     errEl.style.display = 'block';
     return;
   }
   errEl.style.display = 'none';
-
   const inv = {
-    id:       document.getElementById('inv-number').value || ('INV-' + Date.now()),
+    id:        document.getElementById('inv-number').value || ('INV-' + Date.now()),
     client,
-    email:    document.getElementById('inv-email').value.trim(),
-    desc:     document.getElementById('inv-desc').value.trim(),
+    email:     document.getElementById('inv-email').value.trim(),
+    desc:      document.getElementById('inv-desc').value.trim(),
     amount,
-    currency: document.getElementById('inv-currency').value,
-    vat:      parseFloat(document.getElementById('inv-vat').value) || 0,
+    currency:  document.getElementById('inv-currency').value,
+    vat:       parseFloat(document.getElementById('inv-vat').value) || 0,
     due,
-    status:   'draft',
-    terms:    document.getElementById('inv-terms').value,
-    notes:    document.getElementById('inv-notes').value.trim(),
+    status:    'draft',
+    terms:     document.getElementById('inv-terms').value,
+    notes:     document.getElementById('inv-notes').value.trim(),
     createdAt: new Date().toISOString(),
   };
   aqInvoices.push(inv);
+  aqSave('aq_invoices', aqInvoices);
   renderInvoiceTable();
   closeInvoiceModal();
   aqToast('✅ Invoice ' + inv.id + ' created!');
@@ -2299,22 +2322,11 @@ function renderInvoiceTable() {
   const tbody = document.querySelector('#fin-invoices .tbl tbody');
   if (!tbody) return;
   const statusBadge = s => ({
-    paid:   '<span class="badge b-ok">Paid</span>',
-    overdue:'<span class="badge b-danger">Overdue</span>',
-    sent:   '<span class="badge b-blue">Sent</span>',
-    draft:  '<span class="badge b-gray">Draft</span>',
+    paid:    '<span class="badge b-ok">Paid</span>',
+    overdue: '<span class="badge b-danger">Overdue</span>',
+    sent:    '<span class="badge b-blue">Sent</span>',
+    draft:   '<span class="badge b-gray">Draft</span>',
   })[s] || '<span class="badge b-gray">Draft</span>';
-
-  const actionBtn = inv => {
-    const actions = { paid:'receipt', overdue:'chase', sent:'view', draft:'view' };
-    const labels  = { receipt:'Receipt', chase:'Chase', view:'View' };
-    const classes = { receipt:'btn btn-sm', chase:'btn btn-sm btn-danger', view:'btn btn-sm' };
-    const action  = actions[inv.status] || 'view';
-    const sym     = CURRENCY_SYMBOLS[inv.currency] || '';
-    const viewBtn = action !== 'view' ? `<button class="btn btn-sm" onclick="invoiceAction('view','${inv.id}','${inv.client}','${sym}${inv.amount.toLocaleString()}')">View</button>` : '';
-    const mainBtn = `<button class="${classes[action]}" onclick="invoiceAction('${action}','${inv.id}','${inv.client}','${sym}${inv.amount.toLocaleString()}')">${labels[action]}</button>`;
-    return `<div style="display:flex;gap:5px">${viewBtn}${mainBtn}</div>`;
-  };
 
   const fmtDate = d => {
     if (!d) return '—';
@@ -2322,7 +2334,13 @@ function renderInvoiceTable() {
   };
 
   tbody.innerHTML = aqInvoices.map(inv => {
-    const sym = CURRENCY_SYMBOLS[inv.currency] || '';
+    const sym    = CURRENCY_SYMBOLS[inv.currency] || '';
+    const action = { paid:'receipt', overdue:'chase', sent:'view', draft:'view' }[inv.status] || 'view';
+    const label  = { receipt:'Receipt', chase:'Chase', view:'View' }[action];
+    const cls    = { receipt:'btn btn-sm', chase:'btn btn-sm btn-danger', view:'btn btn-sm' }[action];
+    const viewBtn = action !== 'view'
+      ? `<button class="btn btn-sm" onclick="invoiceAction('view','${inv.id}','${inv.client}','${sym}${inv.amount.toLocaleString()}')">View</button> `
+      : '';
     return `<tr>
       <td class="td-bold">${inv.id}</td>
       <td>${inv.client}</td>
@@ -2330,7 +2348,7 @@ function renderInvoiceTable() {
       <td class="td-bold">${sym}${inv.amount.toLocaleString()}</td>
       <td>${fmtDate(inv.due)}</td>
       <td>${statusBadge(inv.status)}</td>
-      <td>${actionBtn(inv)}</td>
+      <td><div style="display:flex;gap:5px">${viewBtn}<button class="${cls}" onclick="invoiceAction('${action}','${inv.id}','${inv.client}','${sym}${inv.amount.toLocaleString()}')">${label}</button></div></td>
     </tr>`;
   }).join('');
 }
@@ -2340,20 +2358,19 @@ function invoiceAction(action, id, client, amount) {
   const title = document.getElementById('invActionTitle');
   const body  = document.getElementById('invActionBody');
   const btn   = document.getElementById('invActionBtn');
+  const inv   = aqInvoices.find(x => x.id === id);
 
   if (action === 'receipt') {
+    const today = new Date().toLocaleDateString('en-NG', {day:'numeric',month:'long',year:'numeric'});
     title.textContent = 'Payment receipt — ' + id;
-    const today = new Date().toLocaleDateString('en-NG', {day:'numeric', month:'long', year:'numeric'});
     body.innerHTML = `
       <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e0e0e0">
-        <!-- Receipt header strip -->
         <div style="background:linear-gradient(135deg,#1D9E75 0%,#0F6E56 100%);padding:22px 22px 18px;text-align:center;color:white">
           <div style="font-size:28px;margin-bottom:6px">✅</div>
           <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.85;margin-bottom:4px">Payment Confirmed</div>
           <div style="font-size:30px;font-weight:700;font-family:var(--font-head);letter-spacing:-0.5px">${amount}</div>
           <div style="font-size:13px;opacity:.9;margin-top:5px">Paid by <strong>${client}</strong></div>
         </div>
-        <!-- Receipt body -->
         <div style="padding:18px 20px;background:#fafafa;display:flex;flex-direction:column;gap:0">
           <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #ececec">
             <span style="font-size:12px;color:#888;font-weight:500">Invoice #</span>
@@ -2372,7 +2389,6 @@ function invoiceAction(action, id, client, amount) {
             <span style="font-size:13px;color:#1a1c18">${today}</span>
           </div>
         </div>
-        <!-- Receipt footer -->
         <div style="background:#fff;border-top:2px dashed #e0e0e0;padding:13px 20px;text-align:center">
           <div style="font-size:11px;color:#aaa;letter-spacing:.04em">Generated by AfriQuote · Thank you for your business</div>
         </div>
@@ -2385,7 +2401,7 @@ function invoiceAction(action, id, client, amount) {
 
   } else if (action === 'chase') {
     title.textContent = 'Chase payment — ' + id;
-    const msg = `Hi, this is a reminder that invoice ${id} for ${amount} was due. Please let us know when payment will be made. Thank you.`;
+    const msg = `Hi, this is a friendly reminder that invoice ${id} for ${amount} is now overdue. Please could you let us know when we can expect payment? Thank you.`;
     body.innerHTML = `
       <div style="background:var(--red-light);border-radius:var(--r);padding:12px;margin-bottom:14px;font-size:13px">
         <strong style="color:var(--red)">⚠️ Overdue</strong> — ${id} · ${amount} · Client: ${client}
@@ -2404,31 +2420,27 @@ function invoiceAction(action, id, client, amount) {
     };
 
   } else {
-    // Find the invoice from aqInvoices for full details
-    const inv = aqInvoices.find(x => x.id === id);
+    // View invoice
+    const fmtDate = d => { try { return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}); } catch { return d||'—'; }};
     title.textContent = 'Invoice — ' + id;
-    const sym = inv ? (CURRENCY_SYMBOLS[inv.currency] || '') : '';
-    const fmtDate = d => { try { return new Date(d).toLocaleDateString('en-NG', {day:'numeric',month:'short',year:'numeric'}); } catch { return d||'—'; }};
     body.innerHTML = `
       <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e0e0e0">
-        <!-- Invoice header -->
-        <div style="background:linear-gradient(135deg,#185FA5 0%,#0d3f6e 100%);padding:20px 22px 16px;color:white">
+        <div style="background:linear-gradient(135deg,#185FA5 0%,#0d3f6e 100%);padding:20px 22px 16px;color:white;text-align:center">
           <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin-bottom:4px">Invoice</div>
-          <div style="font-size:24px;font-weight:700;font-family:var(--font-head)">${id}</div>
-          <div style="font-size:28px;font-weight:700;margin-top:6px">${amount}</div>
+          <div style="font-size:20px;font-weight:700;font-family:var(--font-head)">${id}</div>
+          <div style="font-size:28px;font-weight:700;margin-top:4px">${amount}</div>
           <div style="font-size:13px;opacity:.9;margin-top:4px">Billed to <strong>${client}</strong></div>
         </div>
-        <!-- Invoice details -->
         <div style="padding:16px 20px;background:#fafafa;display:flex;flex-direction:column;gap:0">
-          ${inv?.desc ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ececec"><span style="font-size:12px;color:#888">Description</span><span style="font-size:13px;font-weight:600;color:#1a1c18;max-width:200px;text-align:right">${inv.desc}</span></div>` : ''}
-          ${inv?.due ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ececec"><span style="font-size:12px;color:#888">Due date</span><span style="font-size:13px;font-weight:600;color:#1a1c18">${fmtDate(inv.due)}</span></div>` : ''}
-          ${inv?.terms ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ececec"><span style="font-size:12px;color:#888">Terms</span><span style="font-size:13px;color:#1a1c18">${inv.terms}</span></div>` : ''}
+          ${inv?.desc ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ececec"><span style="font-size:12px;color:#888">Description</span><span style="font-size:13px;font-weight:600;max-width:200px;text-align:right">${inv.desc}</span></div>` : ''}
+          ${inv?.due ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ececec"><span style="font-size:12px;color:#888">Due date</span><span style="font-size:13px;font-weight:600">${fmtDate(inv.due)}</span></div>` : ''}
+          ${inv?.terms ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ececec"><span style="font-size:12px;color:#888">Terms</span><span style="font-size:13px">${inv.terms}</span></div>` : ''}
           <div style="display:flex;justify-content:space-between;padding:8px 0">
             <span style="font-size:12px;color:#888">Status</span>
             <span style="font-size:13px;font-weight:600;color:#185FA5">${inv ? inv.status.charAt(0).toUpperCase()+inv.status.slice(1) : 'Sent'}</span>
           </div>
         </div>
-        ${inv?.notes ? `<div style="padding:12px 20px;background:#fff;border-top:1px solid #ececec;font-size:12px;color:#888">${inv.notes}</div>` : ''}
+        ${inv?.notes ? `<div style="padding:12px 20px;border-top:1px solid #ececec;font-size:12px;color:#888">${inv.notes}</div>` : ''}
       </div>`;
     btn.textContent = '📋 Copy details';
     btn._action = () => {
@@ -2543,14 +2555,14 @@ function togglePayGateway(el, key) {
 // 4. CLIENT FUNCTIONS
 // ════════════════════════════════════════
 
-// In-memory client list (seeded with demo data)
-const aqClients = [
+const SEED_CLIENTS = [
   { id:'cl-001', name:'BetaRide Lagos',  country:'NG', currency:'NGN', status:'active',   projects:3, lifetime:'₦1.1M' },
   { id:'cl-002', name:'TradaKo Ltd',     country:'NG', currency:'NGN', status:'progress', projects:2, lifetime:'₦850K' },
   { id:'cl-003', name:'AgroConnect GH',  country:'GH', currency:'GHS', status:'retainer', projects:1, lifetime:'GH₵4,200' },
   { id:'cl-004', name:'NovaPay Kenya',   country:'KE', currency:'KES', status:'overdue',  projects:1, lifetime:'KES 95K' },
   { id:'cl-005', name:'ShopLync ZA',     country:'ZA', currency:'ZAR', status:'new',      projects:1, lifetime:'R 18,500' },
 ];
+const aqClients = aqLoad('aq_clients', SEED_CLIENTS);
 
 const CLIENT_STATUS_BADGE = {
   active:   '<span class="badge b-ok">Active</span>',
@@ -2600,6 +2612,7 @@ function saveClient() {
   };
 
   aqClients.push(client);
+  aqSave('aq_clients', aqClients);
   renderClientList();
   closeClientModal();
   aqToast('✅ Client "' + name + '" added!');
@@ -2630,6 +2643,16 @@ function renderClientList() {
     </div>`;
   }).join('');
 }
+
+// ════════════════════════════════════════
+// INIT — render all dynamic tables on load
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function () {
+  renderQuoteTable();
+  renderInvoiceTable();
+  renderClientList();
+  setTimeout(function () { if (typeof propRenderAll === 'function') propRenderAll(); }, 120);
+});
 </script>
 
 </body>
