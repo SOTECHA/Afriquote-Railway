@@ -704,7 +704,7 @@ textarea.fc{resize:vertical;min-height:65px}
 ════════════════════════════════ -->
 
 <div id="site-overview" class="page">
-  <div class="ph"><div class="pt">Site overview</div><button class="btn btn-primary" onclick="showPage('site-all',null)">+ Add site</button></div>
+  <div class="ph"><div class="pt">Site overview</div><button class="btn btn-primary" onclick="openAddSiteModal()">+ Add site</button></div>
   <div class="grid4">
     <div class="stat-card"><div class="label">Active sites</div><div class="value">4</div><div class="sub green-sub">2 on track</div></div>
     <div class="stat-card"><div class="label">Open tasks</div><div class="value">18</div><div class="sub amber-sub">6 overdue</div></div>
@@ -738,7 +738,7 @@ textarea.fc{resize:vertical;min-height:65px}
 </div>
 
 <div id="site-all" class="page">
-  <div class="ph"><div class="pt">All sites</div><button class="btn btn-primary">+ Add site</button></div>
+  <div class="ph"><div class="pt">All sites</div><button class="btn btn-primary" onclick="openAddSiteModal()">+ Add site</button></div>
   <div class="site-card"><div class="site-head"><div><div class="site-name">Lekki Phase 2 Housing</div><div class="site-loc">Lagos Island, Nigeria · Residential · Client: BetaRide Estates</div></div><span class="badge b-ok">On track</span></div><div class="prog-track"><div class="prog-fill" style="width:62%;background:var(--green)"></div></div><div class="site-meta"><span>Budget: ₦380M</span><span>Spent: ₦235M (62%)</span><span>4 on site</span><span>Phase 3/5</span></div></div>
   <div class="site-card"><div class="site-head"><div><div class="site-name">Accra Tech Hub</div><div class="site-loc">East Legon, Ghana · Interior fit-out · Client: AgroConnect GH</div></div><span class="badge b-warn">Delayed</span></div><div class="prog-track"><div class="prog-fill" style="width:41%;background:var(--amber)"></div></div><div class="site-meta"><span>Budget: GH₵1.8M</span><span>Spent: GH₵740K (41%)</span><span>0 (weather)</span><span>Phase 2/4</span></div></div>
   <div class="site-card"><div class="site-head"><div><div class="site-name">Nairobi Office Block</div><div class="site-loc">Westlands, Kenya · Civil &amp; structural · Client: NovaPay Kenya</div></div><span class="badge b-ok">On track</span></div><div class="prog-track"><div class="prog-fill" style="width:28%;background:var(--green)"></div></div><div class="site-meta"><span>Budget: KES 95M</span><span>Spent: KES 26M (28%)</span><span>3 on site</span><span>Phase 1/6</span></div></div>
@@ -2645,14 +2645,334 @@ function renderClientList() {
 }
 
 // ════════════════════════════════════════
-// INIT — render all dynamic tables on load
+// BUG FIXES — all 6 issues
+// ════════════════════════════════════════
+
+// ── FIX 1: Country → Currency auto-detect ────────────────────
+// Map country code to currency code
+const COUNTRY_CURRENCY_MAP = {
+  NG: '₦',   // Nigeria → NGN
+  GH: 'GH₵', // Ghana → GHS
+  KE: 'KES', // Kenya → KES
+  ZA: 'R',   // South Africa → ZAR
+  RW: 'RWF', // Rwanda
+  TZ: 'TZS', // Tanzania
+  EG: '$',   // Egypt (USD common)
+  SN: 'CFA', // Senegal
+  CM: 'CFA', // Cameroon
+  ET: 'ETB', // Ethiopia
+  UG: 'UGX', // Uganda
+};
+
+// Wire up country → currency detection anywhere there's a country+currency pair
+function setupCountryCurrencySync(countryId, currencyId) {
+  const countryEl = document.getElementById(countryId);
+  const currencyEl = document.getElementById(currencyId);
+  if (!countryEl || !currencyEl) return;
+  countryEl.addEventListener('change', function () {
+    const mapped = COUNTRY_CURRENCY_MAP[this.value];
+    if (mapped) {
+      // Find and select the matching option
+      for (const opt of currencyEl.options) {
+        if (opt.value === mapped || opt.text.startsWith(mapped)) {
+          currencyEl.value = opt.value;
+          break;
+        }
+      }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Proposal form: country → currency
+  setupCountryCurrencySync('pf-country', 'pf-currency');
+  // Client modal: country → currency
+  setupCountryCurrencySync('cl-country', 'cl-currency');
+});
+
+// ── FIX 2: Fresh accounts get empty data (no demo seed) ──────
+// We key seeds by a "demo" flag. New accounts (registered after
+// this fix) store aq_is_demo=false and load empty arrays.
+(function () {
+  // If this is the very first load (no aq_token at all), show onboarding
+  // and set up empty arrays. If aq_is_demo is explicitly false, use empty.
+  const isDemo = localStorage.getItem('aq_is_demo');
+  if (isDemo === null) {
+    // First ever load — set demo mode (existing behavior, shows seeds)
+    localStorage.setItem('aq_is_demo', 'true');
+  }
+})();
+
+// Override aqLoad to respect demo flag
+const _aqLoadOrig = window.aqLoad || function(key, seed) {
+  try { const r = localStorage.getItem(key); if (r) return JSON.parse(r); } catch(e) {}
+  localStorage.setItem(key, JSON.stringify(seed));
+  return seed;
+};
+
+function aqLoadRespectingDemo(key, seed) {
+  // If user explicitly reset / registered fresh, give them empty data
+  if (localStorage.getItem('aq_is_demo') === 'false') {
+    try { const r = localStorage.getItem(key); if (r) return JSON.parse(r); } catch(e) {}
+    localStorage.setItem(key, JSON.stringify([]));
+    return [];
+  }
+  return _aqLoadOrig(key, seed);
+}
+
+// Expose a "Reset to fresh account" helper (call from console or settings)
+function aqResetToFreshAccount() {
+  ['aq_quotes','aq_invoices','aq_clients','aq_proposals'].forEach(k => localStorage.removeItem(k));
+  localStorage.setItem('aq_is_demo', 'false');
+  location.reload();
+}
+// Also expose demo reset
+function aqResetToDemo() {
+  ['aq_quotes','aq_invoices','aq_clients','aq_proposals','aq_is_demo'].forEach(k => localStorage.removeItem(k));
+  location.reload();
+}
+
+// ── FIX 3: Dashboard "New Quote" button ──────────────────────
+// The button calls switchMod which resets sidebar — override to
+// navigate correctly without clobbering the active module
+document.addEventListener('DOMContentLoaded', function () {
+  const dashQuoteBtn = document.querySelector('#fin-dashboard .btn-primary[onclick*="New quote"], #fin-dashboard .btn-primary[onclick*="new-quote"], #fin-dashboard .btn-primary');
+  // Re-bind it properly
+  const el = document.querySelector('#fin-dashboard .ph .btn-primary');
+  if (el) {
+    el.onclick = function () {
+      // Make sure finance sidebar stays active
+      document.querySelectorAll('.mn').forEach(m => m.classList.remove('on'));
+      const finMn = document.querySelector('.mn[onclick*="finance"]');
+      if (finMn) finMn.classList.add('on');
+      // Show finance sidebar
+      Object.entries({finance:'sb-finance',sites:'sb-sites',contracts:'sb-contracts',time:'sb-time',tax:'sb-tax',cashflow:'sb-cashflow',health:'sb-health',proposals:'sb-proposals'}).forEach(([,sid]) => {
+        const s = document.getElementById(sid);
+        if (s) s.classList.remove('on');
+      });
+      const sb = document.getElementById('sb-finance');
+      if (sb) {
+        sb.classList.add('on');
+        sb.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
+        const newQItem = [...sb.querySelectorAll('.sb-item')].find(i => i.textContent.includes('New quote'));
+        if (newQItem) newQItem.classList.add('on');
+      }
+      // Navigate to the new quote page
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+      const pg = document.getElementById('fin-new-quote');
+      if (pg) pg.classList.add('on');
+    };
+  }
+});
+
+// ── FIX 4: "Add site" opens a modal form ─────────────────────
+// Replace the Add site button navigation with a proper form modal
+function openAddSiteModal() {
+  // Create modal if it doesn't exist
+  if (!document.getElementById('addSiteModal')) {
+    const wrap = document.createElement('div');
+    wrap.className = 'prop-modal-wrap';
+    wrap.id = 'addSiteModal';
+    wrap.innerHTML = `
+      <div class="prop-modal" style="max-width:520px">
+        <div class="prop-modal-head">
+          <span class="prop-modal-title">Add new site</span>
+          <button class="prop-modal-close" onclick="closeAddSiteModal()">✕</button>
+        </div>
+        <div class="prop-modal-body" style="display:flex;flex-direction:column;gap:12px">
+          <div class="fg"><label class="fl">Site name *</label><input class="fc" id="site-name" placeholder="e.g. Lekki Phase 2 Housing"></div>
+          <div class="fg"><label class="fl">Location</label><input class="fc" id="site-location" placeholder="City, Country"></div>
+          <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="fg"><label class="fl">Project type</label>
+              <select class="fc" id="site-type">
+                <option>Construction</option><option>Interior fit-out</option><option>Civil works</option>
+                <option>Structural</option><option>Renovation</option><option>Landscaping</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Status</label>
+              <select class="fc" id="site-status">
+                <option value="on-track">On track</option><option value="delayed">Delayed</option>
+                <option value="at-risk">At risk</option><option value="completed">Completed</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="fg"><label class="fl">Project manager</label><input class="fc" id="site-pm" placeholder="PM name"></div>
+            <div class="fg"><label class="fl">Workers on site</label><input class="fc" id="site-workers" type="number" placeholder="0" min="0"></div>
+          </div>
+          <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="fg"><label class="fl">Total phases</label><input class="fc" id="site-phases" type="number" placeholder="5" min="1"></div>
+            <div class="fg"><label class="fl">Current phase</label><input class="fc" id="site-phase-current" type="number" placeholder="1" min="1"></div>
+          </div>
+          <div class="fg"><label class="fl">Budget</label><input class="fc" id="site-budget" placeholder="e.g. ₦380,000,000"></div>
+          <div class="fg"><label class="fl">Client</label><input class="fc" id="site-client" placeholder="Client name"></div>
+          <div id="site-modal-error" style="display:none;color:var(--red);font-size:12.5px;padding:8px 0"></div>
+        </div>
+        <div class="prop-modal-foot">
+          <button class="btn" onclick="closeAddSiteModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveNewSite()">Add site</button>
+        </div>
+      </div>`;
+    wrap.addEventListener('click', e => { if (e.target === wrap) closeAddSiteModal(); });
+    document.body.appendChild(wrap);
+  }
+  // Clear form
+  ['site-name','site-location','site-pm','site-workers','site-phases','site-phase-current','site-budget','site-client'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('site-modal-error').style.display = 'none';
+  document.getElementById('addSiteModal').classList.add('on');
+}
+
+function closeAddSiteModal() {
+  document.getElementById('addSiteModal')?.classList.remove('on');
+}
+
+function saveNewSite() {
+  const name = document.getElementById('site-name')?.value.trim();
+  if (!name) {
+    const errEl = document.getElementById('site-modal-error');
+    errEl.textContent = 'Please enter a site name.';
+    errEl.style.display = 'block';
+    return;
+  }
+  const location = document.getElementById('site-location')?.value.trim() || '—';
+  const type     = document.getElementById('site-type')?.value || 'Construction';
+  const status   = document.getElementById('site-status')?.value || 'on-track';
+  const pm       = document.getElementById('site-pm')?.value.trim() || '—';
+  const workers  = document.getElementById('site-workers')?.value || '0';
+  const phases   = parseInt(document.getElementById('site-phases')?.value) || 5;
+  const curPhase = parseInt(document.getElementById('site-phase-current')?.value) || 1;
+  const budget   = document.getElementById('site-budget')?.value.trim() || '—';
+  const client   = document.getElementById('site-client')?.value.trim() || '—';
+  const progress = Math.round((curPhase / phases) * 100);
+  const badgeMap = { 'on-track':'b-ok', delayed:'b-warn', 'at-risk':'b-danger', completed:'b-gray' };
+  const badgeLbl = { 'on-track':'On track', delayed:'Delayed', 'at-risk':'At risk', completed:'Completed' };
+  const colorMap = { 'on-track':'var(--green)', delayed:'var(--amber)', 'at-risk':'var(--red)', completed:'var(--border2)' };
+
+  // Inject into both site-overview and site-all pages
+  const card1 = `<div class="site-card"><div class="site-head"><div><div class="site-name">${name}</div><div class="site-loc">${location} · ${type}</div></div><span class="badge ${badgeMap[status]}">${badgeLbl[status]}</span></div><div class="prog-track"><div class="prog-fill" style="width:${progress}%;background:${colorMap[status]}"></div></div><div class="site-meta"><span>Phase ${curPhase} of ${phases}</span><span>${progress}%</span><span>PM: ${pm}</span><span>${workers} on site</span></div></div>`;
+  const card2 = `<div class="site-card"><div class="site-head"><div><div class="site-name">${name}</div><div class="site-loc">${location} · ${type} · Client: ${client}</div></div><span class="badge ${badgeMap[status]}">${badgeLbl[status]}</span></div><div class="prog-track"><div class="prog-fill" style="width:${progress}%;background:${colorMap[status]}"></div></div><div class="site-meta"><span>Budget: ${budget}</span><span>Phase ${curPhase}/${phases}</span><span>${workers} on site</span></div></div>`;
+
+  const overview = document.querySelector('#site-overview .card');
+  if (overview) overview.insertAdjacentHTML('beforeend', card1);
+  const allSites = document.getElementById('site-all');
+  if (allSites) {
+    const firstBtn = allSites.querySelector('.ph');
+    if (firstBtn) firstBtn.insertAdjacentHTML('afterend', card2);
+    else allSites.insertAdjacentHTML('beforeend', card2);
+  }
+
+  closeAddSiteModal();
+  aqToast('✅ Site "' + name + '" added!');
+}
+
+// ── FIX 5: Tax deadline checkboxes + Mark done button ────────
+// Upgrade tax deadlines page with interactive checkboxes and Mark done
+
+function taxToggleDeadline(id) {
+  const row = document.getElementById('tdl-' + id);
+  if (!row) return;
+  const dot = row.querySelector('.tdl-dot');
+  const isDone = row.dataset.done === 'true';
+
+  if (!isDone) {
+    row.dataset.done = 'true';
+    row.style.opacity = '0.5';
+    if (dot) { dot.style.background = 'var(--green)'; }
+    const badge = row.querySelector('.tdl-badge');
+    if (badge) { badge.textContent = 'Done'; badge.className = 'badge b-ok tdl-badge'; }
+    const btn = row.querySelector('.tdl-btn');
+    if (btn) btn.textContent = 'Undo';
+    // Persist
+    const done = JSON.parse(localStorage.getItem('aq_tax_done') || '[]');
+    if (!done.includes(id)) { done.push(id); localStorage.setItem('aq_tax_done', JSON.stringify(done)); }
+    aqToast('✅ Deadline marked as met!');
+  } else {
+    row.dataset.done = 'false';
+    row.style.opacity = '1';
+    if (dot) { dot.style.background = row.dataset.origColor || 'var(--red)'; }
+    const badge = row.querySelector('.tdl-badge');
+    if (badge) { badge.textContent = row.dataset.origBadge || 'Due soon'; badge.className = (row.dataset.origBadgeClass || 'badge b-danger') + ' tdl-badge'; }
+    const btn = row.querySelector('.tdl-btn');
+    if (btn) btn.textContent = 'Mark done';
+    const done = JSON.parse(localStorage.getItem('aq_tax_done') || '[]');
+    localStorage.setItem('aq_tax_done', JSON.stringify(done.filter(x => x !== id)));
+    aqToast('↩ Marked as pending');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Upgrade the tax deadlines page
+  const deadlinePage = document.getElementById('tax-deadlines');
+  if (!deadlinePage) return;
+
+  const card = deadlinePage.querySelector('.card');
+  if (!card) return;
+
+  // Rebuild rows with interactive controls
+  const rows = [
+    { id:'ng-vat-q1', color:'var(--red)',    label:'Nigeria VAT return — Q1 2026',    sub:'FIRS · ₦93,750 payable · File via eFIRS portal', date:'Apr 15', days:'8 days',    badge:'Due soon',  badgeCls:'badge b-danger' },
+    { id:'ng-income', color:'var(--amber)',  label:'Annual income tax — Nigeria',      sub:'LIRS · Personal income tax · Self-employed filing', date:'Jun 30', days:'84 days',   badge:'Upcoming',  badgeCls:'badge b-warn' },
+    { id:'gh-vat-q2', color:'var(--border2)',label:'Ghana VAT return — Q2',           sub:'GRA · File online via GRA portal',                  date:'Jul 31', days:'115 days',  badge:'Upcoming',  badgeCls:'badge b-gray' },
+    { id:'ke-wht',    color:'var(--border2)',label:'Kenya withholding VAT — monthly',  sub:'KRA iTax · 20th of following month',                date:'May 20', days:'43 days',   badge:'Upcoming',  badgeCls:'badge b-gray' },
+  ];
+
+  const done = JSON.parse(localStorage.getItem('aq_tax_done') || '[]');
+
+  card.innerHTML = rows.map(r => {
+    const isDone = done.includes(r.id);
+    return `<div class="row" id="tdl-${r.id}" data-done="${isDone}" data-orig-color="${r.color}" data-orig-badge="${r.badge}" data-orig-badge-class="${r.badgeCls}" style="${isDone ? 'opacity:.5' : ''}">
+      <div class="tdl-dot" style="width:9px;height:9px;border-radius:50%;background:${isDone ? 'var(--green)' : r.color};flex-shrink:0;margin-top:4px;cursor:pointer" onclick="taxToggleDeadline('${r.id}')"></div>
+      <div class="row-info" style="cursor:pointer" onclick="taxToggleDeadline('${r.id}')">
+        <div class="row-title">${r.label}</div>
+        <div class="row-sub">${r.sub}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:12px;font-weight:600;color:${r.color}">${r.date}</div>
+        <div style="font-size:10px;color:var(--text3)">${r.days}</div>
+      </div>
+      <span class="${isDone ? 'badge b-ok' : r.badgeCls} tdl-badge" style="flex-shrink:0">${isDone ? 'Done' : r.badge}</span>
+      <button class="btn btn-sm tdl-btn" style="flex-shrink:0;font-size:11px" onclick="taxToggleDeadline('${r.id}')">${isDone ? 'Undo' : 'Mark done'}</button>
+    </div>`;
+  }).join('');
+});
+
+// ── FIX 6: Proposal sidebar tabs navigate into pipeline sub-views ──
+// "All proposals", "Analytics", "Follow-ups" are sidebar items that
+// call showPage('prop-list') etc — but content lives inside prop-pipeline.
+// Override showPage to intercept these and switch to the correct sub-view.
+
+const _origShowPage = showPage;
+window.showPage = function(id, sidebarEl) {
+  const propSubMap = { 'prop-list': 'list', 'prop-analytics': 'analytics', 'prop-followups': 'followups' };
+  if (propSubMap[id]) {
+    // Navigate to pipeline page first (if not already visible)
+    _origShowPage('prop-pipeline', null);
+    // Activate correct sidebar item
+    if (sidebarEl) {
+      const sb = sidebarEl.closest('.sidebar');
+      if (sb) sb.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
+      sidebarEl.classList.add('on');
+    }
+    // Switch sub-view inside the pipeline
+    const subView = propSubMap[id];
+    const tabBtn = document.querySelector(`.pvtab[onclick*="'${subView}'"]`);
+    propSwitchSubView(subView, tabBtn || null);
+    return;
+  }
+  _origShowPage(id, sidebarEl);
+};
+// ════════════════════════════════════════
+// MASTER INIT — render all tables on load
 // ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function () {
   renderQuoteTable();
   renderInvoiceTable();
   renderClientList();
-  setTimeout(function () { if (typeof propRenderAll === 'function') propRenderAll(); }, 120);
+  setTimeout(function () { if (typeof propRenderAll === 'function') propRenderAll(); }, 150);
 });
+
 </script>
 
 </body>
